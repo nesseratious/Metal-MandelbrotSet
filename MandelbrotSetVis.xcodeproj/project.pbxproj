@@ -22,6 +22,8 @@
 		64257DA424FA03E800D17591 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 64257DA224FA03E800D17591 /* LaunchScreen.storyboard */; };
 		64257DA724FA0A8A00D17591 /* SwiftToMetalConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257DA624FA0A8A00D17591 /* SwiftToMetalConvertible.swift */; };
 		64A17B2724FB6758002482D6 /* Calculator.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64A17B2624FB6758002482D6 /* Calculator.metal */; };
+		64A17B2A24FB6B52002482D6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 64A17B2924FB6B52002482D6 /* README.md */; };
+		64A17B2D24FB6E9B002482D6 /* Main.gif in Resources */ = {isa = PBXBuildFile; fileRef = 64A17B2C24FB6E9B002482D6 /* Main.gif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +49,8 @@
 		64A17B2424FB540A002482D6 /* MetalBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalBuffer.h; sourceTree = "<group>"; };
 		64A17B2624FB6758002482D6 /* Calculator.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Calculator.metal; sourceTree = "<group>"; };
 		64A17B2824FB6781002482D6 /* Calculator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Calculator.h; sourceTree = "<group>"; };
+		64A17B2924FB6B52002482D6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		64A17B2C24FB6E9B002482D6 /* Main.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Main.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,8 @@
 		64257D6224FA037200D17591 = {
 			isa = PBXGroup;
 			children = (
+				64A17B2B24FB6B90002482D6 /* Images */,
+				64A17B2924FB6B52002482D6 /* README.md */,
 				64257D6D24FA037200D17591 /* MandelbrotSetVis */,
 				64257D6C24FA037200D17591 /* Products */,
 			);
@@ -184,6 +190,14 @@
 			path = Bridging;
 			sourceTree = "<group>";
 		};
+		64A17B2B24FB6B90002482D6 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				64A17B2C24FB6E9B002482D6 /* Main.gif */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -244,6 +258,8 @@
 			files = (
 				64257D7824FA037300D17591 /* Assets.xcassets in Resources */,
 				64257DA424FA03E800D17591 /* LaunchScreen.storyboard in Resources */,
+				64A17B2A24FB6B52002482D6 /* README.md in Resources */,
+				64A17B2D24FB6E9B002482D6 /* Main.gif in Resources */,
 				64257D9E24FA03D100D17591 /* pallete.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
