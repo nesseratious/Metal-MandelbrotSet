@@ -10,8 +10,7 @@ import MetalKit
 
 struct Square {
     var vertexBuffer: MTLBuffer?
-    var vertexCount = 0
-    
+
     init(device: MTLDevice) {
         var vertices = [Vertex(x: -1.0, y: -1.0, z: 0),
                         Vertex(x: -1.0, y: 1.0, z: 0),
@@ -21,7 +20,6 @@ struct Square {
                         Vertex(x: 1.0, y: -1.0, z: 0)]
         let lenght = vertices.count * MemoryLayout<Vertex>.size
         let options = MTLResourceOptions()
-        vertexCount = vertices.count
         vertexBuffer = device.makeBuffer(bytes: &vertices, length: lenght, options: options)
     }
 }
