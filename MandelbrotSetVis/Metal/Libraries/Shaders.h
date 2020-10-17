@@ -10,7 +10,6 @@
 #define Shaders_h
 #include <metal_stdlib>
 #include <metal_math>
-#include "Calculator.h"
 #include "../Bridging/MetalBuffer.h"
 
 struct InputVertex {
