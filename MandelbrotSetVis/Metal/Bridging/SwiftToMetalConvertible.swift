@@ -14,15 +14,13 @@ protocol SwiftToMetalConvertible {
 extension SwiftToMetalConvertible {
     func getRawData() -> [Float32] {
         let metalBufferSize = MemoryLayout<MetalBuffer>.size
-        let metalBufferStride = MemoryLayout<MetalBuffer>.stride
-
         unsafeRawData.withUnsafeBufferPointer {
             guard let baseAdress = $0.baseAddress else {
                 fatalError("Swift buffer is empty.")
             }
             let stride = MemoryLayout<Float32>.stride
             let size = Data(bytes: baseAdress, count: unsafeRawData.count * stride).count
-            guard metalBufferSize == size, metalBufferStride == stride * unsafeRawData.count else {
+            guard metalBufferSize == size else {
                 fatalError("Swift buffer and Metal buffer have different memory layouts.")
             }
         }
