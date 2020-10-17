@@ -21,7 +21,6 @@
 		64257DA024FA03D100D17591 /* MandelbrotViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D9524FA03D100D17591 /* MandelbrotViewController.swift */; };
 		64257DA424FA03E800D17591 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 64257DA224FA03E800D17591 /* LaunchScreen.storyboard */; };
 		64257DA724FA0A8A00D17591 /* SwiftToMetalConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257DA624FA0A8A00D17591 /* SwiftToMetalConvertible.swift */; };
-		64A17B2724FB6758002482D6 /* Calculator.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64A17B2624FB6758002482D6 /* Calculator.metal */; };
 		64A17B2A24FB6B52002482D6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 64A17B2924FB6B52002482D6 /* README.md */; };
 		64A17B2D24FB6E9B002482D6 /* Main.gif in Resources */ = {isa = PBXBuildFile; fileRef = 64A17B2C24FB6E9B002482D6 /* Main.gif */; };
 /* End PBXBuildFile section */
@@ -47,8 +46,6 @@
 		64257DA624FA0A8A00D17591 /* SwiftToMetalConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftToMetalConvertible.swift; sourceTree = "<group>"; };
 		64A17B2024FB52FD002482D6 /* BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
 		64A17B2424FB540A002482D6 /* MetalBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalBuffer.h; sourceTree = "<group>"; };
-		64A17B2624FB6758002482D6 /* Calculator.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Calculator.metal; sourceTree = "<group>"; };
-		64A17B2824FB6781002482D6 /* Calculator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Calculator.h; sourceTree = "<group>"; };
 		64A17B2924FB6B52002482D6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		64A17B2C24FB6E9B002482D6 /* Main.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Main.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -125,8 +122,6 @@
 			children = (
 				64257D8B24FA03D100D17591 /* Shaders.h */,
 				64257D8C24FA03D100D17591 /* Shaders.metal */,
-				64A17B2824FB6781002482D6 /* Calculator.h */,
-				64A17B2624FB6758002482D6 /* Calculator.metal */,
 			);
 			path = Libraries;
 			sourceTree = "<group>";
@@ -280,7 +275,6 @@
 				64257DA724FA0A8A00D17591 /* SwiftToMetalConvertible.swift in Sources */,
 				64257D9C24FA03D100D17591 /* Shapes.swift in Sources */,
 				64257D7124FA037200D17591 /* SceneDelegate.swift in Sources */,
-				64A17B2724FB6758002482D6 /* Calculator.metal in Sources */,
 				64257D9F24FA03D100D17591 /* Transform.swift in Sources */,
 				64257D9A24FA03D100D17591 /* RendererBuffer.swift in Sources */,
 			);

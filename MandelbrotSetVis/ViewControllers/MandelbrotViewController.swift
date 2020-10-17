@@ -48,9 +48,8 @@ final class MandelbrotViewController: UIViewController {
     }
 }
 
-extension MandelbrotViewController {
-    
-    @objc private func zoom(sender: UIPinchGestureRecognizer) {
+private extension MandelbrotViewController {
+    @objc func zoom(sender: UIPinchGestureRecognizer) {
         guard sender.view != nil else { return }
         let scale = transform.zoom * Float(sender.scale)
         switch sender.state {
@@ -63,7 +62,7 @@ extension MandelbrotViewController {
         }
     }
 
-    @objc private func pan(sender: UIPanGestureRecognizer) {
+    @objc func pan(sender: UIPanGestureRecognizer) {
         guard sender.view != nil else { return }
         let deltaX = Float(sender.translation(in: view).x/view.frame.width) * Float(view.frame.width / 200)
         let deltaY = Float(sender.translation(in: view).y/view.frame.height) * Float(view.frame.height / 200)

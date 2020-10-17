@@ -9,7 +9,7 @@
 import MetalKit
 
 struct Square {
-    var vertexBuffer: MTLBuffer?
+    let vertexBuffer: MTLBuffer?
 
     init(device: MTLDevice) {
         var vertices = [Vertex(x: -1.0, y: -1.0, z: 0),
@@ -22,10 +22,10 @@ struct Square {
         let options = MTLResourceOptions()
         vertexBuffer = device.makeBuffer(bytes: &vertices, length: lenght, options: options)
     }
-}
-
-struct Vertex {
-    let x: Float
-    let y: Float
-    let z: Float
+    
+    struct Vertex {
+        let x: Float
+        let y: Float
+        let z: Float
+    }
 }

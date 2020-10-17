@@ -16,7 +16,7 @@ final class MetalRenderer: NSObject {
     private var paletteTexture: MTLTexture!
     private var samplerState: MTLSamplerState!
     private var bufferProvider: BufferProvider!
-    private var needsRedraw = true
+    private var isRedrawNeeded = true
     private var square: Square!
     private let metalView = MTKView()
     private var bufferUniform = RendererBuffer()
@@ -104,11 +104,11 @@ final class MetalRenderer: NSObject {
 extension MetalRenderer: MTKViewDelegate {
     
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        needsRedraw = true
+        isRedrawNeeded = true
     }
     
     func draw(in view: MTKView) {
-        guard needsRedraw == true,
+        guard isRedrawNeeded == true,
             let currentRenderPassDescriptor = view.currentRenderPassDescriptor,
             let currentDrawable = view.currentDrawable else {
                 return
@@ -128,11 +128,8 @@ extension MetalRenderer: MTKViewDelegate {
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder.setDepthStencilState(depthStencilState)
         renderCommandEncoder.setCullMode(.none)
-        
-        if let squareBuffer = square?.vertexBuffer {
-            renderCommandEncoder.setVertexBuffer(squareBuffer, offset: 0, index: 0)
-        }
-        
+        renderCommandEncoder.setVertexBuffer(square.vertexBuffer, offset: 0, index: 0)
+ 
         let uniformBuffer = bufferProvider.makeBuffer(with: bridgeBuffer)
         renderCommandEncoder.setVertexBuffer(uniformBuffer, offset: 0, index: 1)
         renderCommandEncoder.setFragmentBuffer(uniformBuffer, offset: 0, index: 0)
@@ -142,20 +139,19 @@ extension MetalRenderer: MTKViewDelegate {
         renderCommandEncoder.endEncoding()
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
-        needsRedraw = false
+        isRedrawNeeded = false
     }
     
 }
 
 extension MetalRenderer: Renderer {
-    
     var bridgeBuffer: RendererBuffer {
         get {
             return bufferUniform
         }
         set {
             bufferUniform = newValue
-            needsRedraw = true
+            isRedrawNeeded = true
         }
     }
     
