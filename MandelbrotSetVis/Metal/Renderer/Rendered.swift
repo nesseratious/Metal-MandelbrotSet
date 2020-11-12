@@ -51,8 +51,8 @@ final class MetalRenderer: NSObject {
             fatalError("Failed to create a metal library.")
         }
         guard let vertexShader = library.makeFunction(name: "vertexShader"),
-            let fragmentShader = library.makeFunction(name: "colorShader") else {
-                fatalError("Failed to create a metal vertex and color shaders.")
+              let fragmentShader = library.makeFunction(name: "colorShader") else {
+            fatalError("Failed to create a metal vertex and color shaders.")
         }
         renderPipelineState = makeCompiledPipelineStateFrom(device: device,
                                                             vertexShader: vertexShader,
@@ -63,8 +63,8 @@ final class MetalRenderer: NSObject {
     private func makeVertexDescriptor() -> MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
         guard let attribute = vertexDescriptor.attributes[0],
-            let layout = vertexDescriptor.layouts[0] else {
-                fatalError("Failed to create attribute or layout.")
+              let layout = vertexDescriptor.layouts[0] else {
+            fatalError("Failed to create attribute or layout.")
         }
         attribute.format = .float3
         attribute.offset = 0
@@ -108,10 +108,10 @@ extension MetalRenderer: MTKViewDelegate {
     }
     
     func draw(in view: MTKView) {
-        guard isRedrawNeeded == true,
-            let currentRenderPassDescriptor = view.currentRenderPassDescriptor,
-            let currentDrawable = view.currentDrawable else {
-                return
+        guard isRedrawNeeded,
+              let currentRenderPassDescriptor = view.currentRenderPassDescriptor,
+              let currentDrawable = view.currentDrawable else {
+            return
         }
         
         let clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
@@ -121,15 +121,15 @@ extension MetalRenderer: MTKViewDelegate {
         currentRenderPassDescriptor.colorAttachments[0].texture = currentDrawable.texture
         
         guard let commandBuffer = commandQueue.makeCommandBuffer(),
-            let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: currentRenderPassDescriptor) else {
-                return
+              let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: currentRenderPassDescriptor) else {
+            return
         }
         
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder.setDepthStencilState(depthStencilState)
         renderCommandEncoder.setCullMode(.none)
         renderCommandEncoder.setVertexBuffer(square.vertexBuffer, offset: 0, index: 0)
- 
+        
         let uniformBuffer = bufferProvider.makeBuffer(with: bridgeBuffer)
         renderCommandEncoder.setVertexBuffer(uniformBuffer, offset: 0, index: 1)
         renderCommandEncoder.setFragmentBuffer(uniformBuffer, offset: 0, index: 0)
@@ -141,7 +141,6 @@ extension MetalRenderer: MTKViewDelegate {
         commandBuffer.commit()
         isRedrawNeeded = false
     }
-    
 }
 
 extension MetalRenderer: Renderer {
