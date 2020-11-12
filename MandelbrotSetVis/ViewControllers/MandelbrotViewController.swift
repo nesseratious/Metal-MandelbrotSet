@@ -10,7 +10,7 @@ import UIKit
 
 final class MandelbrotViewController: UIViewController {
     private let renderer: Renderer = MetalRenderer()
-    private var transform = Transform()
+    private var transform = SceneTransform()
     
     override func loadView() {
         view = renderer.view

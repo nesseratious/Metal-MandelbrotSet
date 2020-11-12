@@ -8,7 +8,7 @@
 
 import MetalKit
 
-struct BufferProvider {
+struct MetalBufferProvider {
     private let buffer: MTLBuffer
     
     init?(device: MTLDevice) {

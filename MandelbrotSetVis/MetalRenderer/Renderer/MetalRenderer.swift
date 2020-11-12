@@ -15,7 +15,7 @@ final class MetalRenderer: NSObject {
     private var depthStencilState: MTLDepthStencilState!
     private var paletteTexture: MTLTexture!
     private var samplerState: MTLSamplerState!
-    private var bufferProvider: BufferProvider!
+    private var bufferProvider: MetalBufferProvider!
     private var isRedrawNeeded = true
     private var square: Square!
     private let metalView = MTKView()
@@ -170,7 +170,7 @@ extension MetalRenderer: Renderer {
         commandQueue = device.makeCommandQueue()
         square = Square(device: device)
         samplerState = makeSamplerState(device: device)
-        bufferProvider = BufferProvider(device: device)
+        bufferProvider = MetalBufferProvider(device: device)
         makeColorPalleteTexture(device: device)
         makeRenderPipelineState(device: device)
         depthStencilState = makeCompiledDepthState(device: device)
