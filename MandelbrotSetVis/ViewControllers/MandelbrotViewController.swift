@@ -31,10 +31,7 @@ final class MandelbrotViewController: UIViewController {
         let renderView = renderer.view
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(zoom(sender:)))
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(pan(sender:)))
-        // Enable trackpad support for iPads
-        if #available(iOS 13.4, *) {
-            panGesture.allowedScrollTypesMask = [.continuous]
-        }
+        panGesture.allowedScrollTypesMask = [.continuous]
         renderView.addGestureRecognizer(pinchGesture)
         renderView.addGestureRecognizer(panGesture)
     }
