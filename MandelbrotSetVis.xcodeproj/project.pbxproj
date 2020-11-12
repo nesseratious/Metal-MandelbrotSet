@@ -7,17 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		64255105255DAC1100C486BD /* RendererBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64255104255DAC1100C486BD /* RendererBuffer.swift */; };
+		6425510A255DAF9C00C486BD /* RootTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64255109255DAF9C00C486BD /* RootTabBarViewController.swift */; };
 		64257D6F24FA037200D17591 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D6E24FA037200D17591 /* AppDelegate.swift */; };
 		64257D7124FA037200D17591 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D7024FA037200D17591 /* SceneDelegate.swift */; };
 		64257D7824FA037300D17591 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 64257D7724FA037300D17591 /* Assets.xcassets */; };
-		64257D9624FA03D100D17591 /* Rendered.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8524FA03D100D17591 /* Rendered.swift */; };
+		64257D9624FA03D100D17591 /* MetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8524FA03D100D17591 /* MetalRenderer.swift */; };
 		64257D9824FA03D100D17591 /* RendererProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8724FA03D100D17591 /* RendererProtocol.swift */; };
 		64257D9924FA03D100D17591 /* BufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8824FA03D100D17591 /* BufferProvider.swift */; };
-		64257D9A24FA03D100D17591 /* RendererBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8924FA03D100D17591 /* RendererBuffer.swift */; };
 		64257D9B24FA03D100D17591 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8C24FA03D100D17591 /* Shaders.metal */; };
 		64257D9C24FA03D100D17591 /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8E24FA03D100D17591 /* Shapes.swift */; };
 		64257D9E24FA03D100D17591 /* pallete.png in Resources */ = {isa = PBXBuildFile; fileRef = 64257D9124FA03D100D17591 /* pallete.png */; };
-		64257D9F24FA03D100D17591 /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D9324FA03D100D17591 /* Transform.swift */; };
+		64257D9F24FA03D100D17591 /* SceneTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D9324FA03D100D17591 /* SceneTransform.swift */; };
 		64257DA024FA03D100D17591 /* MandelbrotViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D9524FA03D100D17591 /* MandelbrotViewController.swift */; };
 		64257DA424FA03E800D17591 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 64257DA224FA03E800D17591 /* LaunchScreen.storyboard */; };
 		64257DA724FA0A8A00D17591 /* SwiftToMetalConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257DA624FA0A8A00D17591 /* SwiftToMetalConvertible.swift */; };
@@ -26,21 +27,22 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		64255104255DAC1100C486BD /* RendererBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RendererBuffer.swift; sourceTree = "<group>"; };
+		64255109255DAF9C00C486BD /* RootTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabBarViewController.swift; sourceTree = "<group>"; };
 		64257D6B24FA037200D17591 /* MandelbrotSetVis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MandelbrotSetVis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64257D6E24FA037200D17591 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		64257D7024FA037200D17591 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		64257D7724FA037300D17591 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		64257D7C24FA037300D17591 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		64257D8224FA039A00D17591 /* MandelbrotSetVis.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MandelbrotSetVis.entitlements; sourceTree = "<group>"; };
-		64257D8524FA03D100D17591 /* Rendered.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rendered.swift; sourceTree = "<group>"; };
+		64257D8524FA03D100D17591 /* MetalRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalRenderer.swift; sourceTree = "<group>"; };
 		64257D8724FA03D100D17591 /* RendererProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RendererProtocol.swift; sourceTree = "<group>"; };
 		64257D8824FA03D100D17591 /* BufferProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferProvider.swift; sourceTree = "<group>"; };
-		64257D8924FA03D100D17591 /* RendererBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RendererBuffer.swift; sourceTree = "<group>"; };
 		64257D8B24FA03D100D17591 /* Shaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shaders.h; sourceTree = "<group>"; };
 		64257D8C24FA03D100D17591 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		64257D8E24FA03D100D17591 /* Shapes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shapes.swift; sourceTree = "<group>"; };
 		64257D9124FA03D100D17591 /* pallete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pallete.png; sourceTree = "<group>"; };
-		64257D9324FA03D100D17591 /* Transform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transform.swift; sourceTree = "<group>"; };
+		64257D9324FA03D100D17591 /* SceneTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneTransform.swift; sourceTree = "<group>"; };
 		64257D9524FA03D100D17591 /* MandelbrotViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MandelbrotViewController.swift; sourceTree = "<group>"; };
 		64257DA324FA03E800D17591 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		64257DA624FA0A8A00D17591 /* SwiftToMetalConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftToMetalConvertible.swift; sourceTree = "<group>"; };
@@ -61,6 +63,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		642550FC255DAA4100C486BD /* AccelerateRenderer */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = AccelerateRenderer;
+			sourceTree = "<group>";
+		};
 		64257D6224FA037200D17591 = {
 			isa = PBXGroup;
 			children = (
@@ -84,8 +93,9 @@
 			children = (
 				64257DA524FA057100D17591 /* AppDelegates */,
 				64257DA124FA03E800D17591 /* Supporting Files */,
-				64257D8324FA03D100D17591 /* Metal */,
-				64257D9224FA03D100D17591 /* Model */,
+				64257D8324FA03D100D17591 /* MetalRenderer */,
+				642550FC255DAA4100C486BD /* AccelerateRenderer */,
+				64257D9224FA03D100D17591 /* Mandelbrot */,
 				64257D9424FA03D100D17591 /* ViewControllers */,
 				64257D8224FA039A00D17591 /* MandelbrotSetVis.entitlements */,
 				64257D7724FA037300D17591 /* Assets.xcassets */,
@@ -94,7 +104,7 @@
 			path = MandelbrotSetVis;
 			sourceTree = "<group>";
 		};
-		64257D8324FA03D100D17591 /* Metal */ = {
+		64257D8324FA03D100D17591 /* MetalRenderer */ = {
 			isa = PBXGroup;
 			children = (
 				64A17B2524FB5498002482D6 /* Bridging */,
@@ -103,16 +113,14 @@
 				64257D8D24FA03D100D17591 /* Shapes */,
 				64257D9024FA03D100D17591 /* Palletes */,
 			);
-			path = Metal;
+			path = MetalRenderer;
 			sourceTree = "<group>";
 		};
 		64257D8424FA03D100D17591 /* Renderer */ = {
 			isa = PBXGroup;
 			children = (
-				64257D8524FA03D100D17591 /* Rendered.swift */,
-				64257D8724FA03D100D17591 /* RendererProtocol.swift */,
+				64257D8524FA03D100D17591 /* MetalRenderer.swift */,
 				64257D8824FA03D100D17591 /* BufferProvider.swift */,
-				64257D8924FA03D100D17591 /* RendererBuffer.swift */,
 			);
 			path = Renderer;
 			sourceTree = "<group>";
@@ -142,18 +150,21 @@
 			path = Palletes;
 			sourceTree = "<group>";
 		};
-		64257D9224FA03D100D17591 /* Model */ = {
+		64257D9224FA03D100D17591 /* Mandelbrot */ = {
 			isa = PBXGroup;
 			children = (
-				64257D9324FA03D100D17591 /* Transform.swift */,
+				64257D8724FA03D100D17591 /* RendererProtocol.swift */,
+				64257D9324FA03D100D17591 /* SceneTransform.swift */,
+				64255104255DAC1100C486BD /* RendererBuffer.swift */,
 			);
-			path = Model;
+			path = Mandelbrot;
 			sourceTree = "<group>";
 		};
 		64257D9424FA03D100D17591 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
 				64257D9524FA03D100D17591 /* MandelbrotViewController.swift */,
+				64255109255DAF9C00C486BD /* RootTabBarViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -270,13 +281,14 @@
 				64257D9924FA03D100D17591 /* BufferProvider.swift in Sources */,
 				64257DA024FA03D100D17591 /* MandelbrotViewController.swift in Sources */,
 				64257D6F24FA037200D17591 /* AppDelegate.swift in Sources */,
-				64257D9624FA03D100D17591 /* Rendered.swift in Sources */,
+				6425510A255DAF9C00C486BD /* RootTabBarViewController.swift in Sources */,
+				64257D9624FA03D100D17591 /* MetalRenderer.swift in Sources */,
 				64257D9B24FA03D100D17591 /* Shaders.metal in Sources */,
 				64257DA724FA0A8A00D17591 /* SwiftToMetalConvertible.swift in Sources */,
 				64257D9C24FA03D100D17591 /* Shapes.swift in Sources */,
+				64255105255DAC1100C486BD /* RendererBuffer.swift in Sources */,
 				64257D7124FA037200D17591 /* SceneDelegate.swift in Sources */,
-				64257D9F24FA03D100D17591 /* Transform.swift in Sources */,
-				64257D9A24FA03D100D17591 /* RendererBuffer.swift in Sources */,
+				64257D9F24FA03D100D17591 /* SceneTransform.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -430,7 +442,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG MTL_FP32";
-				SWIFT_OBJC_BRIDGING_HEADER = MandelbrotSetVis/Metal/Bridging/BridgingHeader.h;
+				SWIFT_OBJC_BRIDGING_HEADER = MandelbrotSetVis/MetalRenderer/Bridging/BridgingHeader.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
@@ -457,7 +469,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = MTL_FP32;
-				SWIFT_OBJC_BRIDGING_HEADER = MandelbrotSetVis/Metal/Bridging/BridgingHeader.h;
+				SWIFT_OBJC_BRIDGING_HEADER = MandelbrotSetVis/MetalRenderer/Bridging/BridgingHeader.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};

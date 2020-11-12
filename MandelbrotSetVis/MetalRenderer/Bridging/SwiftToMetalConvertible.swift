@@ -27,3 +27,9 @@ extension SwiftToMetalConvertible {
         return unsafeRawData
     }
 }
+
+extension RendererBuffer: SwiftToMetalConvertible {
+    var unsafeRawData: [Float32] {
+        [scale, interations, translation.x, translation.y, aspectRatio.x, aspectRatio.y]
+    }
+}
