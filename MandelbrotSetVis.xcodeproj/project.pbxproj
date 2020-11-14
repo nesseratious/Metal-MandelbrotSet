@@ -24,6 +24,7 @@
 		64257DA724FA0A8A00D17591 /* SwiftToMetalConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257DA624FA0A8A00D17591 /* SwiftToMetalConvertible.swift */; };
 		64A17B2A24FB6B52002482D6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 64A17B2924FB6B52002482D6 /* README.md */; };
 		64A17B2D24FB6E9B002482D6 /* Main.gif in Resources */ = {isa = PBXBuildFile; fileRef = 64A17B2C24FB6E9B002482D6 /* Main.gif */; };
+		64ADD960256058F1009A81D8 /* PerformanceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64ADD95F256058F1009A81D8 /* PerformanceMonitor.swift */; };
 		64C355C8255FFBF300440B3B /* AccelerateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +52,7 @@
 		64A17B2424FB540A002482D6 /* MetalBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalBuffer.h; sourceTree = "<group>"; };
 		64A17B2924FB6B52002482D6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		64A17B2C24FB6E9B002482D6 /* Main.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Main.gif; sourceTree = "<group>"; };
+		64ADD95F256058F1009A81D8 /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
 		64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelerateRenderer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -96,6 +98,7 @@
 			children = (
 				64257DA524FA057100D17591 /* AppDelegates */,
 				64257DA124FA03E800D17591 /* Supporting Files */,
+				64ADD95D256058CC009A81D8 /* PerformanceMonitor */,
 				64257D8324FA03D100D17591 /* MetalRenderer */,
 				642550FC255DAA4100C486BD /* AccelerateRenderer */,
 				64257D9224FA03D100D17591 /* Mandelbrot */,
@@ -207,6 +210,14 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
+		64ADD95D256058CC009A81D8 /* PerformanceMonitor */ = {
+			isa = PBXGroup;
+			children = (
+				64ADD95F256058F1009A81D8 /* PerformanceMonitor.swift */,
+			);
+			path = PerformanceMonitor;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -289,6 +300,7 @@
 				64257D9624FA03D100D17591 /* MetalRenderer.swift in Sources */,
 				64257D9B24FA03D100D17591 /* Shaders.metal in Sources */,
 				64257DA724FA0A8A00D17591 /* SwiftToMetalConvertible.swift in Sources */,
+				64ADD960256058F1009A81D8 /* PerformanceMonitor.swift in Sources */,
 				64257D9C24FA03D100D17591 /* Shapes.swift in Sources */,
 				64255105255DAC1100C486BD /* RendererBuffer.swift in Sources */,
 				64257D7124FA037200D17591 /* SceneDelegate.swift in Sources */,

@@ -10,9 +10,13 @@ import UIKit
 
 final class AccelerateRenderer: UIView {
     var buffer = RendererBuffer()
+    var pallete: UIImage!
     
     override func draw(_ rect: CGRect) {
-        let fraction = 4
+        var monitor = PerformanceMonitor()
+        monitor.calculationStarted()
+        
+        let fraction = 1
         let workingWidth = Int(frame.width)/fraction
         let workingHeight = Int(frame.height)/fraction
         let iterations = buffer.iterations
@@ -25,11 +29,13 @@ final class AccelerateRenderer: UIView {
                                         ))
                 let rect = CGRect(x: x*fraction, y: y*fraction, width: 1, height: 1)
                 let path = UIBezierPath(rect: rect)
-                UIColor(red: pixelShift, green: pixelShift, blue: pixelShift, alpha: 1.0).set()
+                getPixelColor(Int(pixelShift)).set()
                 path.lineWidth = CGFloat(fraction)
                 path.stroke()
             }
         }
+        
+        monitor.calculationEnded()
     }
     
     private func render() {
@@ -46,15 +52,21 @@ final class AccelerateRenderer: UIView {
             real = temp
             i += 1
         }
-        return (i == iterations ? 0.0 : Float32(i)) / 256
+        return (i == iterations ? 0.0 : Float32(i)) / 50
+    }
+    
+    private func getPixelColor(_ pos: Int) -> UIColor {
+        let pixelData = pallete.cgImage!.dataProvider!.data
+        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
+        let pixelInfo = ((Int(pallete.size.width) * pos) + 1) * 4
+        let r = CGFloat(data[pixelInfo]) / CGFloat(255.0)
+        let g = CGFloat(data[pixelInfo+1]) / CGFloat(255.0)
+        let b = CGFloat(data[pixelInfo+2]) / CGFloat(255.0)
+        return UIColor(red: r, green: g, blue: b, alpha: 1.0)
     }
 }
 
 extension AccelerateRenderer: Renderer {
-    var view: UIView {
-        return self
-    }
-    
     var bridgeBuffer: RendererBuffer {
         get {
             return buffer
@@ -67,5 +79,10 @@ extension AccelerateRenderer: Renderer {
     
     func setupRenderer() {
         backgroundColor = .white
+        guard let palleteFile = Bundle.main.path(forResource: "pallete", ofType: "png"),
+        let pallete = UIImage(contentsOfFile: palleteFile) else {
+            fatalError("Failed to load color pallete from image.")
+        }
+        self.pallete = pallete
     }
 }

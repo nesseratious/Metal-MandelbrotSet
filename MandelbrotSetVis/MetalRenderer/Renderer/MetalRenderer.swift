@@ -113,6 +113,9 @@ extension MetalRenderer: MTKViewDelegate {
             return
         }
         
+        var monitor = PerformanceMonitor()
+        monitor.calculationStarted()
+        
         let clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
         currentRenderPassDescriptor.colorAttachments[0].clearColor = clearColor
@@ -139,6 +142,11 @@ extension MetalRenderer: MTKViewDelegate {
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
         isRedrawNeeded = false
+        
+        DispatchQueue.global(qos: .utility).async {
+            commandBuffer.waitUntilCompleted()
+            monitor.calculationEnded()
+        }
     }
 }
 
