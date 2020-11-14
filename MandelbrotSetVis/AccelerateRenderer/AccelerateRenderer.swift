@@ -13,20 +13,20 @@ final class AccelerateRenderer: UIView {
     var buffer = RendererBuffer()
     
     override func draw(_ rect: CGRect) {
-        let width = Int(frame.width)
-        let height = Int(frame.height)
+        let width = frame.width
+        let height = frame.height
         
-        for x in 0..<100 {
-            for y in 0..<100 {
-                let pixel = CGFloat(processPixel(iterations: 64, x: Float32(x)/100, y: Float32(y)/100))/256
-                print(pixel)
-                let aPath = UIBezierPath()
-                aPath.move(to: CGPoint(x: x, y: y))
-                aPath.addLine(to: CGPoint(x: x+1, y: y+1))
-                aPath.close()
+        for x in -100...100 {
+            for y in -100...100 {
+                let pixel = CGFloat(processPixel(iterations: 256, x: Float32(x)/100, y: Float32(y)/100))
+                let x = (CGFloat(x) / 200 * width) + (width / 2)
+                let y = CGFloat(y) / 200 * height + (height / 2)
+                let rect = CGRect(x: x, y: y, width: 2, height: 2)
+                let path = UIBezierPath(rect: rect)
+                path.close()
                 UIColor(red: pixel, green: pixel, blue: pixel, alpha: pixel).set()
-                aPath.lineWidth = 5.0
-                aPath.stroke()
+                path.lineWidth = 2.0
+                path.stroke()
             }
         }
     }
@@ -45,7 +45,7 @@ final class AccelerateRenderer: UIView {
             real = temp;
             i += 1
         }
-        return i == iterations ? 0.0 : Float32(i);
+        return (i == iterations ? 0.0 : Float32(i)) / 256
     }
 }
 
