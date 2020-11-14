@@ -30,6 +30,6 @@ extension SwiftToMetalConvertible {
 
 extension RendererBuffer: SwiftToMetalConvertible {
     var unsafeRawData: [Float32] {
-        [scale, iterations, translation.x, translation.y, aspectRatio.x, aspectRatio.y]
+        [scale, Float32(iterations), translation.x, translation.y, aspectRatio.x, aspectRatio.y]
     }
 }
