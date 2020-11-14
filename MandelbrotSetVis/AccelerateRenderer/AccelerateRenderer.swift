@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import Accelerate
 
 final class AccelerateRenderer: UIView {
     var buffer = RendererBuffer()
@@ -21,8 +20,8 @@ final class AccelerateRenderer: UIView {
         for x in 0...workingWidth {
             for y in 0...workingHeight {
                 let pixelShift = CGFloat(processPixel(iterations: iterations,
-                                                      x: Float32(x)/Float32(workingWidth)*2-1,
-                                                      y: Float32(y)/Float32(workingHeight)*2-1
+                                                      x: Float32(x) / Float32(workingWidth) * 2 - 1,
+                                                      y: Float32(y) / Float32(workingHeight) * 2 - 1
                                         ))
                 let rect = CGRect(x: x*fraction, y: y*fraction, width: 1, height: 1)
                 let path = UIBezierPath(rect: rect)
@@ -38,13 +37,13 @@ final class AccelerateRenderer: UIView {
     }
     
     private func processPixel(iterations: Int, x: Float32, y: Float32) -> Float32 {
-        var real: Float32 = 0.0;
-        var img: Float32 = 0.0;
-        var i = 0;
-        while i < iterations && real * real + img * img < 10.0 {
-            let temp = (real * real) - (img * img) + x;
-            img = 2.0 * (real * img) + y;
-            real = temp;
+        var real: Float32 = 0.0
+        var img: Float32 = 0.0
+        var i = 0
+        while i < iterations && real * real + img * img < 4.0 {
+            let temp = (real * real) - (img * img) + x
+            img = 2.0 * (real * img) + y
+            real = temp
             i += 1
         }
         return (i == iterations ? 0.0 : Float32(i)) / 256
