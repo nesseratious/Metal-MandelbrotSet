@@ -8,8 +8,8 @@
 
 import MetalKit
 
-final class MetalRenderer: NSObject {
-    private var device: MTLDevice?
+final class MetalRenderer: MTKView {
+    private var metalDevice: MTLDevice?
     private var commandQueue: MTLCommandQueue!
     private var renderPipelineState: MTLRenderPipelineState!
     private var depthStencilState: MTLDepthStencilState!
@@ -18,7 +18,6 @@ final class MetalRenderer: NSObject {
     private var bufferProvider: MetalBufferProvider!
     private var isRedrawNeeded = true
     private var square: Square!
-    private let metalView = MTKView()
     private var bufferUniform = RendererBuffer()
     
     private func makeSamplerState(device: MTLDevice) -> MTLSamplerState? {
@@ -82,9 +81,9 @@ final class MetalRenderer: NSObject {
         pipelineStateDescriptor.vertexDescriptor = vertexDescriptor
         pipelineStateDescriptor.vertexFunction = vertexShader
         pipelineStateDescriptor.fragmentFunction = fragmentShader
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = metalView.colorPixelFormat
-        pipelineStateDescriptor.depthAttachmentPixelFormat = metalView.depthStencilPixelFormat
-        pipelineStateDescriptor.stencilAttachmentPixelFormat = metalView.depthStencilPixelFormat
+        pipelineStateDescriptor.colorAttachments[0].pixelFormat = colorPixelFormat
+        pipelineStateDescriptor.depthAttachmentPixelFormat = depthStencilPixelFormat
+        pipelineStateDescriptor.stencilAttachmentPixelFormat = depthStencilPixelFormat
         do {
             let compiledState = try device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
             return compiledState
@@ -155,17 +154,17 @@ extension MetalRenderer: Renderer {
     }
     
     var view: UIView {
-        return metalView
+        return self
     }
     
     func setupRenderer() {
         guard let device = MTLCreateSystemDefaultDevice() else {
             fatalError("Failed to create device.")
         }
+        self.metalDevice = device
         self.device = device
-        metalView.device = device
-        metalView.delegate = self
-        metalView.depthStencilPixelFormat = .depth32Float_stencil8
+        delegate = self
+        depthStencilPixelFormat = .depth32Float_stencil8
         commandQueue = device.makeCommandQueue()
         square = Square(device: device)
         samplerState = makeSamplerState(device: device)
