@@ -22,7 +22,7 @@ final class MandelbrotViewController: UIViewController {
     }
     
     override func loadView() {
-        view = renderer.view
+        view = renderer
     }
     
     override func viewDidLoad() {
@@ -37,12 +37,11 @@ final class MandelbrotViewController: UIViewController {
     }
     
     private func addGestures() {
-        let renderView = renderer.view
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(zoom(sender:)))
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(pan(sender:)))
         panGesture.allowedScrollTypesMask = [.continuous]
-        renderView.addGestureRecognizer(pinchGesture)
-        renderView.addGestureRecognizer(panGesture)
+        renderer.addGestureRecognizer(pinchGesture)
+        renderer.addGestureRecognizer(panGesture)
     }
     
     private func calculateAspectRatio() {

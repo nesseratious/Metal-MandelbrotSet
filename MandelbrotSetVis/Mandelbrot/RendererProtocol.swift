@@ -8,8 +8,7 @@
 
 import UIKit
 
-protocol Renderer: class {
-    var view: UIView { get }
+protocol Renderer: UIView {
     var bridgeBuffer: RendererBuffer { get set }
     func setupRenderer()
 }

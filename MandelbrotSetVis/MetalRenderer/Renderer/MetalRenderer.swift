@@ -153,10 +153,6 @@ extension MetalRenderer: Renderer {
         }
     }
     
-    var view: UIView {
-        return self
-    }
-    
     func setupRenderer() {
         guard let device = MTLCreateSystemDefaultDevice() else {
             fatalError("Failed to create device.")
