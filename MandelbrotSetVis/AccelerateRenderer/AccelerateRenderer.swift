@@ -25,7 +25,8 @@ final class AccelerateRenderer: UIView {
         var monitor = PerformanceMonitor()
         monitor.calculationStarted()
         
-        UIGraphicsBeginImageContextWithOptions(frame.size, true, UIScreen.main.scale)
+        let scale = UIScreen.main.scale
+        UIGraphicsBeginImageContextWithOptions(frame.size, true, scale)
         drawHierarchy(in: bounds, afterScreenUpdates: true)
         guard let image = UIGraphicsGetImageFromCurrentImageContext(),
               let cgImage = image.cgImage else {
@@ -74,7 +75,7 @@ final class AccelerateRenderer: UIView {
             fatalError("Failed to create cgimage from context.")
         }
         
-        let outputImage = UIImage(cgImage: outputCGImage, scale: UIScreen.main.scale, orientation: .up)
+        let outputImage = UIImage(cgImage: outputCGImage, scale: scale, orientation: .up)
         mandelbrotImage.image = outputImage
         
         monitor.calculationEnded()
