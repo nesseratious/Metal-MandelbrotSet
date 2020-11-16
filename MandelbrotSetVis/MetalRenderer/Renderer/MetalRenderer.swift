@@ -10,7 +10,6 @@ import MetalKit
 
 final class MetalRenderer: MTKView {
     private let queue = DispatchQueue(label: "com.esie.mandelbrot.metal", qos: .utility)
-    private var metalDevice: MTLDevice?
     private var commandQueue: MTLCommandQueue!
     private var renderPipelineState: MTLRenderPipelineState!
     private var depthStencilState: MTLDepthStencilState!
@@ -171,7 +170,6 @@ extension MetalRenderer: Renderer {
     
     func setupRenderer() {
         let device = makeDevice()
-        self.metalDevice = device
         self.device = device
         delegate = self
         depthStencilPixelFormat = .depth32Float_stencil8
