@@ -22,10 +22,25 @@ final class MetalRenderer: MTKView {
     private var bufferUniform = RendererBuffer()
     
     private func makeDevice() -> MTLDevice {
-        guard let device = MTLCreateSystemDefaultDevice() else {
+        let devices = MTLCopyAllDevices()
+        for device in devices {
+            if device.isRemovable {
+                print("Using external GPU \(device.name), buffer lenght: \(device.maxBufferLength/1024/1024)MiB, is unified memory: \(device.hasUnifiedMemory)")
+                return device
+
+            } else if !device.isLowPower {
+                print("Using built-in descrete GPU \(device.name), buffer lenght: \(device.maxBufferLength/1024/1024)MiB, is unified memory: \(device.hasUnifiedMemory)")
+                return device
+
+            } else {
+                print("Using built-in integrated GPU \(device.name), buffer lenght: \(device.maxBufferLength/1024/1024)MiB, is unified memory: \(device.hasUnifiedMemory)")
+                return device
+            }
+        }
+        guard let unknownDevice = devices.first else {
             fatalError("Failed to create device.")
         }
-        return device
+        return unknownDevice
     }
     
     private func makeSamplerState(device: MTLDevice) -> MTLSamplerState? {
