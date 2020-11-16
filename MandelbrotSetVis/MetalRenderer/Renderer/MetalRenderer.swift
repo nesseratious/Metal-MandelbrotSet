@@ -9,6 +9,7 @@
 import MetalKit
 
 final class MetalRenderer: MTKView {
+    private let queue = DispatchQueue(label: "com.esie.mandelbrot.metal", qos: .utility)
     private var metalDevice: MTLDevice?
     private var commandQueue: MTLCommandQueue!
     private var renderPipelineState: MTLRenderPipelineState!
@@ -20,6 +21,13 @@ final class MetalRenderer: MTKView {
     private var square: Square!
     private var bufferUniform = RendererBuffer()
     
+    private func makeDevice() -> MTLDevice {
+        guard let device = MTLCreateSystemDefaultDevice() else {
+            fatalError("Failed to create device.")
+        }
+        return device
+    }
+    
     private func makeSamplerState(device: MTLDevice) -> MTLSamplerState? {
         let sampler = MTLSamplerDescriptor()
         sampler.maxAnisotropy = 1
@@ -29,7 +37,7 @@ final class MetalRenderer: MTKView {
         return device.makeSamplerState(descriptor: sampler)
     }
     
-    private func makeColorPalleteTexture(device: MTLDevice) {
+    private func setupColorPalleteTexture(device: MTLDevice) {
         guard let path = Bundle.main.path(forResource: "pallete", ofType: "png") else {
             fatalError("Failed to load color pallete. ")
         }
@@ -45,7 +53,7 @@ final class MetalRenderer: MTKView {
         }
     }
     
-    private func makeRenderPipelineState(device: MTLDevice) {
+    private func setupRenderPipelineState(device: MTLDevice) {
         guard let library = device.makeDefaultLibrary() else {
             fatalError("Failed to create a metal library.")
         }
@@ -143,7 +151,7 @@ extension MetalRenderer: MTKViewDelegate {
         commandBuffer.commit()
         isRedrawNeeded = false
         
-        DispatchQueue.global(qos: .utility).async {
+        queue.sync {
             commandBuffer.waitUntilCompleted()
             monitor.calculationEnded()
         }
@@ -162,9 +170,7 @@ extension MetalRenderer: Renderer {
     }
     
     func setupRenderer() {
-        guard let device = MTLCreateSystemDefaultDevice() else {
-            fatalError("Failed to create device.")
-        }
+        let device = makeDevice()
         self.metalDevice = device
         self.device = device
         delegate = self
@@ -173,8 +179,8 @@ extension MetalRenderer: Renderer {
         square = Square(device: device)
         samplerState = makeSamplerState(device: device)
         bufferProvider = MetalBufferProvider(device: device)
-        makeColorPalleteTexture(device: device)
-        makeRenderPipelineState(device: device)
+        setupColorPalleteTexture(device: device)
+        setupRenderPipelineState(device: device)
         depthStencilState = makeCompiledDepthState(device: device)
     }
 }
