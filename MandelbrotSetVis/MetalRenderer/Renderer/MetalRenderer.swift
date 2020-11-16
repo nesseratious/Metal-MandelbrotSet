@@ -21,8 +21,8 @@ final class MetalRenderer: MTKView {
     private var bufferUniform = RendererBuffer()
     
     private func makeDevice() -> MTLDevice {
+        #if targetEnvironment(macCatalyst)
         let devices = MTLCopyAllDevices()
-        
         // Detect device battery level, and force using iGPU for calculations if it's below 20%
         UIDevice.current.isBatteryMonitoringEnabled = true
         let batteryLevel = UIDevice.current.batteryLevel
@@ -40,11 +40,11 @@ final class MetalRenderer: MTKView {
             if device.isRemovable {
                 print("Using external GPU \(device.name), buffer: \(device.maxBufferLength/1024/1024)MiB")
                 return device
-            // Internal descrete GPU
+                // Internal descrete GPU
             } else if !device.isLowPower {
                 print("Using built-in descrete GPU \(device.name), buffer: \(device.maxBufferLength/1024/1024)MiB")
                 return device
-            // Internal iGPU
+                // Internal iGPU
             } else {
                 print("Using built-in integrated GPU \(device.name), buffer: \(device.maxBufferLength/1024/1024)MiB")
                 return device
@@ -56,6 +56,13 @@ final class MetalRenderer: MTKView {
             fatalError("Failed to create device.")
         }
         return unknownDevice
+        #else
+        guard let device = MTLCreateSystemDefaultDevice() else {
+            fatalError("Failed to create device.")
+        }
+        print("Using SoC GPU \(device.name)")
+        return device
+        #endif
     }
     
     private func makeSamplerState(device: MTLDevice) -> MTLSamplerState? {
