@@ -13,11 +13,12 @@ struct PerformanceMonitor {
     
     mutating func calculationStarted() {
         time = CFAbsoluteTimeGetCurrent()
+        print("Started rendering frame...")
     }
     
     mutating func calculationEnded() {
         let inference = CFAbsoluteTimeGetCurrent() - (time ?? 0.0)
         self.inference = inference
-        print(inference, "s.")
+        print("Frame rendered in ", inference, "s.")
     }
 }
