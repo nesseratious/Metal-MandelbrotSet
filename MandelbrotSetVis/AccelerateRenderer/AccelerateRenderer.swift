@@ -53,10 +53,19 @@ final class AccelerateRenderer: UIView {
         
         for y in 0 ..< height {
             for x in 0 ..< width {
-                let offset = y * width + x
-                let pixelShift = UInt32(processPixel(iterations: iterations,
-                                                    x: Float32(x) / Float32(width) * 2 - 1,
-                                                    y: Float32(y) / Float32(height) * 2 - 1))
+                let offset = y * width &+ x
+                let x = Float32(x) / Float32(width) * 2.0 - 1.0
+                let y = Float32(y) / Float32(height) * 2.0 - 1.0
+                var real: Float32 = 0.0
+                var img: Float32 = 0.0
+                var i = 0
+                while i < iterations && (real * real) + (img * img) < 4.0 {
+                    let temp = (real * real) - (img * img) + x
+                    img = 2.0 * (real * img) + y
+                    real = temp
+                    i &+= 1
+                }
+                let pixelShift = (i == iterations ? 0 : UInt32(i))
                 pixelBuffer[offset] = (pixelShift << 24) | (pixelShift << 16) | (pixelShift << 8) | (255 << 0)
             }
         }
@@ -69,19 +78,6 @@ final class AccelerateRenderer: UIView {
         mandelbrotImage.image = outputImage
         
         monitor.calculationEnded()
-    }
-    
-    private func processPixel(iterations: Int, x: Float32, y: Float32) -> Float32 {
-        var real: Float32 = 0.0
-        var img: Float32 = 0.0
-        var i = 0
-        while i < iterations && real * real + img * img < 4.0 {
-            let temp = (real * real) - (img * img) + x
-            img = 2.0 * (real * img) + y
-            real = temp
-            i += 1
-        }
-        return (i == iterations ? 0.0 : Float32(i))
     }
 }
 
