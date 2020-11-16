@@ -10,6 +10,11 @@ import UIKit
 
 final class AccelerateRenderer: UIView {
     var buffer = RendererBuffer()
+    
+    private let bitmap = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+    private let colorSpace = CGColorSpaceCreateDeviceRGB()
+    private let bytesPerPixel = 4
+    private let bitsPerComponent = 8
     private var pallete: UIImage!
     private let mandelbrotImage = UIImageView()
     private var once = true
@@ -22,38 +27,44 @@ final class AccelerateRenderer: UIView {
         
         UIGraphicsBeginImageContextWithOptions(frame.size, true, UIScreen.main.scale)
         drawHierarchy(in: bounds, afterScreenUpdates: true)
-        let image = UIGraphicsGetImageFromCurrentImageContext()!
+        guard let image = UIGraphicsGetImageFromCurrentImageContext(),
+              let cgImage = image.cgImage else {
+            fatalError("Invalid bitmap.")
+        }
         UIGraphicsEndImageContext()
+        mandelbrotImage.image = image
         
         let iterations = buffer.iterations
-        let bitmap = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
-        let cgImage = image.cgImage!
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
         let width = cgImage.width
         let height = cgImage.height
-        let bytesPerPixel = 4
-        let bitsPerComponent = 8
         let bytesPerRow = bytesPerPixel * width
-        
-        let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent,
-                                bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmap)!
+        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent,
+                                      bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmap) else {
+            fatalError("Failed to create Quartz destination context.")
+        }
         
         context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         
-        let buffer = context.data!
-        let pixelBuffer = buffer.bindMemory(to: RawColor.self, capacity: width * height)
+        guard let buffer = context.data else {
+            fatalError("Failed to create bitmap pointer.")
+        }
+        
+        let pixelBuffer = buffer.bindMemory(to: UInt32.self, capacity: width * height)
         
         for y in 0 ..< height {
             for x in 0 ..< width {
                 let offset = y * width + x
-                let pixelShift = UInt8(processPixel(iterations: iterations,
-                                                    x: Float32(x) /  Float32(width) * 2 - 1,
+                let pixelShift = UInt32(processPixel(iterations: iterations,
+                                                    x: Float32(x) / Float32(width) * 2 - 1,
                                                     y: Float32(y) / Float32(height) * 2 - 1))
-                pixelBuffer[offset] = RawColor(pixelShift, pixelShift, pixelShift, 255)
+                pixelBuffer[offset] = (pixelShift << 24) | (pixelShift << 16) | (pixelShift << 8) | (255 << 0)
             }
         }
         
-        let outputCGImage = context.makeImage()!
+        guard let outputCGImage = context.makeImage() else {
+            fatalError("Failed to create cgimage from context.")
+        }
+        
         let outputImage = UIImage(cgImage: outputCGImage, scale: UIScreen.main.scale, orientation: .up)
         mandelbrotImage.image = outputImage
         
@@ -71,17 +82,6 @@ final class AccelerateRenderer: UIView {
             i += 1
         }
         return (i == iterations ? 0.0 : Float32(i))
-    }
-    
-    struct RawColor {
-        var color: UInt32
-        init(_ red: UInt8,_ green: UInt8,_ blue: UInt8,_ alpha: UInt8 = 255) {
-            let red = UInt32(red)
-            let green = UInt32(green)
-            let blue = UInt32(blue)
-            let alpha = UInt32(alpha)
-            color = (red << 24) | (green << 16) | (blue << 8) | (alpha << 0)
-        }
     }
 }
 
