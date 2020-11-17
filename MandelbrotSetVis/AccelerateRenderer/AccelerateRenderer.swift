@@ -7,10 +7,10 @@
 
 import Foundation
 import UIKit
+import Accelerate
 
 final class AccelerateRenderer: UIView {
     var buffer = RendererBuffer()
-    
     private let bitmap = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
     private let colorSpace = CGColorSpaceCreateDeviceRGB()
     private let bytesPerPixel = 4
@@ -45,29 +45,35 @@ final class AccelerateRenderer: UIView {
         }
         
         context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
-        
-        guard let buffer = context.data else {
+        guard let dataBuffer = context.data else {
             fatalError("Failed to create bitmap pointer.")
         }
         
-        let pixelBuffer = buffer.bindMemory(to: UInt32.self, capacity: width * height)
+        let buffer = dataBuffer.bindMemory(to: UInt32.self, capacity: width * height)
         
-        for y in 0 ..< height {
-            for x in 0 ..< width {
-                let offset = y * width &+ x
-                let x = Float32(x) / Float32(width) * 2.0 - 1.0
-                let y = Float32(y) / Float32(height) * 2.0 - 1.0
+        for x in 0 ..< width {
+            for y in 0 ..< height {
+                
+                let mx = Float32(x) / Float32(width) * 2.0 - 1.0
+                let my = Float32(y) / Float32(height) * 2.0 - 1.0
+                
                 var real: Float32 = 0.0
                 var img: Float32 = 0.0
                 var i = 0
-                while i < iterations && (real * real) + (img * img) < 4.0 {
-                    let temp = (real * real) - (img * img) + x
-                    img = 2.0 * (real * img) + y
-                    real = temp
+                
+                while i < iterations {
+                    let r2 = real * real
+                    let i2 = img * img
+                    if r2 + i2 > 4.0 { break }
+                    img = 2.0 * real * img + my
+                    real = r2 - i2 + mx
                     i &+= 1
                 }
-                let pixelShift = (i == iterations ? 0 : UInt32(i))
-                pixelBuffer[offset] = (pixelShift << 24) | (pixelShift << 16) | (pixelShift << 8) | (255 << 0)
+                
+                let pixelShift = UInt32(i)
+                
+                let offset = y * width &+ x
+                buffer[offset] = pixelShift << 24 | pixelShift << 16 | pixelShift << 8 | 255 << 0
             }
         }
         
@@ -77,7 +83,6 @@ final class AccelerateRenderer: UIView {
         
         let outputImage = UIImage(cgImage: outputCGImage, scale: scale, orientation: .up)
         mandelbrotImage.image = outputImage
-        
         monitor.calculationEnded()
     }
 }
