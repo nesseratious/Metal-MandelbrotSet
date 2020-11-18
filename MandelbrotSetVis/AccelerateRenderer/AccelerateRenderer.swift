@@ -17,8 +17,7 @@ final class AccelerateRenderer: UIView {
     private let bitsPerComponent = 8
     private let mandelbrotImage = UIImageView()
     private let scale = UIScreen.main.scale
-    private var once = true
-    typealias Buffer = UnsafeMutablePointer<UInt32>
+//    private var once = true
     
     private func render() {
 //        guard once else { return }
@@ -62,14 +61,14 @@ final class AccelerateRenderer: UIView {
         return context
     }
     
-    private func makeBuffer(context: CGContext, lenght: Int) -> Buffer {
+    private func makeBuffer(context: CGContext, lenght: Int) -> UnsafeMutablePointer<UInt32> {
         guard let dataBuffer = context.data else {
             fatalError("Failed to create bitmap pointer.")
         }
         return dataBuffer.bindMemory(to: UInt32.self, capacity: lenght)
     }
     
-    private func makeWidthBuffer(lenght: Int) -> [Float32] {
+    private func makeWidthBuffer(lenght: Int) -> UnsafeBufferPointer<Float32> {
         var widthBuffer = [Float32](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for x in 0 ..< lenght {
                 buffer[x] = Float32(x)
@@ -79,10 +78,11 @@ final class AccelerateRenderer: UIView {
         vDSP.divide(widthBuffer, Float32(lenght), result: &widthBuffer)
         vDSP.multiply(2.0, widthBuffer, result: &widthBuffer)
         vDSP.add(-1.0, widthBuffer, result: &widthBuffer)
-        return widthBuffer
+        let ptr = widthBuffer.withUnsafeBufferPointer { $0 }
+        return ptr
     }
     
-    private func makeHeightBuffer(lenght: Int) -> [Float32] {
+    private func makeHeightBuffer(lenght: Int) -> UnsafeBufferPointer<Float32> {
         var heightBuffer = [Float32](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for y in 0 ..< lenght {
                 buffer[y] = Float32(y)
@@ -92,14 +92,22 @@ final class AccelerateRenderer: UIView {
         vDSP.divide(heightBuffer, Float32(lenght), result: &heightBuffer)
         vDSP.multiply(2.0, heightBuffer, result: &heightBuffer)
         vDSP.add(-1.0, heightBuffer, result: &heightBuffer)
-        return heightBuffer
+        let ptr = heightBuffer.withUnsafeBufferPointer { $0 }
+        return ptr
     }
     
-    private func calculateMandelbrot(buffer: Buffer, width: Int, height: Int, widthBuffer: [Float32], heightBuffer: [Float32]) {
+    private func calculateMandelbrot(buffer: UnsafeMutablePointer<UInt32>,
+                                     width: Int,
+                                     height: Int,
+                                     widthBuffer: UnsafeBufferPointer<Float32>,
+                                     heightBuffer: UnsafeBufferPointer<Float32>) {
+        
         let iterations = self.buffer.iterations
         for y in 0 ..< height {
             for x in 0 ..< width {
                 
+                let my = heightBuffer[y]
+                let mx = widthBuffer[x]
                 var real: Float32 = 0.0
                 var img: Float32 = 0.0
                 var i = 0
@@ -108,8 +116,8 @@ final class AccelerateRenderer: UIView {
                     let r2 = real * real
                     let i2 = img * img
                     if r2 + i2 > 4.0 { break }
-                    img = 2.0 * real * img + heightBuffer[y]
-                    real = r2 - i2 + widthBuffer[x]
+                    img = 2.0 * real * img + my
+                    real = r2 - i2 + mx
                     i &+= 1
                 }
                 
