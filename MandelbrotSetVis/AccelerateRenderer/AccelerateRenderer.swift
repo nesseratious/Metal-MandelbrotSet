@@ -49,14 +49,33 @@ final class AccelerateRenderer: UIView {
             fatalError("Failed to create bitmap pointer.")
         }
         
-        let buffer = dataBuffer.bindMemory(to: UInt32.self, capacity: width * height)
+        let capacity = width * height
+        let buffer = dataBuffer.bindMemory(to: UInt32.self, capacity: capacity)
         
-        for x in 0 ..< width {
+        var widthBuffer = [Float32](unsafeUninitializedCapacity: width) { (buffer, lenght) in
+            for x in 0 ..< width {
+                buffer[x] = Float32(x)
+            }
+            lenght = width
+        }
+        vDSP.divide(widthBuffer, Float32(width), result: &widthBuffer)
+        vDSP.multiply(2.0, widthBuffer, result: &widthBuffer)
+        vDSP.add(-1.0, widthBuffer, result: &widthBuffer)
+        
+        var heightBuffer = [Float32](unsafeUninitializedCapacity: height) { (buffer, lenght) in
             for y in 0 ..< height {
-                
-                let mx = Float32(x) / Float32(width) * 2.0 - 1.0
-                let my = Float32(y) / Float32(height) * 2.0 - 1.0
-                
+                buffer[y] = Float32(y)
+            }
+            lenght = height
+        }
+        vDSP.divide(heightBuffer, Float32(height), result: &heightBuffer)
+        vDSP.multiply(2.0, heightBuffer, result: &heightBuffer)
+        vDSP.add(-1.0, heightBuffer, result: &heightBuffer)
+        
+        for y in 0 ..< height {
+            for x in 0 ..< width {
+                let offset = y * width &+ x
+
                 var real: Float32 = 0.0
                 var img: Float32 = 0.0
                 var i = 0
@@ -65,14 +84,12 @@ final class AccelerateRenderer: UIView {
                     let r2 = real * real
                     let i2 = img * img
                     if r2 + i2 > 4.0 { break }
-                    img = 2.0 * real * img + my
-                    real = r2 - i2 + mx
+                    img = 2.0 * real * img + heightBuffer[y]
+                    real = r2 - i2 + widthBuffer[x]
                     i &+= 1
                 }
                 
                 let pixelShift = UInt32(i)
-                
-                let offset = y * width &+ x
                 buffer[offset] = pixelShift << 24 | pixelShift << 16 | pixelShift << 8 | 255 << 0
             }
         }
