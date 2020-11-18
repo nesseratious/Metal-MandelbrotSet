@@ -15,17 +15,33 @@ final class AccelerateRenderer: UIView {
     private let colorSpace = CGColorSpaceCreateDeviceRGB()
     private let bytesPerPixel = 4
     private let bitsPerComponent = 8
-    private var pallete: UIImage!
     private let mandelbrotImage = UIImageView()
+    private let scale = UIScreen.main.scale
     private var once = true
+    typealias Buffer = UnsafeMutablePointer<UInt32>
     
     private func render() {
-        guard once else { return }
-        once = false
+//        guard once else { return }
+//        once = false
         var monitor = PerformanceMonitor()
         monitor.calculationStarted()
         
-        let scale = UIScreen.main.scale
+        let cgImage = makeCGImage()
+        let width = cgImage.width
+        let height = cgImage.height
+        let capacity = width * height
+        
+        let context = makeContext(cgImage: cgImage, width: width, height: height)
+        let buffer = makeBuffer(context: context, lenght: capacity)
+        let widthBuffer = makeWidthBuffer(lenght: width)
+        let heightBuffer = makeHeightBuffer(lenght: height)
+        
+        calculateMandelbrot(buffer: buffer, width: width, height: height, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
+        mandelbrotImage.image = makeImage(context: context)
+        monitor.calculationEnded()
+    }
+    
+    private func makeCGImage() -> CGImage {
         UIGraphicsBeginImageContextWithOptions(frame.size, true, scale)
         drawHierarchy(in: bounds, afterScreenUpdates: true)
         guard let image = UIGraphicsGetImageFromCurrentImageContext(),
@@ -33,49 +49,57 @@ final class AccelerateRenderer: UIView {
             fatalError("Invalid bitmap.")
         }
         UIGraphicsEndImageContext()
-        mandelbrotImage.image = image
-        
-        let iterations = buffer.iterations
-        let width = cgImage.width
-        let height = cgImage.height
+        return cgImage
+    }
+    
+    private func makeContext(cgImage: CGImage, width: Int, height: Int) -> CGContext {
         let bytesPerRow = bytesPerPixel * width
         guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent,
                                       bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmap) else {
             fatalError("Failed to create Quartz destination context.")
         }
-        
         context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+        return context
+    }
+    
+    private func makeBuffer(context: CGContext, lenght: Int) -> Buffer {
         guard let dataBuffer = context.data else {
             fatalError("Failed to create bitmap pointer.")
         }
-        
-        let capacity = width * height
-        let buffer = dataBuffer.bindMemory(to: UInt32.self, capacity: capacity)
-        
-        var widthBuffer = [Float32](unsafeUninitializedCapacity: width) { (buffer, lenght) in
-            for x in 0 ..< width {
+        return dataBuffer.bindMemory(to: UInt32.self, capacity: lenght)
+    }
+    
+    private func makeWidthBuffer(lenght: Int) -> [Float32] {
+        var widthBuffer = [Float32](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
+            for x in 0 ..< lenght {
                 buffer[x] = Float32(x)
             }
-            lenght = width
+            capacity = lenght
         }
-        vDSP.divide(widthBuffer, Float32(width), result: &widthBuffer)
+        vDSP.divide(widthBuffer, Float32(lenght), result: &widthBuffer)
         vDSP.multiply(2.0, widthBuffer, result: &widthBuffer)
         vDSP.add(-1.0, widthBuffer, result: &widthBuffer)
-        
-        var heightBuffer = [Float32](unsafeUninitializedCapacity: height) { (buffer, lenght) in
-            for y in 0 ..< height {
+        return widthBuffer
+    }
+    
+    private func makeHeightBuffer(lenght: Int) -> [Float32] {
+        var heightBuffer = [Float32](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
+            for y in 0 ..< lenght {
                 buffer[y] = Float32(y)
             }
-            lenght = height
+            capacity = lenght
         }
-        vDSP.divide(heightBuffer, Float32(height), result: &heightBuffer)
+        vDSP.divide(heightBuffer, Float32(lenght), result: &heightBuffer)
         vDSP.multiply(2.0, heightBuffer, result: &heightBuffer)
         vDSP.add(-1.0, heightBuffer, result: &heightBuffer)
-        
+        return heightBuffer
+    }
+    
+    private func calculateMandelbrot(buffer: Buffer, width: Int, height: Int, widthBuffer: [Float32], heightBuffer: [Float32]) {
+        let iterations = self.buffer.iterations
         for y in 0 ..< height {
             for x in 0 ..< width {
-                let offset = y * width &+ x
-
+                
                 var real: Float32 = 0.0
                 var img: Float32 = 0.0
                 var i = 0
@@ -89,18 +113,18 @@ final class AccelerateRenderer: UIView {
                     i &+= 1
                 }
                 
+                let offset = y * width &+ x
                 let pixelShift = UInt32(i)
                 buffer[offset] = pixelShift << 24 | pixelShift << 16 | pixelShift << 8 | 255 << 0
             }
         }
-        
+    }
+    
+    func makeImage(context: CGContext) -> UIImage {
         guard let outputCGImage = context.makeImage() else {
             fatalError("Failed to create cgimage from context.")
         }
-        
-        let outputImage = UIImage(cgImage: outputCGImage, scale: scale, orientation: .up)
-        mandelbrotImage.image = outputImage
-        monitor.calculationEnded()
+        return UIImage(cgImage: outputCGImage, scale: scale, orientation: .up)
     }
 }
 
@@ -117,11 +141,6 @@ extension AccelerateRenderer: Renderer {
     
     func setupRenderer() {
         backgroundColor = .white
-        guard let palleteFile = Bundle.main.path(forResource: "pallete", ofType: "png"),
-              let pallete = UIImage(contentsOfFile: palleteFile) else {
-            fatalError("Failed to load color pallete from image.")
-        }
-        self.pallete = pallete
         addSubview(mandelbrotImage)
         mandelbrotImage.contentMode = .scaleToFill
         mandelbrotImage.autoresizingMask = [.flexibleHeight, .flexibleWidth]
