@@ -21,6 +21,13 @@ final class MetalRenderer: MTKView {
     
     private func makeDevice() -> MTLDevice {
         #if targetEnvironment(macCatalyst)
+        return makeMacDevice()
+        #else
+        return makeIOSDevice()
+        #endif
+    }
+    
+    private func makeMacDevice() -> MTLDevice {
         let devices = MTLCopyAllDevices()
         // Detect device battery level, and force using iGPU for calculations if it's below 20%
         UIDevice.current.isBatteryMonitoringEnabled = true
@@ -49,26 +56,21 @@ final class MetalRenderer: MTKView {
                 return device
             }
         }
-        
         // If classification above has failed
         guard let unknownDevice = devices.first else {
             fatalError("Failed to create device.")
         }
         return unknownDevice
-        #else
+    }
+    
+    private func makeIOSDevice() -> MTLDevice {
         guard let device = MTLCreateSystemDefaultDevice() else {
             fatalError("Failed to create device.")
         }
         print("Using SoC GPU \(device.name)")
         return device
-        #endif
     }
-    
-//    private func makeSamplerState(device: MTLDevice) -> MTLSamplerState? {
-//        let sampler = MTLSamplerDescriptor()
-//        return device.makeSamplerState(descriptor: sampler)
-//    }
-    
+
     private func setupColorPalleteTexture(device: MTLDevice) {
         guard let path = Bundle.main.path(forResource: "pallete", ofType: "png") else {
             fatalError("Failed to load color pallete. ")
