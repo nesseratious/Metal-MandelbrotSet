@@ -76,8 +76,8 @@ final class SwiftAccelerateRenderer: UIView {
             capacity = lenght
         }
         vDSP.divide(widthBuffer, Float32(lenght), result: &widthBuffer)
-        vDSP.multiply(2.0, widthBuffer, result: &widthBuffer)
-        vDSP.add(-1.0, widthBuffer, result: &widthBuffer)
+        vDSP.multiply(2.5 * buffer.aspectRatio.x, widthBuffer, result: &widthBuffer)
+        vDSP.add(-1.5 * buffer.aspectRatio.x, widthBuffer, result: &widthBuffer)
         let ptr = widthBuffer.withUnsafeBufferPointer { $0 }
         return ptr
     }
@@ -90,8 +90,8 @@ final class SwiftAccelerateRenderer: UIView {
             capacity = lenght
         }
         vDSP.divide(heightBuffer, Float32(lenght), result: &heightBuffer)
-        vDSP.multiply(2.0, heightBuffer, result: &heightBuffer)
-        vDSP.add(-1.0, heightBuffer, result: &heightBuffer)
+        vDSP.multiply(2.0 * buffer.aspectRatio.y, heightBuffer, result: &heightBuffer)
+        vDSP.add(-1.0 * buffer.aspectRatio.y, heightBuffer, result: &heightBuffer)
         let ptr = heightBuffer.withUnsafeBufferPointer { $0 }
         return ptr
     }
