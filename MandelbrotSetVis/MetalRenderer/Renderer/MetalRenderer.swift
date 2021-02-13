@@ -16,7 +16,7 @@ final class MetalRenderer: MTKView {
     private var samplerState: MTLSamplerState!
     private var bufferProvider: MetalBufferProvider!
     private var isRedrawNeeded = true
-    private var square: Square!
+    private var vertexBufferProvider: MetalVertexBufferProvider!
     private var bufferUniform = RendererBuffer()
     
     private func makeColorPalleteTexture(device: MTLDevice) -> MTLTexture {
@@ -72,7 +72,7 @@ extension MetalRenderer: MTKViewDelegate {
         
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder.setDepthStencilState(depthStencilState)
-        renderCommandEncoder.setVertexBuffer(square.vertexBuffer, offset: 0, index: 0)
+        renderCommandEncoder.setVertexBuffer(vertexBufferProvider.make(), offset: 0, index: 0)
         
         let uniformBuffer = bufferProvider.make(with: bridgeBuffer)
         renderCommandEncoder.setVertexBuffer(uniformBuffer, offset: 0, index: 1)
@@ -108,7 +108,7 @@ extension MetalRenderer: Renderer {
         delegate = self
         depthStencilPixelFormat = .depth32Float_stencil8
         commandQueue = device.makeCommandQueue()
-        square = Square(device: device)
+        vertexBufferProvider = MetalVertexBufferProvider(device: device)
         let samplerProvider = MetalSamplerProvider(device: device)
         samplerState = samplerProvider.make()
         bufferProvider = MetalBufferProvider(device: device)
