@@ -24,7 +24,7 @@ final class RootTabBarController: UITabBarController {
     }()
     
     let accelerateViewController: UIViewController = {
-        let accelerateVC = MandelbrotViewController(renderer: AccelerateRenderer())
+        let accelerateVC = MandelbrotViewController(renderer: SwiftAccelerateRenderer())
         accelerateVC.tabBarItem = UITabBarItem(title: "CPU/ACCELERATE", image: UIImage(systemName: "memorychip"), tag: 1)
         return accelerateVC
     }()

@@ -1,5 +1,5 @@
 //
-//  AccelerateRenderer.swift
+//  SwiftAccelerateRenderer.swift
 //  MandelbrotSetVis
 //
 //  Created by Esie on 11/14/20.
@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import Accelerate
 
-final class AccelerateRenderer: UIView {
+final class SwiftAccelerateRenderer: UIView {
     var buffer = RendererBuffer()
     private let bitmap = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
     private let colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -136,7 +136,7 @@ final class AccelerateRenderer: UIView {
     }
 }
 
-extension AccelerateRenderer: Renderer {
+extension SwiftAccelerateRenderer: Renderer {
     var bridgeBuffer: RendererBuffer {
         get {
             return buffer
