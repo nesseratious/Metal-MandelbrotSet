@@ -19,7 +19,7 @@ final class MetalRenderer: MTKView {
     private var square: Square!
     private var bufferUniform = RendererBuffer()
     
-    private func setupColorPalleteTexture(device: MTLDevice) {
+    private func makeColorPalleteTexture(device: MTLDevice) -> MTLTexture {
         guard let path = Bundle.main.path(forResource: "pallete", ofType: "png") else {
             fatalError("Failed to load color pallete. ")
         }
@@ -29,13 +29,14 @@ final class MetalRenderer: MTKView {
             guard let image = UIImage(data: data)?.cgImage else {
                 fatalError("Failed to load color pallete from image.")
             }
-            paletteTexture = try textureLoader.newTexture(cgImage: image)
+            let paletteTexture = try textureLoader.newTexture(cgImage: image)
+            return paletteTexture
         } catch let error {
             fatalError("Failed to load color pallete texture. Error \(error.localizedDescription)")
         }
     }
     
-    private func setupRenderPipelineState(device: MTLDevice) {
+    private func makeRenderPipelineState(device: MTLDevice) -> MTLRenderPipelineState {
         guard let library = device.makeDefaultLibrary() else {
             fatalError("Failed to create a metal library.")
         }
@@ -43,9 +44,7 @@ final class MetalRenderer: MTKView {
               let fragmentShader = library.makeFunction(name: "colorShader") else {
             fatalError("Failed to create a metal vertex and color shaders.")
         }
-        renderPipelineState = makeCompiledPipelineStateFrom(device: device,
-                                                            vertexShader: vertexShader,
-                                                            fragmentShader: fragmentShader)
+        return makePipelineState(device: device, vertexShader: vertexShader, fragmentShader: fragmentShader)!
     }
     
     private func makeVertexDescriptor() -> MTLVertexDescriptor {
@@ -62,9 +61,7 @@ final class MetalRenderer: MTKView {
     }
     
     
-    private func makeCompiledPipelineStateFrom(device: MTLDevice,
-                                               vertexShader: MTLFunction,
-                                               fragmentShader: MTLFunction) -> MTLRenderPipelineState? {
+    private func makePipelineState(device: MTLDevice, vertexShader: MTLFunction, fragmentShader: MTLFunction) -> MTLRenderPipelineState? {
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexDescriptor = makeVertexDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexShader
@@ -73,8 +70,8 @@ final class MetalRenderer: MTKView {
         pipelineStateDescriptor.depthAttachmentPixelFormat = depthStencilPixelFormat
         pipelineStateDescriptor.stencilAttachmentPixelFormat = depthStencilPixelFormat
         do {
-            let compiledState = try device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
-            return compiledState
+            let pipelineState = try device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
+            return pipelineState
         } catch let error {
             fatalError("Failed to make render pipeline state. Error \(error.localizedDescription)")
         }
@@ -156,8 +153,8 @@ extension MetalRenderer: Renderer {
         let samplerProvider = MetalSamplerProvider(device: device)
         samplerState = samplerProvider.make()
         bufferProvider = MetalBufferProvider(device: device)
-        setupColorPalleteTexture(device: device)
-        setupRenderPipelineState(device: device)
+        paletteTexture = makeColorPalleteTexture(device: device)
+        renderPipelineState = makeRenderPipelineState(device: device)
         depthStencilState = makeCompiledDepthState(device: device)
     }
 }
