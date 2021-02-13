@@ -20,7 +20,7 @@ struct AspectRatioScaling {
 
 /// Size 192 bits.
 /// Stride 192 bits.
-/// Convertible from Swift using 32bit buffer [Scale, Iterations, X, Y, W, H]
+/// Convertible from Swift using 6 x 32 buffer [Scale, Iterations, X, Y, W, H]
 struct MetalBuffer {
     float scale;
     float interations;
