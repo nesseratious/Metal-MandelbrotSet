@@ -14,16 +14,16 @@ final class RootTabBarController: UITabBarController {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
     }
     
-    lazy var metalViewController: UIViewController = {
+    let metalViewController: UIViewController = {
         let metalVC = MandelbrotViewController(renderer: MetalRenderer())
         metalVC.tabBarItem = UITabBarItem(title: "GPU/METAL", image: UIImage(systemName: "cpu"), tag: 0)
         return metalVC
     }()
     
-    lazy var accelerateViewController: UIViewController = {
+    let accelerateViewController: UIViewController = {
         let accelerateVC = MandelbrotViewController(renderer: AccelerateRenderer())
         accelerateVC.tabBarItem = UITabBarItem(title: "CPU/ACCELERATE", image: UIImage(systemName: "memorychip"), tag: 1)
         return accelerateVC
