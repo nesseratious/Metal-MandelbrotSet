@@ -36,47 +36,6 @@ final class MetalRenderer: MTKView {
         }
     }
     
-    private func makeRenderPipelineState(device: MTLDevice) -> MTLRenderPipelineState {
-        guard let library = device.makeDefaultLibrary() else {
-            fatalError("Failed to create a metal library.")
-        }
-        guard let vertexShader = library.makeFunction(name: "vertexShader"),
-              let fragmentShader = library.makeFunction(name: "colorShader") else {
-            fatalError("Failed to create a metal vertex and color shaders.")
-        }
-        return makePipelineState(device: device, vertexShader: vertexShader, fragmentShader: fragmentShader)!
-    }
-    
-    private func makeVertexDescriptor() -> MTLVertexDescriptor {
-        let vertexDescriptor = MTLVertexDescriptor()
-        guard let attribute = vertexDescriptor.attributes[0],
-              let layout = vertexDescriptor.layouts[0] else {
-            fatalError("Failed to create attribute or layout.")
-        }
-        attribute.format = .float3
-        attribute.offset = 0
-        attribute.bufferIndex = 0
-        layout.stride = MemoryLayout<Float>.size * 3
-        return vertexDescriptor
-    }
-    
-    
-    private func makePipelineState(device: MTLDevice, vertexShader: MTLFunction, fragmentShader: MTLFunction) -> MTLRenderPipelineState? {
-        let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
-        pipelineStateDescriptor.vertexDescriptor = makeVertexDescriptor()
-        pipelineStateDescriptor.vertexFunction = vertexShader
-        pipelineStateDescriptor.fragmentFunction = fragmentShader
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = colorPixelFormat
-        pipelineStateDescriptor.depthAttachmentPixelFormat = depthStencilPixelFormat
-        pipelineStateDescriptor.stencilAttachmentPixelFormat = depthStencilPixelFormat
-        do {
-            let pipelineState = try device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
-            return pipelineState
-        } catch let error {
-            fatalError("Failed to make render pipeline state. Error \(error.localizedDescription)")
-        }
-    }
-    
     private func makeCompiledDepthState(device: MTLDevice) -> MTLDepthStencilState {
         let depthStencilDesc = MTLDepthStencilDescriptor()
         depthStencilDesc.depthCompareFunction = .less
@@ -154,7 +113,8 @@ extension MetalRenderer: Renderer {
         samplerState = samplerProvider.make()
         bufferProvider = MetalBufferProvider(device: device)
         paletteTexture = makeColorPalleteTexture(device: device)
-        renderPipelineState = makeRenderPipelineState(device: device)
+        let renderPipelineProvider = MetalRenderPipelineProvider(device: device, view: self)
+        renderPipelineState = renderPipelineProvider.make()
         depthStencilState = makeCompiledDepthState(device: device)
     }
 }

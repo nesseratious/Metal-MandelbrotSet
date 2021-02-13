@@ -28,6 +28,7 @@
 		64C355C8255FFBF300440B3B /* AccelerateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */; };
 		64D706AA25D8100E00B77DD4 /* MetalSamplerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706A925D8100E00B77DD4 /* MetalSamplerProvider.swift */; };
 		64D706AD25D815DC00B77DD4 /* MetalDeviceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706AC25D815DC00B77DD4 /* MetalDeviceProvider.swift */; };
+		64D706B025D81D8500B77DD4 /* MetalRenderPipelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelerateRenderer.swift; sourceTree = "<group>"; };
 		64D706A925D8100E00B77DD4 /* MetalSamplerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalSamplerProvider.swift; sourceTree = "<group>"; };
 		64D706AC25D815DC00B77DD4 /* MetalDeviceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalDeviceProvider.swift; sourceTree = "<group>"; };
+		64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRenderPipelineProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +134,7 @@
 				64257D8824FA03D100D17591 /* MetalBufferProvider.swift */,
 				64D706A925D8100E00B77DD4 /* MetalSamplerProvider.swift */,
 				64D706AC25D815DC00B77DD4 /* MetalDeviceProvider.swift */,
+				64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */,
 			);
 			path = Renderer;
 			sourceTree = "<group>";
@@ -300,6 +303,7 @@
 				64D706AA25D8100E00B77DD4 /* MetalSamplerProvider.swift in Sources */,
 				64257D9824FA03D100D17591 /* RendererProtocol.swift in Sources */,
 				64D706AD25D815DC00B77DD4 /* MetalDeviceProvider.swift in Sources */,
+				64D706B025D81D8500B77DD4 /* MetalRenderPipelineProvider.swift in Sources */,
 				64257D9924FA03D100D17591 /* MetalBufferProvider.swift in Sources */,
 				64257DA024FA03D100D17591 /* MandelbrotViewController.swift in Sources */,
 				64C355C8255FFBF300440B3B /* AccelerateRenderer.swift in Sources */,
