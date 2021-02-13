@@ -9,7 +9,6 @@
 import MetalKit
 
 final class MetalRenderer: MTKView {
-    private let queue = DispatchQueue(label: "com.esie.mandelbrot.metal", qos: .utility)
     private var commandQueue: MTLCommandQueue!
     private var renderPipelineState: MTLRenderPipelineState!
     private var depthStencilState: MTLDepthStencilState!
@@ -186,9 +185,8 @@ extension MetalRenderer: MTKViewDelegate {
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
         isRedrawNeeded = false
-        
-        queue.sync {
-            commandBuffer.waitUntilCompleted()
+
+        commandBuffer.addCompletedHandler { _ in
             monitor.calculationEnded()
         }
     }
