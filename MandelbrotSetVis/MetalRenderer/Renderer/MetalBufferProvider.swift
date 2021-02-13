@@ -11,18 +11,19 @@ import MetalKit
 struct MetalBufferProvider {
     private let buffer: MTLBuffer
     
-    init?(device: MTLDevice) {
+    init(device: MTLDevice) {
         let size = MemoryLayout<Float32>.size * 8
         let options = MTLResourceOptions()
-        guard let buffer = device.makeBuffer(length: size, options: options) else { return nil }
+        guard let buffer = device.makeBuffer(length: size, options: options) else {
+            fatalError("Failed making buffer")
+        }
         self.buffer = buffer
     }
     
-    func makeBuffer(with uniform: SwiftToMetalConvertible) -> MTLBuffer {
+    func make(with uniform: SwiftToMetalConvertible) -> MTLBuffer {
         let size = MemoryLayout<Float32>.size * 8
         let contents = buffer.contents()
         memcpy(contents, uniform.getRawData(), size)
         return buffer
     }
 }
-
