@@ -25,7 +25,8 @@
 		64A17B2A24FB6B52002482D6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 64A17B2924FB6B52002482D6 /* README.md */; };
 		64A17B2D24FB6E9B002482D6 /* Main.gif in Resources */ = {isa = PBXBuildFile; fileRef = 64A17B2C24FB6E9B002482D6 /* Main.gif */; };
 		64ADD960256058F1009A81D8 /* PerformanceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64ADD95F256058F1009A81D8 /* PerformanceMonitor.swift */; };
-		64C355C8255FFBF300440B3B /* AccelerateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */; };
+		64C355C8255FFBF300440B3B /* SwiftAccelerateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C355C7255FFBF300440B3B /* SwiftAccelerateRenderer.swift */; };
+		64D706B925D8251200B77DD4 /* AccelerateRendererView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 64D706B825D8251200B77DD4 /* AccelerateRendererView.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,7 +54,9 @@
 		64A17B2924FB6B52002482D6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		64A17B2C24FB6E9B002482D6 /* Main.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Main.gif; sourceTree = "<group>"; };
 		64ADD95F256058F1009A81D8 /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
-		64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelerateRenderer.swift; sourceTree = "<group>"; };
+		64C355C7255FFBF300440B3B /* SwiftAccelerateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftAccelerateRenderer.swift; sourceTree = "<group>"; };
+		64D706B725D8251200B77DD4 /* AccelerateRendererView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AccelerateRendererView.h; sourceTree = "<group>"; };
+		64D706B825D8251200B77DD4 /* AccelerateRendererView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AccelerateRendererView.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,7 +73,8 @@
 		642550FC255DAA4100C486BD /* AccelerateRenderer */ = {
 			isa = PBXGroup;
 			children = (
-				64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */,
+				64D706B625D824EE00B77DD4 /* Renderer */,
+				64C355C7255FFBF300440B3B /* SwiftAccelerateRenderer.swift */,
 			);
 			path = AccelerateRenderer;
 			sourceTree = "<group>";
@@ -226,6 +230,15 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		64D706B625D824EE00B77DD4 /* Renderer */ = {
+			isa = PBXGroup;
+			children = (
+				64D706B725D8251200B77DD4 /* AccelerateRendererView.h */,
+				64D706B825D8251200B77DD4 /* AccelerateRendererView.mm */,
+			);
+			path = Renderer;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -302,7 +315,7 @@
 				64257D9824FA03D100D17591 /* RendererProtocol.swift in Sources */,
 				64257D9924FA03D100D17591 /* BufferProvider.swift in Sources */,
 				64257DA024FA03D100D17591 /* MandelbrotViewController.swift in Sources */,
-				64C355C8255FFBF300440B3B /* AccelerateRenderer.swift in Sources */,
+				64C355C8255FFBF300440B3B /* SwiftAccelerateRenderer.swift in Sources */,
 				64257D6F24FA037200D17591 /* AppDelegate.swift in Sources */,
 				6425510A255DAF9C00C486BD /* RootTabBarViewController.swift in Sources */,
 				64257D9624FA03D100D17591 /* MetalRenderer.swift in Sources */,
@@ -311,6 +324,7 @@
 				64ADD960256058F1009A81D8 /* PerformanceMonitor.swift in Sources */,
 				64257D9C24FA03D100D17591 /* Shapes.swift in Sources */,
 				64255105255DAC1100C486BD /* RendererBuffer.swift in Sources */,
+				64D706B925D8251200B77DD4 /* AccelerateRendererView.mm in Sources */,
 				64257D7124FA037200D17591 /* SceneDelegate.swift in Sources */,
 				64257D9F24FA03D100D17591 /* SceneTransform.swift in Sources */,
 			);
