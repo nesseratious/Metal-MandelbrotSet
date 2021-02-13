@@ -64,14 +64,10 @@ final class MetalRenderer: MTKView {
         #endif
     }
     
-    private func makeSamplerState(device: MTLDevice) -> MTLSamplerState? {
-        let sampler = MTLSamplerDescriptor()
-        sampler.maxAnisotropy = 1
-        sampler.normalizedCoordinates = true
-        sampler.lodMinClamp = 0
-        sampler.lodMaxClamp = .greatestFiniteMagnitude
-        return device.makeSamplerState(descriptor: sampler)
-    }
+//    private func makeSamplerState(device: MTLDevice) -> MTLSamplerState? {
+//        let sampler = MTLSamplerDescriptor()
+//        return device.makeSamplerState(descriptor: sampler)
+//    }
     
     private func setupColorPalleteTexture(device: MTLDevice) {
         guard let path = Bundle.main.path(forResource: "pallete", ofType: "png") else {
@@ -210,7 +206,8 @@ extension MetalRenderer: Renderer {
         depthStencilPixelFormat = .depth32Float_stencil8
         commandQueue = device.makeCommandQueue()
         square = Square(device: device)
-        samplerState = makeSamplerState(device: device)
+        let samplerProvider = MetalSamplerProvider(device: device)
+        samplerState = samplerProvider.make()
         bufferProvider = MetalBufferProvider(device: device)
         setupColorPalleteTexture(device: device)
         setupRenderPipelineState(device: device)
