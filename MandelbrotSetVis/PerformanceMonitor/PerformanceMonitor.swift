@@ -9,16 +9,20 @@ import Foundation
 
 struct PerformanceMonitor {
     private var time: TimeInterval?
-    private var inference: TimeInterval!
+    private var inference: TimeInterval?
     
     mutating func calculationStarted() {
         time = CFAbsoluteTimeGetCurrent()
-        print("Started rendering frame...")
+        print("[PERFORMANCE] Started rendering frame...")
     }
     
     mutating func calculationEnded() {
-        let inference = CFAbsoluteTimeGetCurrent() - (time ?? 0.0)
+        guard let time = time else {
+            print("[WARNING] calculationEnded() called before calculationStarted().")
+            return
+        }
+        let inference = CFAbsoluteTimeGetCurrent() - time
         self.inference = inference
-        print("Frame rendered in ", inference, "s.")
+        print("[PERFORMANCE] Frame rendered in ", inference, "s.")
     }
 }
