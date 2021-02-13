@@ -14,7 +14,7 @@
 		64257D7824FA037300D17591 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 64257D7724FA037300D17591 /* Assets.xcassets */; };
 		64257D9624FA03D100D17591 /* MetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8524FA03D100D17591 /* MetalRenderer.swift */; };
 		64257D9824FA03D100D17591 /* RendererProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8724FA03D100D17591 /* RendererProtocol.swift */; };
-		64257D9924FA03D100D17591 /* BufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8824FA03D100D17591 /* BufferProvider.swift */; };
+		64257D9924FA03D100D17591 /* MetalBufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8824FA03D100D17591 /* MetalBufferProvider.swift */; };
 		64257D9B24FA03D100D17591 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8C24FA03D100D17591 /* Shaders.metal */; };
 		64257D9C24FA03D100D17591 /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8E24FA03D100D17591 /* Shapes.swift */; };
 		64257D9E24FA03D100D17591 /* pallete.png in Resources */ = {isa = PBXBuildFile; fileRef = 64257D9124FA03D100D17591 /* pallete.png */; };
@@ -39,7 +39,7 @@
 		64257D8224FA039A00D17591 /* MandelbrotSetVis.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MandelbrotSetVis.entitlements; sourceTree = "<group>"; };
 		64257D8524FA03D100D17591 /* MetalRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalRenderer.swift; sourceTree = "<group>"; };
 		64257D8724FA03D100D17591 /* RendererProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RendererProtocol.swift; sourceTree = "<group>"; };
-		64257D8824FA03D100D17591 /* BufferProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferProvider.swift; sourceTree = "<group>"; };
+		64257D8824FA03D100D17591 /* MetalBufferProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalBufferProvider.swift; sourceTree = "<group>"; };
 		64257D8B24FA03D100D17591 /* Shaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shaders.h; sourceTree = "<group>"; };
 		64257D8C24FA03D100D17591 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		64257D8E24FA03D100D17591 /* Shapes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shapes.swift; sourceTree = "<group>"; };
@@ -125,7 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				64257D8524FA03D100D17591 /* MetalRenderer.swift */,
-				64257D8824FA03D100D17591 /* BufferProvider.swift */,
+				64257D8824FA03D100D17591 /* MetalBufferProvider.swift */,
 			);
 			path = Renderer;
 			sourceTree = "<group>";
@@ -292,7 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				64257D9824FA03D100D17591 /* RendererProtocol.swift in Sources */,
-				64257D9924FA03D100D17591 /* BufferProvider.swift in Sources */,
+				64257D9924FA03D100D17591 /* MetalBufferProvider.swift in Sources */,
 				64257DA024FA03D100D17591 /* MandelbrotViewController.swift in Sources */,
 				64C355C8255FFBF300440B3B /* AccelerateRenderer.swift in Sources */,
 				64257D6F24FA037200D17591 /* AppDelegate.swift in Sources */,

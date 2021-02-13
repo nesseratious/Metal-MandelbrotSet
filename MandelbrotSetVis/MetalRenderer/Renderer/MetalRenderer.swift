@@ -175,7 +175,7 @@ extension MetalRenderer: MTKViewDelegate {
         renderCommandEncoder.setCullMode(.none)
         renderCommandEncoder.setVertexBuffer(square.vertexBuffer, offset: 0, index: 0)
         
-        let uniformBuffer = bufferProvider.makeBuffer(with: bridgeBuffer)
+        let uniformBuffer = bufferProvider.make(with: bridgeBuffer)
         renderCommandEncoder.setVertexBuffer(uniformBuffer, offset: 0, index: 1)
         renderCommandEncoder.setFragmentBuffer(uniformBuffer, offset: 0, index: 0)
         renderCommandEncoder.setFragmentTexture(paletteTexture, index: 0)

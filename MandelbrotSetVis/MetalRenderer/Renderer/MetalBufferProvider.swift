@@ -18,11 +18,10 @@ struct MetalBufferProvider {
         self.buffer = buffer
     }
     
-    func makeBuffer(with uniform: SwiftToMetalConvertible) -> MTLBuffer {
+    func make(with uniform: SwiftToMetalConvertible) -> MTLBuffer {
         let size = MemoryLayout<Float32>.size * 8
         let contents = buffer.contents()
         memcpy(contents, uniform.getRawData(), size)
         return buffer
     }
 }
-
