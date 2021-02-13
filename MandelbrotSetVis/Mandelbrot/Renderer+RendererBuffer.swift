@@ -11,6 +11,7 @@ import UIKit
 protocol Renderer: UIView {
     var bridgeBuffer: RendererBuffer { get set }
     func setupRenderer()
+    func update()
 }
 
 struct RendererBuffer {

@@ -137,6 +137,10 @@ final class SwiftAccelerateRenderer: UIView {
 }
 
 extension SwiftAccelerateRenderer: Renderer {
+    func update() {
+        render()
+    }
+    
     var bridgeBuffer: RendererBuffer {
         get {
             return buffer
