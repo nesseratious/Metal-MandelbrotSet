@@ -156,7 +156,6 @@
 		64257D9224FA03D100D17591 /* Mandelbrot */ = {
 			isa = PBXGroup;
 			children = (
-				64257D9024FA03D100D17591 /* Palletes */,
 				64257D8724FA03D100D17591 /* RendererProtocol.swift */,
 				64257D9324FA03D100D17591 /* SceneTransform.swift */,
 				64255104255DAC1100C486BD /* RendererBuffer.swift */,
@@ -221,6 +220,7 @@
 		64D706A425D80C5F00B77DD4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				64257D9024FA03D100D17591 /* Palletes */,
 				64257D7724FA037300D17591 /* Assets.xcassets */,
 			);
 			path = Resources;
