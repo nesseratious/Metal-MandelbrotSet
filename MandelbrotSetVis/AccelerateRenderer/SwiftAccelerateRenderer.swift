@@ -10,7 +10,7 @@ import UIKit
 import Accelerate
 
 final class SwiftAccelerateRenderer: UIView {
-    var buffer = RendererBuffer()
+    private var buffer = RendererBuffer()
     private let bitmap = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
     private let colorSpace = CGColorSpaceCreateDeviceRGB()
     private let bytesPerPixel = 4

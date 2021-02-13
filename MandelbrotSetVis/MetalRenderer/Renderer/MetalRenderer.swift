@@ -17,7 +17,7 @@ final class MetalRenderer: MTKView {
     private var bufferProvider: MetalBufferProvider!
     private var isRedrawNeeded = true
     private var vertexBufferProvider: MetalVertexBufferProvider!
-    private var bufferUniform = RendererBuffer()
+    private var buffer = RendererBuffer()
     
     private func makeColorPalleteTexture(device: MTLDevice) -> MTLTexture {
         guard let path = Bundle.main.path(forResource: "pallete", ofType: "png") else {
@@ -94,10 +94,10 @@ extension MetalRenderer: MTKViewDelegate {
 extension MetalRenderer: Renderer {
     var bridgeBuffer: RendererBuffer {
         get {
-            return bufferUniform
+            return buffer
         }
         set {
-            bufferUniform = newValue
+            buffer = newValue
             isRedrawNeeded = true
         }
     }
