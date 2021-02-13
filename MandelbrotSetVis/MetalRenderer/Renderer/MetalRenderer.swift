@@ -97,8 +97,7 @@ final class MetalRenderer: MTKView {
         }
         renderPipelineState = makeCompiledPipelineStateFrom(device: device,
                                                             vertexShader: vertexShader,
-                                                            fragmentShader: fragmentShader,
-                                                            vertexDescriptor: makeVertexDescriptor())
+                                                            fragmentShader: fragmentShader)
     }
     
     private func makeVertexDescriptor() -> MTLVertexDescriptor {
@@ -117,10 +116,9 @@ final class MetalRenderer: MTKView {
     
     private func makeCompiledPipelineStateFrom(device: MTLDevice,
                                                vertexShader: MTLFunction,
-                                               fragmentShader: MTLFunction,
-                                               vertexDescriptor: MTLVertexDescriptor) -> MTLRenderPipelineState? {
+                                               fragmentShader: MTLFunction) -> MTLRenderPipelineState? {
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
-        pipelineStateDescriptor.vertexDescriptor = vertexDescriptor
+        pipelineStateDescriptor.vertexDescriptor = makeVertexDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexShader
         pipelineStateDescriptor.fragmentFunction = fragmentShader
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = colorPixelFormat
@@ -170,7 +168,6 @@ extension MetalRenderer: MTKViewDelegate {
         
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder.setDepthStencilState(depthStencilState)
-        renderCommandEncoder.setCullMode(.none)
         renderCommandEncoder.setVertexBuffer(square.vertexBuffer, offset: 0, index: 0)
         
         let uniformBuffer = bufferProvider.make(with: bridgeBuffer)
