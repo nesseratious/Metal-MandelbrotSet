@@ -7,13 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		64255105255DAC1100C486BD /* RendererBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64255104255DAC1100C486BD /* RendererBuffer.swift */; };
 		6425510A255DAF9C00C486BD /* RootTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64255109255DAF9C00C486BD /* RootTabBarViewController.swift */; };
 		64257D6F24FA037200D17591 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D6E24FA037200D17591 /* AppDelegate.swift */; };
 		64257D7124FA037200D17591 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D7024FA037200D17591 /* SceneDelegate.swift */; };
 		64257D7824FA037300D17591 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 64257D7724FA037300D17591 /* Assets.xcassets */; };
 		64257D9624FA03D100D17591 /* MetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8524FA03D100D17591 /* MetalRenderer.swift */; };
-		64257D9824FA03D100D17591 /* RendererProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8724FA03D100D17591 /* RendererProtocol.swift */; };
+		64257D9824FA03D100D17591 /* RendererProtocol+RendererBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8724FA03D100D17591 /* RendererProtocol+RendererBuffer.swift */; };
 		64257D9924FA03D100D17591 /* MetalBufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8824FA03D100D17591 /* MetalBufferProvider.swift */; };
 		64257D9B24FA03D100D17591 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8C24FA03D100D17591 /* Shaders.metal */; };
 		64257D9C24FA03D100D17591 /* MetalVertexBufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8E24FA03D100D17591 /* MetalVertexBufferProvider.swift */; };
@@ -25,16 +24,14 @@
 		64A17B2A24FB6B52002482D6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 64A17B2924FB6B52002482D6 /* README.md */; };
 		64A17B2D24FB6E9B002482D6 /* Main.gif in Resources */ = {isa = PBXBuildFile; fileRef = 64A17B2C24FB6E9B002482D6 /* Main.gif */; };
 		64ADD960256058F1009A81D8 /* PerformanceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64ADD95F256058F1009A81D8 /* PerformanceMonitor.swift */; };
-		64C355C8255FFBF300440B3B /* AccelerateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */; };
+		64C355C8255FFBF300440B3B /* SwiftAccelerateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C355C7255FFBF300440B3B /* SwiftAccelerateRenderer.swift */; };
 		64D706AA25D8100E00B77DD4 /* MetalSamplerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706A925D8100E00B77DD4 /* MetalSamplerProvider.swift */; };
 		64D706AD25D815DC00B77DD4 /* MetalDeviceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706AC25D815DC00B77DD4 /* MetalDeviceProvider.swift */; };
 		64D706B025D81D8500B77DD4 /* MetalRenderPipelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */; };
-		64C355C8255FFBF300440B3B /* SwiftAccelerateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C355C7255FFBF300440B3B /* SwiftAccelerateRenderer.swift */; };
 		64D706B925D8251200B77DD4 /* AccelerateRendererView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 64D706B825D8251200B77DD4 /* AccelerateRendererView.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		64255104255DAC1100C486BD /* RendererBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RendererBuffer.swift; sourceTree = "<group>"; };
 		64255109255DAF9C00C486BD /* RootTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabBarViewController.swift; sourceTree = "<group>"; };
 		64257D6B24FA037200D17591 /* MandelbrotSetVis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MandelbrotSetVis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64257D6E24FA037200D17591 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -43,7 +40,7 @@
 		64257D7C24FA037300D17591 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		64257D8224FA039A00D17591 /* MandelbrotSetVis.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MandelbrotSetVis.entitlements; sourceTree = "<group>"; };
 		64257D8524FA03D100D17591 /* MetalRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalRenderer.swift; sourceTree = "<group>"; };
-		64257D8724FA03D100D17591 /* RendererProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RendererProtocol.swift; sourceTree = "<group>"; };
+		64257D8724FA03D100D17591 /* RendererProtocol+RendererBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RendererProtocol+RendererBuffer.swift"; sourceTree = "<group>"; };
 		64257D8824FA03D100D17591 /* MetalBufferProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalBufferProvider.swift; sourceTree = "<group>"; };
 		64257D8B24FA03D100D17591 /* Shaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shaders.h; sourceTree = "<group>"; };
 		64257D8C24FA03D100D17591 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
@@ -58,11 +55,10 @@
 		64A17B2924FB6B52002482D6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		64A17B2C24FB6E9B002482D6 /* Main.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Main.gif; sourceTree = "<group>"; };
 		64ADD95F256058F1009A81D8 /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
-		64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelerateRenderer.swift; sourceTree = "<group>"; };
+		64C355C7255FFBF300440B3B /* SwiftAccelerateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftAccelerateRenderer.swift; sourceTree = "<group>"; };
 		64D706A925D8100E00B77DD4 /* MetalSamplerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalSamplerProvider.swift; sourceTree = "<group>"; };
 		64D706AC25D815DC00B77DD4 /* MetalDeviceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalDeviceProvider.swift; sourceTree = "<group>"; };
 		64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRenderPipelineProvider.swift; sourceTree = "<group>"; };
-		64C355C7255FFBF300440B3B /* SwiftAccelerateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftAccelerateRenderer.swift; sourceTree = "<group>"; };
 		64D706B725D8251200B77DD4 /* AccelerateRendererView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AccelerateRendererView.h; sourceTree = "<group>"; };
 		64D706B825D8251200B77DD4 /* AccelerateRendererView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AccelerateRendererView.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -163,9 +159,8 @@
 		64257D9224FA03D100D17591 /* Mandelbrot */ = {
 			isa = PBXGroup;
 			children = (
-				64257D8724FA03D100D17591 /* RendererProtocol.swift */,
+				64257D8724FA03D100D17591 /* RendererProtocol+RendererBuffer.swift */,
 				64257D9324FA03D100D17591 /* SceneTransform.swift */,
-				64255104255DAC1100C486BD /* RendererBuffer.swift */,
 			);
 			path = Mandelbrot;
 			sourceTree = "<group>";
@@ -316,7 +311,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				64D706AA25D8100E00B77DD4 /* MetalSamplerProvider.swift in Sources */,
-				64257D9824FA03D100D17591 /* RendererProtocol.swift in Sources */,
+				64257D9824FA03D100D17591 /* RendererProtocol+RendererBuffer.swift in Sources */,
 				64D706AD25D815DC00B77DD4 /* MetalDeviceProvider.swift in Sources */,
 				64D706B025D81D8500B77DD4 /* MetalRenderPipelineProvider.swift in Sources */,
 				64257D9924FA03D100D17591 /* MetalBufferProvider.swift in Sources */,
@@ -329,7 +324,6 @@
 				64257DA724FA0A8A00D17591 /* SwiftToMetalConvertible.swift in Sources */,
 				64ADD960256058F1009A81D8 /* PerformanceMonitor.swift in Sources */,
 				64257D9C24FA03D100D17591 /* MetalVertexBufferProvider.swift in Sources */,
-				64255105255DAC1100C486BD /* RendererBuffer.swift in Sources */,
 				64D706B925D8251200B77DD4 /* AccelerateRendererView.mm in Sources */,
 				64257D7124FA037200D17591 /* SceneDelegate.swift in Sources */,
 				64257D9F24FA03D100D17591 /* SceneTransform.swift in Sources */,
