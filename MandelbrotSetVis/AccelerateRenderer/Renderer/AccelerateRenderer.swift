@@ -1,5 +1,5 @@
 //
-//  SwiftAccelerateRenderer.swift
+//  AccelerateRenderer.swift
 //  MandelbrotSetVis
 //
 //  Created by Esie on 11/14/20.
@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import Accelerate
 
-final class SwiftAccelerateRenderer: UIView {
+final class AccelerateRenderer: UIView {
     private var buffer = RendererBuffer()
     private let mandelbrotImage = UIImageView()
     private var monitor = PerformanceMonitor()
@@ -104,7 +104,7 @@ final class SwiftAccelerateRenderer: UIView {
         
         let mandelbrotIterations = self.buffer.iterations
         
-        /// The amount of rows to be processed in a single thread. The default if 1.
+        /// The amount of rows to be processed in a single thread. The default is 1.
         /// Setting it > 1 will make thread creation more efficient on intel, but will result in some weird graphic glitches.
         /// On big.little it will be more efficient at 1.
         let batchSize = 1
@@ -146,7 +146,7 @@ final class SwiftAccelerateRenderer: UIView {
     }
 }
 
-extension SwiftAccelerateRenderer: Renderer {
+extension AccelerateRenderer: Renderer {
     func update() {
         render()
     }
