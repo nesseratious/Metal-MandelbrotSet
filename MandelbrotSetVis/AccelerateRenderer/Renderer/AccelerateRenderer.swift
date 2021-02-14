@@ -12,18 +12,19 @@ import Accelerate
 final class AccelerateRenderer: UIView {
     private var buffer = RendererBuffer()
     private let mandelbrotImage = UIImageView()
-    private var monitor = PerformanceMonitor()
+    private var performanceMonitor = PerformanceMonitor()
     
+    /// Starts the mandelbrot render process.
     private func render() {
-        guard !monitor.isRunning else { return }
-        monitor.calculationStarted(on: .CPU)
-        let cgImage = makeCGImage()
+        guard !performanceMonitor.isRunning else { return }
+        performanceMonitor.calculationStarted(on: .CPU)
+        let blankCgImage = makeCGImage()
         
         DispatchQueue.global(qos: .userInteractive).async {
-            let bufferWidth = cgImage.width
-            let bufferHeight = cgImage.height
+            let bufferWidth = blankCgImage.width
+            let bufferHeight = blankCgImage.height
             let lenght = bufferWidth * bufferHeight
-            let cgContext = self.makeContext(from: cgImage, width: bufferWidth, height: bufferHeight)
+            let cgContext = self.makeContext(from: blankCgImage, width: bufferWidth, height: bufferHeight)
             let buffer = self.makeBuffer(from: cgContext, lenght: lenght)
             let widthBuffer = self.makeWidthBuffer(lenght: bufferWidth)
             let heightBuffer = self.makeHeightBuffer(lenght: bufferHeight)
@@ -31,36 +32,49 @@ final class AccelerateRenderer: UIView {
             
             DispatchQueue.main.async {
                 self.mandelbrotImage.image = self.makeUIImage(from: cgContext)
-                self.monitor.calculationEnded()
+                self.performanceMonitor.calculationEnded()
             }
         }
     }
     
+    /// Creates a blank cg image from graphic context.
+    /// - Returns: Blank cg image.
     private func makeCGImage() -> CGImage {
         UIGraphicsBeginImageContextWithOptions(frame.size, true, 0)
         drawHierarchy(in: bounds, afterScreenUpdates: true)
         guard let image = UIGraphicsGetImageFromCurrentImageContext(),
               let cgImage = image.cgImage else {
-            fatalError("Invalid bitmap.")
+            fatalError("Error creating a blank cg image.")
         }
         UIGraphicsEndImageContext()
         return cgImage
     }
     
+    /// Makes a CGContext from a given CGImage.
+    /// - Parameters:
+    ///   - cgImage: Input CGImage
+    ///   - width: CGImage's and CGContext's width in pixels.
+    ///   - height: CGImage's CGContext's height in pixels.
+    /// - Returns: CGContext
     private func makeContext(from cgImage: CGImage, width: Int, height: Int) -> CGContext {
         let bytesPerPixel = 4
         let bitsPerComponent = 8
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmap = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+        let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
         let bytesPerRow = bytesPerPixel * width
         guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent,
-                                      bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmap) else {
+                                      bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
             fatalError("Failed to create Quartz destination context.")
         }
         context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         return context
     }
     
+    /// Makes a word buffer from a given CGContext.
+    /// - Parameters:
+    ///   - context: CGContext
+    ///   - lenght: CGContext's lenght (widht x height).
+    /// - Returns: Pointer to word buffer.
     private func makeBuffer(from context: CGContext, lenght: Int) -> UnsafeMutablePointer<UInt32> {
         guard let dataBuffer = context.data else {
             fatalError("Failed to create bitmap pointer.")
@@ -68,6 +82,9 @@ final class AccelerateRenderer: UIView {
         return dataBuffer.bindMemory(to: UInt32.self, capacity: lenght)
     }
     
+    /// Makes a Float32 buffer of current mandebrot width transformation.
+    /// - Parameter lenght: Buffer lenght
+    /// - Returns: Float32 buffer of current mandebrot width transformation
     private func makeWidthBuffer(lenght: Int) -> UnsafeBufferPointer<Float32> {
         var widthBuffer = [Float32](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for x in 0 ..< lenght {
@@ -75,13 +92,17 @@ final class AccelerateRenderer: UIView {
             }
             capacity = lenght
         }
+        let widthTransformationMultiplier = 2.5 * buffer.aspectRatio.x * buffer.scale
+        let widthTranslation = -1.5 * buffer.aspectRatio.x * buffer.scale - buffer.translation.x
         vDSP.divide(widthBuffer, Float32(lenght), result: &widthBuffer)
-        vDSP.multiply(2.5 * buffer.aspectRatio.x * buffer.scale, widthBuffer, result: &widthBuffer)
-        vDSP.add(-1.5 * buffer.aspectRatio.x * buffer.scale - buffer.translation.x, widthBuffer, result: &widthBuffer)
-        let ptr = widthBuffer.withUnsafeBufferPointer { $0 }
-        return ptr
+        vDSP.multiply(widthTransformationMultiplier, widthBuffer, result: &widthBuffer)
+        vDSP.add(widthTranslation, widthBuffer, result: &widthBuffer)
+        return widthBuffer.withUnsafeBufferPointer { $0 }
     }
     
+    /// Makes a Float32 buffer of current mandebrot height transformation.
+    /// - Parameter lenght: Buffer lenght
+    /// - Returns: Float32 buffer of current mandebrot height transformation
     private func makeHeightBuffer(lenght: Int) -> UnsafeBufferPointer<Float32> {
         var heightBuffer = [Float32](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for y in 0 ..< lenght {
@@ -89,13 +110,21 @@ final class AccelerateRenderer: UIView {
             }
             capacity = lenght
         }
+        let heightTransformationMultiplier = 2.0 * buffer.aspectRatio.y * buffer.scale
+        let heightTranslation = -1.0 * buffer.aspectRatio.y * buffer.scale + buffer.translation.y
         vDSP.divide(heightBuffer, Float32(lenght), result: &heightBuffer)
-        vDSP.multiply(2.0 * buffer.aspectRatio.y * buffer.scale, heightBuffer, result: &heightBuffer)
-        vDSP.add(-1.0 * buffer.aspectRatio.y * buffer.scale + buffer.translation.y, heightBuffer, result: &heightBuffer)
-        let ptr = heightBuffer.withUnsafeBufferPointer { $0 }
-        return ptr
+        vDSP.multiply(heightTransformationMultiplier, heightBuffer, result: &heightBuffer)
+        vDSP.add(heightTranslation, heightBuffer, result: &heightBuffer)
+        return heightBuffer.withUnsafeBufferPointer { $0 }
     }
     
+    /// Reforms the main mandebrot calculation cycle.
+    /// - Parameters:
+    ///   - buffer: Target buffer where the result should be written to.
+    ///   - width: Render target's width in pixels.
+    ///   - height: Render target's height in pixels.
+    ///   - widthBuffer: Float32 buffer of current mandebrot width transformation.
+    ///   - heightBuffer: Float32 buffer of current mandebrot heigh transformation.
     private func calculateMandelbrot(buffer: UnsafeMutablePointer<UInt32>,
                                      width: Int,
                                      height: Int,
@@ -129,15 +158,18 @@ final class AccelerateRenderer: UIView {
                         i &+= 1
                     }
                     
-                    let offset = row * width &+ column
-                    let pixelShift = UInt32(i)
-                    buffer[offset] = pixelShift << 24 | pixelShift << 16 | pixelShift << 8 | 255 << 0
+                    let pixelOffset = row * width &+ column
+                    let color = UInt32(i)
+                    buffer[pixelOffset] = color << 24 | color << 16 | color << 8 | 255 << 0
                 }
             }
         }
     }
     
-    func makeUIImage(from context: CGContext) -> UIImage {
+    /// Makes a UIImage from the given CGContext.
+    /// - Parameter context: CGContext
+    /// - Returns: UIImage from the given CGContext
+    private func makeUIImage(from context: CGContext) -> UIImage {
         guard let outputCGImage = context.makeImage() else {
             fatalError("Failed to create cgimage from context.")
         }
