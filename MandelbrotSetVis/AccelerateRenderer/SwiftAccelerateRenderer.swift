@@ -76,8 +76,8 @@ final class SwiftAccelerateRenderer: UIView {
             capacity = lenght
         }
         vDSP.divide(widthBuffer, Float32(lenght), result: &widthBuffer)
-        vDSP.multiply(2.5 * buffer.aspectRatio.x, widthBuffer, result: &widthBuffer)
-        vDSP.add(-1.5 * buffer.aspectRatio.x, widthBuffer, result: &widthBuffer)
+        vDSP.multiply(2.5 * buffer.aspectRatio.x * buffer.scale, widthBuffer, result: &widthBuffer)
+        vDSP.add(-1.5 * buffer.aspectRatio.x * buffer.scale - buffer.translation.x, widthBuffer, result: &widthBuffer)
         let ptr = widthBuffer.withUnsafeBufferPointer { $0 }
         return ptr
     }
@@ -90,8 +90,8 @@ final class SwiftAccelerateRenderer: UIView {
             capacity = lenght
         }
         vDSP.divide(heightBuffer, Float32(lenght), result: &heightBuffer)
-        vDSP.multiply(2.0 * buffer.aspectRatio.y, heightBuffer, result: &heightBuffer)
-        vDSP.add(-1.0 * buffer.aspectRatio.y, heightBuffer, result: &heightBuffer)
+        vDSP.multiply(2.0 * buffer.aspectRatio.y * buffer.scale, heightBuffer, result: &heightBuffer)
+        vDSP.add(-1.0 * buffer.aspectRatio.y * buffer.scale + buffer.translation.y, heightBuffer, result: &heightBuffer)
         let ptr = heightBuffer.withUnsafeBufferPointer { $0 }
         return ptr
     }
@@ -102,28 +102,33 @@ final class SwiftAccelerateRenderer: UIView {
                                      widthBuffer: UnsafeBufferPointer<Float32>,
                                      heightBuffer: UnsafeBufferPointer<Float32>) {
         
-        let iterations = self.buffer.iterations
-        for y in 0 ..< height {
-            for x in 0 ..< width {
+        let mandelbrotIterations = self.buffer.iterations
+        let batchSize = 16
+        
+        DispatchQueue.concurrentPerform(iterations: (height / batchSize) - 1) { (iteration) in
+            for batchIndex in 1 ... batchSize {
+                let row = iteration &* batchIndex
                 
-                let my = heightBuffer[y]
-                let mx = widthBuffer[x]
-                var real: Float32 = 0.0
-                var img: Float32 = 0.0
-                var i = 0
-                
-                while i < iterations {
-                    let r2 = real * real
-                    let i2 = img * img
-                    if r2 + i2 > 4.0 { break }
-                    img = 2.0 * real * img + my
-                    real = r2 - i2 + mx
-                    i &+= 1
+                for column in 0 ..< width {
+                    let my = heightBuffer[row]
+                    let mx = widthBuffer[column]
+                    var real: Float32 = 0.0
+                    var img: Float32 = 0.0
+                    var i = 0
+                    
+                    while i < mandelbrotIterations {
+                        let r2 = real * real
+                        let i2 = img * img
+                        if r2 + i2 > 4.0 { break }
+                        img = 2.0 * real * img + my
+                        real = r2 - i2 + mx
+                        i &+= 1
+                    }
+                    
+                    let offset = row * width &+ column
+                    let pixelShift = UInt32(i)
+                    buffer[offset] = pixelShift << 24 | pixelShift << 16 | pixelShift << 8 | 255 << 0
                 }
-                
-                let offset = y * width &+ x
-                let pixelShift = UInt32(i)
-                buffer[offset] = pixelShift << 24 | pixelShift << 16 | pixelShift << 8 | 255 << 0
             }
         }
     }
