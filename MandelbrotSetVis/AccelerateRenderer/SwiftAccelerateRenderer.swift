@@ -17,19 +17,15 @@ final class SwiftAccelerateRenderer: UIView {
     private let bitsPerComponent = 8
     private let mandelbrotImage = UIImageView()
     private let scale = UIScreen.main.scale
-//    private var once = true
+    private var monitor = PerformanceMonitor()
     
     private func render() {
-//        guard once else { return }
-//        once = false
-        var monitor = PerformanceMonitor()
         monitor.calculationStarted(on: .CPU)
         
         let cgImage = makeCGImage()
         let width = cgImage.width
         let height = cgImage.height
         let capacity = width * height
-        
         let context = makeContext(cgImage: cgImage, width: width, height: height)
         let buffer = makeBuffer(context: context, lenght: capacity)
         let widthBuffer = makeWidthBuffer(lenght: width)

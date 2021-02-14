@@ -18,6 +18,7 @@ final class MetalRenderer: MTKView {
     private var isRedrawNeeded = true
     private var vertexBufferProvider: MetalVertexBufferProvider!
     private var buffer = RendererBuffer()
+    private var monitor = PerformanceMonitor()
     
     private func makeColorPalleteTexture(device: MTLDevice) -> MTLTexture {
         guard let path = Bundle.main.path(forResource: "pallete", ofType: "png") else {
@@ -55,8 +56,6 @@ extension MetalRenderer: MTKViewDelegate {
               let currentDrawable = view.currentDrawable else {
             return
         }
-        
-        var monitor = PerformanceMonitor()
         monitor.calculationStarted(on: .GPU)
         
         let clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
@@ -86,7 +85,7 @@ extension MetalRenderer: MTKViewDelegate {
         isRedrawNeeded = false
 
         commandBuffer.addCompletedHandler { _ in
-            monitor.calculationEnded()
+            self.monitor.calculationEnded()
         }
     }
 }

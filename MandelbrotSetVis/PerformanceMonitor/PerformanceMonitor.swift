@@ -11,10 +11,12 @@ struct PerformanceMonitor {
     private var time: TimeInterval?
     private var inference: TimeInterval?
     private var device: Device?
+    var isRunning = false
     
     mutating func calculationStarted(on device: Device) {
         time = CFAbsoluteTimeGetCurrent()
         self.device = device
+        isRunning = true
         print("[PERFORMANCE] [\(device.rawValue)] Started rendering frame...")
     }
     
@@ -25,9 +27,10 @@ struct PerformanceMonitor {
         }
         let inference = CFAbsoluteTimeGetCurrent() - time
         self.inference = inference
+        isRunning = false
         print("[PERFORMANCE] [\(device.rawValue)] Frame rendered in ", inference, "s.")
     }
-    
+
     enum Device: String {
         case CPU, GPU
     }
