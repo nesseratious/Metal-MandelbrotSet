@@ -20,6 +20,7 @@ final class SwiftAccelerateRenderer: UIView {
     private var monitor = PerformanceMonitor()
     
     private func render() {
+        guard !monitor.isRunning else { return }
         monitor.calculationStarted(on: .CPU)
         
         let cgImage = makeCGImage()
