@@ -10,19 +10,25 @@ import Foundation
 struct PerformanceMonitor {
     private var time: TimeInterval?
     private var inference: TimeInterval?
+    private var device: Device?
     
-    mutating func calculationStarted() {
+    mutating func calculationStarted(on device: Device) {
         time = CFAbsoluteTimeGetCurrent()
-        print("[PERFORMANCE] Started rendering frame...")
+        self.device = device
+        print("[PERFORMANCE] [\(device.rawValue)] Started rendering frame...")
     }
     
     mutating func calculationEnded() {
-        guard let time = time else {
+        guard let time = time, let device = device else {
             print("[WARNING] calculationEnded() called before calculationStarted().")
             return
         }
         let inference = CFAbsoluteTimeGetCurrent() - time
         self.inference = inference
-        print("[PERFORMANCE] Frame rendered in ", inference, "s.")
+        print("[PERFORMANCE] [\(device.rawValue)] Frame rendered in ", inference, "s.")
+    }
+    
+    enum Device: String {
+        case CPU, GPU
     }
 }

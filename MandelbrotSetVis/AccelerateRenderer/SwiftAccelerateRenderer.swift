@@ -23,7 +23,7 @@ final class SwiftAccelerateRenderer: UIView {
 //        guard once else { return }
 //        once = false
         var monitor = PerformanceMonitor()
-        monitor.calculationStarted()
+        monitor.calculationStarted(on: .CPU)
         
         let cgImage = makeCGImage()
         let width = cgImage.width
