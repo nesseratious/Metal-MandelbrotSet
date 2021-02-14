@@ -11,38 +11,33 @@ import Accelerate
 
 final class SwiftAccelerateRenderer: UIView {
     private var buffer = RendererBuffer()
-    private let bitmap = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
-    private let colorSpace = CGColorSpaceCreateDeviceRGB()
-    private let bytesPerPixel = 4
-    private let bitsPerComponent = 8
     private let mandelbrotImage = UIImageView()
-    private let scale = UIScreen.main.scale
     private var monitor = PerformanceMonitor()
     
     private func render() {
         guard !monitor.isRunning else { return }
         monitor.calculationStarted(on: .CPU)
-        let cgImage = self.makeCGImage()
+        let cgImage = makeCGImage()
         
         DispatchQueue.global(qos: .userInteractive).async {
-            let width = cgImage.width
-            let height = cgImage.height
-            let capacity = width * height
-            let context = self.makeContext(cgImage: cgImage, width: width, height: height)
-            let buffer = self.makeBuffer(context: context, lenght: capacity)
-            let widthBuffer = self.makeWidthBuffer(lenght: width)
-            let heightBuffer = self.makeHeightBuffer(lenght: height)
-            self.calculateMandelbrot(buffer: buffer, width: width, height: height, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
+            let bufferWidth = cgImage.width
+            let bufferHeight = cgImage.height
+            let lenght = bufferWidth * bufferHeight
+            let cgContext = self.makeContext(from: cgImage, width: bufferWidth, height: bufferHeight)
+            let buffer = self.makeBuffer(from: cgContext, lenght: lenght)
+            let widthBuffer = self.makeWidthBuffer(lenght: bufferWidth)
+            let heightBuffer = self.makeHeightBuffer(lenght: bufferHeight)
+            self.calculateMandelbrot(buffer: buffer, width: bufferWidth, height: bufferHeight, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
             
             DispatchQueue.main.async {
-                self.mandelbrotImage.image = self.makeImage(context: context)
+                self.mandelbrotImage.image = self.makeUIImage(from: cgContext)
                 self.monitor.calculationEnded()
             }
         }
     }
     
     private func makeCGImage() -> CGImage {
-        UIGraphicsBeginImageContextWithOptions(frame.size, true, scale)
+        UIGraphicsBeginImageContextWithOptions(frame.size, true, 0)
         drawHierarchy(in: bounds, afterScreenUpdates: true)
         guard let image = UIGraphicsGetImageFromCurrentImageContext(),
               let cgImage = image.cgImage else {
@@ -52,7 +47,11 @@ final class SwiftAccelerateRenderer: UIView {
         return cgImage
     }
     
-    private func makeContext(cgImage: CGImage, width: Int, height: Int) -> CGContext {
+    private func makeContext(from cgImage: CGImage, width: Int, height: Int) -> CGContext {
+        let bytesPerPixel = 4
+        let bitsPerComponent = 8
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmap = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
         let bytesPerRow = bytesPerPixel * width
         guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent,
                                       bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmap) else {
@@ -62,7 +61,7 @@ final class SwiftAccelerateRenderer: UIView {
         return context
     }
     
-    private func makeBuffer(context: CGContext, lenght: Int) -> UnsafeMutablePointer<UInt32> {
+    private func makeBuffer(from context: CGContext, lenght: Int) -> UnsafeMutablePointer<UInt32> {
         guard let dataBuffer = context.data else {
             fatalError("Failed to create bitmap pointer.")
         }
@@ -129,10 +128,11 @@ final class SwiftAccelerateRenderer: UIView {
         }
     }
     
-    func makeImage(context: CGContext) -> UIImage {
+    func makeUIImage(from context: CGContext) -> UIImage {
         guard let outputCGImage = context.makeImage() else {
             fatalError("Failed to create cgimage from context.")
         }
+        let scale = UIScreen.main.scale
         return UIImage(cgImage: outputCGImage, scale: scale, orientation: .up)
     }
 }
