@@ -22,19 +22,23 @@ final class SwiftAccelerateRenderer: UIView {
     private func render() {
         guard !monitor.isRunning else { return }
         monitor.calculationStarted(on: .CPU)
+        let cgImage = self.makeCGImage()
         
-        let cgImage = makeCGImage()
-        let width = cgImage.width
-        let height = cgImage.height
-        let capacity = width * height
-        let context = makeContext(cgImage: cgImage, width: width, height: height)
-        let buffer = makeBuffer(context: context, lenght: capacity)
-        let widthBuffer = makeWidthBuffer(lenght: width)
-        let heightBuffer = makeHeightBuffer(lenght: height)
-        
-        calculateMandelbrot(buffer: buffer, width: width, height: height, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
-        mandelbrotImage.image = makeImage(context: context)
-        monitor.calculationEnded()
+        DispatchQueue.global(qos: .userInteractive).async {
+            let width = cgImage.width
+            let height = cgImage.height
+            let capacity = width * height
+            let context = self.makeContext(cgImage: cgImage, width: width, height: height)
+            let buffer = self.makeBuffer(context: context, lenght: capacity)
+            let widthBuffer = self.makeWidthBuffer(lenght: width)
+            let heightBuffer = self.makeHeightBuffer(lenght: height)
+            self.calculateMandelbrot(buffer: buffer, width: width, height: height, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
+            
+            DispatchQueue.main.async {
+                self.mandelbrotImage.image = self.makeImage(context: context)
+                self.monitor.calculationEnded()
+            }
+        }
     }
     
     private func makeCGImage() -> CGImage {
