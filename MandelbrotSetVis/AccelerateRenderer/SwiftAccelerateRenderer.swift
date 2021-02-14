@@ -103,7 +103,11 @@ final class SwiftAccelerateRenderer: UIView {
                                      heightBuffer: UnsafeBufferPointer<Float32>) {
         
         let mandelbrotIterations = self.buffer.iterations
-        let batchSize = 16
+        
+        /// The amount of rows to be processed in a single thread. The default if 1.
+        /// Setting it > 1 will make thread creation more efficient on intel, but will result in some weird graphic glitches.
+        /// On big.little it will be more efficient at 1.
+        let batchSize = 1
         
         DispatchQueue.concurrentPerform(iterations: (height / batchSize) - 1) { (iteration) in
             for batchIndex in 1 ... batchSize {
