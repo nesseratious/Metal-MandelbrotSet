@@ -91,10 +91,6 @@ extension MetalRenderer: MTKViewDelegate {
 }
 
 extension MetalRenderer: Renderer {
-    func update() {
-        isRedrawNeeded = true
-    }
-    
     var bridgeBuffer: RendererBuffer {
         get {
             return buffer

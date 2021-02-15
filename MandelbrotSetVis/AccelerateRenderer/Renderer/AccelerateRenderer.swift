@@ -230,10 +230,6 @@ final class AccelerateRenderer: UIView {
 }
 
 extension AccelerateRenderer: Renderer {
-    func update() {
-        render()
-    }
-    
     var bridgeBuffer: RendererBuffer {
         get {
             return buffer
