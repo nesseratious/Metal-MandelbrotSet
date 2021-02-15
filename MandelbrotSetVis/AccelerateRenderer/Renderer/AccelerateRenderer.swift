@@ -142,27 +142,37 @@ final class AccelerateRenderer: UIView {
             for batchIndex in 1 ... batchSize {
                 let row = iteration &* batchIndex
                 
-                for column in 0 ..< width {
-                    let my = heightBuffer[row]
-                    let mx = widthBuffer[column]
-                    var real: Float32 = 0.0
-                    var img: Float32 = 0.0
-                    var i = 0
-                    
-                    while i < mandelbrotIterations {
-                        let r2 = real * real
-                        let i2 = img * img
-                        if r2 + i2 > 4.0 { break }
-                        img = 2.0 * real * img + my
-                        real = r2 - i2 + mx
-                        i &+= 1
-                    }
-                    
-                    let pixelOffset = row * width &+ column
-                    let color = UInt32(i)
-                    buffer[pixelOffset] = color << 24 | color << 16 | color << 8 | 255 << 0
-                }
+                calculateRow(row: row, rowWidth: width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, targetBuffer: buffer, iterations: mandelbrotIterations)
             }
+        }
+    }
+    
+    private func calculateRow(row: Int,
+                              rowWidth: Int,
+                              widthBuffer: UnsafeBufferPointer<Float32>,
+                              heightBuffer: UnsafeBufferPointer<Float32>,
+                              targetBuffer: UnsafeMutablePointer<UInt32>,
+                              iterations: Int) {
+        
+        for column in 0 ..< rowWidth {
+            let my = heightBuffer[row]
+            let mx = widthBuffer[column]
+            var real: Float32 = 0.0
+            var img: Float32 = 0.0
+            var i = 0
+            
+            while i < iterations {
+                let r2 = real * real
+                let i2 = img * img
+                if r2 + i2 > 4.0 { break }
+                img = 2.0 * real * img + my
+                real = r2 - i2 + mx
+                i &+= 1
+            }
+            
+            let pixelOffset = row * rowWidth &+ column
+            let color = UInt32(i)
+            targetBuffer[pixelOffset] = color << 24 | color << 16 | color << 8 | 255 << 0
         }
     }
     
