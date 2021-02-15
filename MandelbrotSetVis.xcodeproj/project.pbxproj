@@ -72,7 +72,7 @@
 		642550FC255DAA4100C486BD /* AccelerateRenderer */ = {
 			isa = PBXGroup;
 			children = (
-				6441D43725D9BBCA00D9AE34 /* Renderer */,
+				64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */,
 			);
 			path = AccelerateRenderer;
 			sourceTree = "<group>";
@@ -186,14 +186,6 @@
 				64257D7024FA037200D17591 /* SceneDelegate.swift */,
 			);
 			path = AppDelegates;
-			sourceTree = "<group>";
-		};
-		6441D43725D9BBCA00D9AE34 /* Renderer */ = {
-			isa = PBXGroup;
-			children = (
-				64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */,
-			);
-			path = Renderer;
 			sourceTree = "<group>";
 		};
 		64A17B2B24FB6B90002482D6 /* Images */ = {
