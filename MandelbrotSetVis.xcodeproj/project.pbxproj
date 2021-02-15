@@ -138,6 +138,8 @@
 		64257D8A24FA03D100D17591 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				64257DA624FA0A8A00D17591 /* SwiftToMetalConvertible.swift */,
+				64A17B2424FB540A002482D6 /* MetalBuffer.h */,
 				64257D8B24FA03D100D17591 /* Shaders.h */,
 				64257D8C24FA03D100D17591 /* Shaders.metal */,
 			);
@@ -155,6 +157,7 @@
 		64257D9224FA03D100D17591 /* Mandelbrot */ = {
 			isa = PBXGroup;
 			children = (
+				64A17B2024FB52FD002482D6 /* BridgingHeader.h */,
 				64257D8724FA03D100D17591 /* Renderer+RendererBuffer.swift */,
 				64257D9324FA03D100D17591 /* SceneTransform.swift */,
 			);
@@ -200,9 +203,6 @@
 		64A17B2524FB5498002482D6 /* Bridging */ = {
 			isa = PBXGroup;
 			children = (
-				64A17B2024FB52FD002482D6 /* BridgingHeader.h */,
-				64A17B2424FB540A002482D6 /* MetalBuffer.h */,
-				64257DA624FA0A8A00D17591 /* SwiftToMetalConvertible.swift */,
 			);
 			path = Bridging;
 			sourceTree = "<group>";
@@ -476,7 +476,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG MTL_FP32";
 				SWIFT_DISABLE_SAFETY_CHECKS = YES;
 				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = off;
-				SWIFT_OBJC_BRIDGING_HEADER = MandelbrotSetVis/MetalRenderer/Bridging/BridgingHeader.h;
+				SWIFT_OBJC_BRIDGING_HEADER = MandelbrotSetVis/Mandelbrot/BridgingHeader.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
@@ -505,7 +505,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = MTL_FP32;
 				SWIFT_DISABLE_SAFETY_CHECKS = YES;
 				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = off;
-				SWIFT_OBJC_BRIDGING_HEADER = MandelbrotSetVis/MetalRenderer/Bridging/BridgingHeader.h;
+				SWIFT_OBJC_BRIDGING_HEADER = MandelbrotSetVis/Mandelbrot/BridgingHeader.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
