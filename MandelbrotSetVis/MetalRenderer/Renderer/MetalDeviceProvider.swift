@@ -16,6 +16,7 @@ enum MetalDeviceProvider {
         #endif
     }
     
+    #if targetEnvironment(macCatalyst)
     private static func makeMacDevice() -> MTLDevice {
         let devices = MTLCopyAllDevices()
         // Detect device battery level, and force using iGPU for calculations if it's below 20%
@@ -51,6 +52,7 @@ enum MetalDeviceProvider {
         }
         return unknownDevice
     }
+    #endif
     
     private static func makeIOSDevice() -> MTLDevice {
         guard let device = MTLCreateSystemDefaultDevice() else {
