@@ -13,7 +13,7 @@ final class AccelerateRenderer: UIView {
     private var buffer = RendererBuffer()
     private let mandelbrotImage = UIImageView()
     private var performanceMonitor = PerformanceMonitor()
-    
+        
     /// Starts the mandelbrot render process.
     private func render() {
         guard !performanceMonitor.isRunning else { return }
@@ -26,14 +26,113 @@ final class AccelerateRenderer: UIView {
             let lenght = bufferWidth * bufferHeight
             let cgContext = self.makeContext(from: blankCgImage, width: bufferWidth, height: bufferHeight)
             let buffer = self.makeBuffer(from: cgContext, lenght: lenght)
-            let widthBuffer = self.makeWidthBuffer(lenght: bufferWidth)
-            let heightBuffer = self.makeHeightBuffer(lenght: bufferHeight)
-            self.calculateMandelbrot(buffer: buffer, width: bufferWidth, height: bufferHeight, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
-            
-            DispatchQueue.main.async {
-                self.mandelbrotImage.image = self.makeUIImage(from: cgContext)
-                self.performanceMonitor.calculationEnded()
+            self.calculateMandelbrot(in: buffer, width: bufferWidth, height: bufferHeight, completion: {
+                DispatchQueue.main.async {
+                    self.mandelbrotImage.image = self.makeUIImage(from: cgContext)
+                    self.performanceMonitor.calculationEnded()
+                }
+            })
+        }
+    }
+    
+    /// Performs a full mandelbrot calculation cycle (for one frame).
+    /// - Parameters:
+    ///   - buffer: Target UInt32 buffer where the result should be written to.
+    ///   - width: Render target's width.
+    ///   - height: Render target's height.
+    ///   - completion: Fires when mandelbrot calculation cycle has ended.
+    private func calculateMandelbrot(in buffer: UnsafeMutablePointer<UInt32>,
+                                     width: Int,
+                                     height: Int,
+                                     completion: @escaping () -> Void) {
+        
+        let dispatchGroup = DispatchGroup()
+        
+        /// Buffer of current mandebrot per pixel width transformation.
+        var widthBuffer: UnsafeMutablePointer<Float32>!
+        dispatchGroup.enter()
+        DispatchQueue.global(qos: .userInteractive).async {
+            widthBuffer = self.makeWidthBuffer(lenght: width)
+            dispatchGroup.leave()
+        }
+        
+        /// Buffer of current mandebrot per pixel heigh transformation.
+        var heightBuffer: UnsafeMutablePointer<Float32>!
+        dispatchGroup.enter()
+        DispatchQueue.global(qos: .userInteractive).async {
+            heightBuffer = self.makeHeightBuffer(lenght: height)
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.notify(queue: DispatchQueue.global(qos: .userInteractive)) {
+            self.calculateMandelbrot(buffer: buffer, width: width, height: height, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
+            completion()
+        }
+    }
+    
+    /// Peforms a mandebrot calculation cycle (for one frame).
+    /// - Parameters:
+    ///   - buffer: Target UInt32 buffer where the result should be written to.
+    ///   - width: Render target's width in pixels.
+    ///   - height: Render target's height in pixels.
+    ///   - widthBuffer: Float32 buffer of current mandebrot width transformation.
+    ///   - heightBuffer: Float32 buffer of current mandebrot heigh transformation.
+    private func calculateMandelbrot(buffer: UnsafeMutablePointer<UInt32>,
+                                     width: Int,
+                                     height: Int,
+                                     widthBuffer: UnsafeMutablePointer<Float32>,
+                                     heightBuffer: UnsafeMutablePointer<Float32>) {
+        
+        let mandelbrotIterations = self.buffer.iterations
+        
+        /// The amount of rows to be processed in a single thread. The default is 1.
+        /// Setting it > 1 will make thread creation more efficient on intel, but will result in some weird graphic glitches.
+        /// On big.little it will be more efficient at 1.
+        let batchSize = 1
+        
+        DispatchQueue.concurrentPerform(iterations: (height / batchSize) - 1) { (iteration) in
+            for batchIndex in 1 ... batchSize {
+                let row = iteration &* batchIndex
+                //calculateMandelbrotRow(row, width, widthBuffer, heightBuffer, buffer, mandelbrotIterations)
+                calculateRow(row: row, rowWidth: width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, targetBuffer: buffer, iterations: mandelbrotIterations)
             }
+        }
+    }
+    
+    /// Performs calculation of a single mandolbrot row.
+    /// - Parameters:
+    ///   - row: Row index (Y position from top).
+    ///   - rowWidth: Row width in pixels.
+    ///   - widthBuffer: Float32 buffer of current mandebrot width transformation.
+    ///   - heightBuffer: Float32 buffer of current mandebrot heigh transformation.
+    ///   - targetBuffer: Target buffer where the result should be written to.
+    ///   - iterations: Number of mandelbrot iterations.
+    @inline(__always)
+    private func calculateRow(row: Int,
+                              rowWidth: Int,
+                              widthBuffer: UnsafeMutablePointer<Float32>,
+                              heightBuffer: UnsafeMutablePointer<Float32>,
+                              targetBuffer: UnsafeMutablePointer<UInt32>,
+                              iterations: Int) {
+
+        for column in 0 ..< rowWidth {
+            let my = heightBuffer[row]
+            let mx = widthBuffer[column]
+            var real: Float32 = 0.0
+            var img: Float32 = 0.0
+            var i: UInt32 = 0
+
+            while i < iterations {
+                let r2 = real * real
+                let i2 = img * img
+                if r2 + i2 > 4.0 { break }
+                img = 2.0 * real * img + my
+                real = r2 - i2 + mx
+                i &+= 1
+            }
+
+            let pixelOffset = row * rowWidth &+ column
+            targetBuffer[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
         }
     }
     
@@ -116,72 +215,6 @@ final class AccelerateRenderer: UIView {
         vDSP.multiply(heightTransformationMultiplier, heightBuffer, result: &heightBuffer)
         vDSP.add(heightTranslation, heightBuffer, result: &heightBuffer)
         return UnsafeMutablePointer(mutating: heightBuffer.withUnsafeBufferPointer { $0 }.baseAddress!)
-    }
-    
-    /// Peforms the main mandebrot calculation cycle.
-    /// - Parameters:
-    ///   - buffer: Target buffer where the result should be written to.
-    ///   - width: Render target's width in pixels.
-    ///   - height: Render target's height in pixels.
-    ///   - widthBuffer: Float32 buffer of current mandebrot width transformation.
-    ///   - heightBuffer: Float32 buffer of current mandebrot heigh transformation.
-    private func calculateMandelbrot(buffer: UnsafeMutablePointer<UInt32>,
-                                     width: Int,
-                                     height: Int,
-                                     widthBuffer: UnsafeMutablePointer<Float32>,
-                                     heightBuffer: UnsafeMutablePointer<Float32>) {
-        
-        let mandelbrotIterations = self.buffer.iterations
-        
-        /// The amount of rows to be processed in a single thread. The default is 1.
-        /// Setting it > 1 will make thread creation more efficient on intel, but will result in some weird graphic glitches.
-        /// On big.little it will be more efficient at 1.
-        let batchSize = 1
-        
-        DispatchQueue.concurrentPerform(iterations: (height / batchSize) - 1) { (iteration) in
-            for batchIndex in 1 ... batchSize {
-                let row = iteration &* batchIndex
-                //calculateMandelbrotRow(row, width, widthBuffer, heightBuffer, buffer, mandelbrotIterations)
-                calculateRow(row: row, rowWidth: width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, targetBuffer: buffer, iterations: mandelbrotIterations)
-            }
-        }
-    }
-    
-    /// Performs calculation of a single mandolbrot row.
-    /// - Parameters:
-    ///   - row: Row index.
-    ///   - rowWidth: Row width in pixels.
-    ///   - widthBuffer: Float32 buffer of current mandebrot width transformation.
-    ///   - heightBuffer: Float32 buffer of current mandebrot heigh transformation.
-    ///   - targetBuffer: Target buffer where the result should be written to.
-    ///   - iterations: Number of mandelbrot iterations.
-    @inline(__always)
-    private func calculateRow(row: Int,
-                              rowWidth: Int,
-                              widthBuffer: UnsafeMutablePointer<Float32>,
-                              heightBuffer: UnsafeMutablePointer<Float32>,
-                              targetBuffer: UnsafeMutablePointer<UInt32>,
-                              iterations: Int) {
-
-        for column in 0 ..< rowWidth {
-            let my = heightBuffer[row]
-            let mx = widthBuffer[column]
-            var real: Float32 = 0.0
-            var img: Float32 = 0.0
-            var i: UInt32 = 0
-
-            while i < iterations {
-                let r2 = real * real
-                let i2 = img * img
-                if r2 + i2 > 4.0 { break }
-                img = 2.0 * real * img + my
-                real = r2 - i2 + mx
-                i &+= 1
-            }
-
-            let pixelOffset = row * rowWidth &+ column
-            targetBuffer[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
-        }
     }
     
     /// Makes a UIImage from the given CGContext.
