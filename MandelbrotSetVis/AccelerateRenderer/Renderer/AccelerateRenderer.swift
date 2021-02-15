@@ -84,7 +84,7 @@ final class AccelerateRenderer: UIView {
                                      widthBuffer: UnsafeMutablePointer<Float32>,
                                      heightBuffer: UnsafeMutablePointer<Float32>) {
         
-        let mandelbrotIterations = self.buffer.iterations
+        let mandelbrotIterations = Int(self.buffer.iterations)
         
         /// The amount of rows to be processed in a single thread. The default is 1.
         /// Setting it > 1 will make thread creation more efficient on intel, but will result in some weird graphic glitches.

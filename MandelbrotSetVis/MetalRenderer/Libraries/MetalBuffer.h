@@ -13,19 +13,17 @@ struct Translation {
     float y;
 };
 
-struct AspectRatioScaling {
-    float width;
-    float height;
+struct Scaling {
+    float x;
+    float y;
 };
 
-/// Size 192 bits.
-/// Stride 192 bits.
-/// Convertible from Swift using 6 x 32 buffer [Scale, Iterations, X, Y, W, H]
+/// Convertible from Swift using RendererBuffer swift struct.
 struct MetalBuffer {
     float scale;
-    float interations;
-    struct Translation transaltion;
-    struct AspectRatioScaling aspectRatio;
+    float iterations;
+    struct Translation translation;
+    struct Scaling aspectRatio;
 };
 
 #endif 

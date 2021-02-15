@@ -14,10 +14,14 @@ protocol Renderer: UIView {
     func setupRenderer()
 }
 
-/// Bridge buffer used for exchanging uniform data between swift and c/metal.
-struct RendererBuffer {
+/// Bridge buffer used for exchanging uniform data between Swift and C/Metal.
+/// RendererBuffer struct has the same memory layout as C's MetalBuffer struct.
+/// Can be casted as SwiftToMetalConvertible protocol using memcopy or reinterpret cast.
+struct RendererBuffer: SwiftToMetalConvertible {
     var scale: Float32 = 1.0
-    var iterations: Int = 256
+    var iterations: Float32 = 256
     var translation: (x: Float32, y: Float32) = (0.0, 0.0)
     var aspectRatio: (x: Float32, y: Float32) = (1.0, 1.0)
 }
+
+protocol SwiftToMetalConvertible { }

@@ -9,16 +9,15 @@
 #ifndef Shaders_h
 #define Shaders_h
 #include <metal_stdlib>
-#include <metal_math>
 #include "MetalBuffer.h"
 
 struct InputVertex {
-    float3 pos [[attribute(0)]];
+    float3 position [[attribute(0)]];
 };
 
 struct OutputVertex {
-    float4 pos [[position]];
-    float2 coords;
+    float4 position [[position]];
+    float2 coordinates;
 };
 
 #endif

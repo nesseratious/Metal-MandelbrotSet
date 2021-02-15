@@ -23,7 +23,8 @@ struct MetalBufferProvider {
     func make(with uniform: SwiftToMetalConvertible) -> MTLBuffer {
         let size = MemoryLayout<Float32>.size * 8
         let contents = buffer.contents()
-        memcpy(contents, uniform.getRawData(), size)
+        let ptr = withUnsafePointer(to: uniform, { $0 })
+        memcpy(contents, ptr, size)
         return buffer
     }
 }

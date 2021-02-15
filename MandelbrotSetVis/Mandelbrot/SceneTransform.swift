@@ -6,6 +6,7 @@
 //  Copyright © 2020 Denis Esie. All rights reserved.
 //
 
+/// Holds view controller's transformation of the mandelbrot set.
 struct SceneTransform {
     var x: Float = 0.0
     var y: Float = 0.0
