@@ -10,7 +10,7 @@
 #define Shaders_h
 #include <metal_stdlib>
 #include <metal_math>
-#include "../Bridging/MetalBuffer.h"
+#include "MetalBuffer.h"
 
 struct InputVertex {
     float3 pos [[attribute(0)]];
