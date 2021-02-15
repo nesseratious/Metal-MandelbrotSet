@@ -85,7 +85,7 @@ final class AccelerateRenderer: UIView {
     /// Makes a Float32 buffer of current mandebrot width transformation.
     /// - Parameter lenght: Buffer lenght
     /// - Returns: Float32 buffer of current mandebrot width transformation
-    private func makeWidthBuffer(lenght: Int) -> UnsafeBufferPointer<Float32> {
+    private func makeWidthBuffer(lenght: Int) -> UnsafeMutablePointer<Float32> {
         var widthBuffer = [Float32](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for x in 0 ..< lenght {
                 buffer[x] = Float32(x)
@@ -97,13 +97,13 @@ final class AccelerateRenderer: UIView {
         vDSP.divide(widthBuffer, Float32(lenght), result: &widthBuffer)
         vDSP.multiply(widthTransformationMultiplier, widthBuffer, result: &widthBuffer)
         vDSP.add(widthTranslation, widthBuffer, result: &widthBuffer)
-        return widthBuffer.withUnsafeBufferPointer { $0 }
+        return UnsafeMutablePointer(mutating: widthBuffer.withUnsafeBufferPointer { $0 }.baseAddress!)
     }
     
     /// Makes a Float32 buffer of current mandebrot height transformation.
     /// - Parameter lenght: Buffer lenght
     /// - Returns: Float32 buffer of current mandebrot height transformation
-    private func makeHeightBuffer(lenght: Int) -> UnsafeBufferPointer<Float32> {
+    private func makeHeightBuffer(lenght: Int) -> UnsafeMutablePointer<Float32> {
         var heightBuffer = [Float32](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for y in 0 ..< lenght {
                 buffer[y] = Float32(y)
@@ -115,10 +115,10 @@ final class AccelerateRenderer: UIView {
         vDSP.divide(heightBuffer, Float32(lenght), result: &heightBuffer)
         vDSP.multiply(heightTransformationMultiplier, heightBuffer, result: &heightBuffer)
         vDSP.add(heightTranslation, heightBuffer, result: &heightBuffer)
-        return heightBuffer.withUnsafeBufferPointer { $0 }
+        return UnsafeMutablePointer(mutating: heightBuffer.withUnsafeBufferPointer { $0 }.baseAddress!)
     }
     
-    /// Reforms the main mandebrot calculation cycle.
+    /// Peforms the main mandebrot calculation cycle.
     /// - Parameters:
     ///   - buffer: Target buffer where the result should be written to.
     ///   - width: Render target's width in pixels.
@@ -128,8 +128,8 @@ final class AccelerateRenderer: UIView {
     private func calculateMandelbrot(buffer: UnsafeMutablePointer<UInt32>,
                                      width: Int,
                                      height: Int,
-                                     widthBuffer: UnsafeBufferPointer<Float32>,
-                                     heightBuffer: UnsafeBufferPointer<Float32>) {
+                                     widthBuffer: UnsafeMutablePointer<Float32>,
+                                     heightBuffer: UnsafeMutablePointer<Float32>) {
         
         let mandelbrotIterations = self.buffer.iterations
         
@@ -141,26 +141,35 @@ final class AccelerateRenderer: UIView {
         DispatchQueue.concurrentPerform(iterations: (height / batchSize) - 1) { (iteration) in
             for batchIndex in 1 ... batchSize {
                 let row = iteration &* batchIndex
-                
+                //calculateMandelbrotRow(row, width, widthBuffer, heightBuffer, buffer, mandelbrotIterations)
                 calculateRow(row: row, rowWidth: width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, targetBuffer: buffer, iterations: mandelbrotIterations)
             }
         }
     }
     
+    /// Performs calculation of a single mandolbrot row.
+    /// - Parameters:
+    ///   - row: Row index.
+    ///   - rowWidth: Row width in pixels.
+    ///   - widthBuffer: Float32 buffer of current mandebrot width transformation.
+    ///   - heightBuffer: Float32 buffer of current mandebrot heigh transformation.
+    ///   - targetBuffer: Target buffer where the result should be written to.
+    ///   - iterations: Number of mandelbrot iterations.
+    @inline(__always)
     private func calculateRow(row: Int,
                               rowWidth: Int,
-                              widthBuffer: UnsafeBufferPointer<Float32>,
-                              heightBuffer: UnsafeBufferPointer<Float32>,
+                              widthBuffer: UnsafeMutablePointer<Float32>,
+                              heightBuffer: UnsafeMutablePointer<Float32>,
                               targetBuffer: UnsafeMutablePointer<UInt32>,
                               iterations: Int) {
-        
+
         for column in 0 ..< rowWidth {
             let my = heightBuffer[row]
             let mx = widthBuffer[column]
             var real: Float32 = 0.0
             var img: Float32 = 0.0
-            var i = 0
-            
+            var i: UInt32 = 0
+
             while i < iterations {
                 let r2 = real * real
                 let i2 = img * img
@@ -169,10 +178,9 @@ final class AccelerateRenderer: UIView {
                 real = r2 - i2 + mx
                 i &+= 1
             }
-            
+
             let pixelOffset = row * rowWidth &+ column
-            let color = UInt32(i)
-            targetBuffer[pixelOffset] = color << 24 | color << 16 | color << 8 | 255 << 0
+            targetBuffer[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
         }
     }
     
