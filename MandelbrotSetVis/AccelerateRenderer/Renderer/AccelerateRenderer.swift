@@ -47,6 +47,7 @@ final class AccelerateRenderer: UIView {
                                      completion: @escaping () -> Void) {
         
         let dispatchGroup = DispatchGroup()
+        // widthBuffer heightBuffer are independent, so they can be calculated concurrentl.
         
         /// Buffer of current mandebrot per pixel width transformation.
         var widthBuffer: UnsafeMutablePointer<Float32>!
@@ -93,8 +94,7 @@ final class AccelerateRenderer: UIView {
         DispatchQueue.concurrentPerform(iterations: (height / batchSize) - 1) { (iteration) in
             for batchIndex in 1 ... batchSize {
                 let row = iteration &* batchIndex
-                //calculateMandelbrotRow(row, width, widthBuffer, heightBuffer, buffer, mandelbrotIterations)
-                calculateRow(row: row, rowWidth: width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, targetBuffer: buffer, iterations: mandelbrotIterations)
+                calculateRow(row, width: width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, targetBuffer: buffer, iterations: mandelbrotIterations)
             }
         }
     }
@@ -108,14 +108,14 @@ final class AccelerateRenderer: UIView {
     ///   - targetBuffer: Target buffer where the result should be written to.
     ///   - iterations: Number of mandelbrot iterations.
     @inline(__always)
-    private func calculateRow(row: Int,
-                              rowWidth: Int,
+    private func calculateRow(_ row: Int,
+                              width: Int,
                               widthBuffer: UnsafeMutablePointer<Float32>,
                               heightBuffer: UnsafeMutablePointer<Float32>,
                               targetBuffer: UnsafeMutablePointer<UInt32>,
                               iterations: Int) {
 
-        for column in 0 ..< rowWidth {
+        for column in 0 ..< width {
             let my = heightBuffer[row]
             let mx = widthBuffer[column]
             var real: Float32 = 0.0
@@ -131,7 +131,7 @@ final class AccelerateRenderer: UIView {
                 i &+= 1
             }
 
-            let pixelOffset = row * rowWidth &+ column
+            let pixelOffset = row * width &+ column
             targetBuffer[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
         }
     }
