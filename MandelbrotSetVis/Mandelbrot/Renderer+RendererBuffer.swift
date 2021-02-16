@@ -8,7 +8,7 @@
 
 import UIKit
 
-/// Interface for exchanging bridge renderer buffer between a view controller and a entity responsible for rendering.
+/// Interface for exchanging bridge renderer buffer between a view controller and an entity responsible for rendering.
 protocol Renderer: UIView {
     var bridgeBuffer: RendererBuffer { get set }
     func setupRenderer()
