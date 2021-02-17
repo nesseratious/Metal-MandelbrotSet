@@ -8,6 +8,7 @@
 
 import MetalKit
 
+/// Provides the view with mandelbrot image rendered using power of GPU
 final class MetalRenderer: MTKView {
     private var commandQueue: MTLCommandQueue!
     private var renderPipelineState: MTLRenderPipelineState!
@@ -17,8 +18,8 @@ final class MetalRenderer: MTKView {
     private var bufferProvider: MetalBufferProvider!
     private var isRedrawNeeded = true
     private var vertexBufferProvider: MetalVertexBufferProvider!
-    private var buffer = RendererBuffer()
-    private var monitor = PerformanceMonitor()
+    private var bridgeBuffer = RendererBuffer()
+    private var performanceMonitor = PerformanceMonitor()
     
     private func makeColorPalleteTexture(device: MTLDevice) -> MTLTexture {
         guard let path = Bundle.main.path(forResource: "pallete", ofType: "png") else {
@@ -56,7 +57,7 @@ extension MetalRenderer: MTKViewDelegate {
               let currentDrawable = view.currentDrawable else {
             return
         }
-        monitor.calculationStarted(on: .GPU)
+        performanceMonitor.calculationStarted(on: .GPU)
         
         let clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
@@ -85,18 +86,18 @@ extension MetalRenderer: MTKViewDelegate {
         isRedrawNeeded = false
 
         commandBuffer.addCompletedHandler { _ in
-            self.monitor.calculationEnded()
+            self.performanceMonitor.calculationEnded()
         }
     }
 }
 
 extension MetalRenderer: Renderer {
-    var bridgeBuffer: RendererBuffer {
+    var buffer: RendererBuffer {
         get {
-            return buffer
+            return bridgeBuffer
         }
         set {
-            buffer = newValue
+            bridgeBuffer = newValue
             isRedrawNeeded = true
         }
     }

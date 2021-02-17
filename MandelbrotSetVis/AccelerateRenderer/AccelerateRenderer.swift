@@ -11,7 +11,7 @@ import Accelerate
 
 /// Provides the view with mandelbrot image rendered using power of CPU
 final class AccelerateRenderer: UIView {
-    private var buffer = RendererBuffer()
+    private var bridgeBuffer = RendererBuffer()
     private let mandelbrotImage = UIImageView()
     private var performanceMonitor = PerformanceMonitor()
         
@@ -85,7 +85,7 @@ final class AccelerateRenderer: UIView {
                                      widthBuffer: UnsafeMutablePointer<Float32>,
                                      heightBuffer: UnsafeMutablePointer<Float32>) {
         
-        let mandelbrotIterations = Int(self.buffer.iterations)
+        let mandelbrotIterations = Int(self.bridgeBuffer.iterations)
         
         /// The amount of rows to be processed in a single thread. The default is 1.
         /// Setting it > 1 will make thread creation more efficient on intel, but will result in some weird graphic glitches.
@@ -192,8 +192,8 @@ final class AccelerateRenderer: UIView {
             }
             capacity = lenght
         }
-        let widthTransformationMultiplier = 2.5 * buffer.aspectRatio.x * buffer.scale
-        let widthTranslation = -1.5 * buffer.aspectRatio.x * buffer.scale - buffer.translation.x
+        let widthTransformationMultiplier = 2.5 * bridgeBuffer.aspectRatio.x * bridgeBuffer.scale
+        let widthTranslation = -1.5 * bridgeBuffer.aspectRatio.x * bridgeBuffer.scale - bridgeBuffer.translation.x
         vDSP.divide(widthBuffer, Float32(lenght), result: &widthBuffer)
         vDSP.multiply(widthTransformationMultiplier, widthBuffer, result: &widthBuffer)
         vDSP.add(widthTranslation, widthBuffer, result: &widthBuffer)
@@ -210,8 +210,8 @@ final class AccelerateRenderer: UIView {
             }
             capacity = lenght
         }
-        let heightTransformationMultiplier = 2.0 * buffer.aspectRatio.y * buffer.scale
-        let heightTranslation = -1.0 * buffer.aspectRatio.y * buffer.scale + buffer.translation.y
+        let heightTransformationMultiplier = 2.0 * bridgeBuffer.aspectRatio.y * bridgeBuffer.scale
+        let heightTranslation = -1.0 * bridgeBuffer.aspectRatio.y * bridgeBuffer.scale + bridgeBuffer.translation.y
         vDSP.divide(heightBuffer, Float32(lenght), result: &heightBuffer)
         vDSP.multiply(heightTransformationMultiplier, heightBuffer, result: &heightBuffer)
         vDSP.add(heightTranslation, heightBuffer, result: &heightBuffer)
@@ -231,12 +231,12 @@ final class AccelerateRenderer: UIView {
 }
 
 extension AccelerateRenderer: Renderer {
-    var bridgeBuffer: RendererBuffer {
+    var buffer: RendererBuffer {
         get {
-            return buffer
+            return bridgeBuffer
         }
         set {
-            buffer = newValue
+            bridgeBuffer = newValue
             render()
         }
     }

@@ -48,8 +48,8 @@ final class MandelbrotViewController: UIViewController {
         let scaleMultiplier: Float = 1.15
         let widht = Float(view.frame.width)
         let height = Float(view.frame.height)
-        renderer.bridgeBuffer.aspectRatio.x = scaleMultiplier
-        renderer.bridgeBuffer.aspectRatio.y = height / widht * scaleMultiplier
+        renderer.buffer.aspectRatio.x = scaleMultiplier
+        renderer.buffer.aspectRatio.y = height / widht * scaleMultiplier
     }
 }
 
@@ -59,7 +59,7 @@ private extension MandelbrotViewController {
         let scale = transform.zoom * Float(sender.scale)
         switch sender.state {
         case .began, .changed:
-            renderer.bridgeBuffer.scale = 1.0 / scale
+            renderer.buffer.scale = 1.0 / scale
         case .ended:
             transform.zoom = scale
         default:
@@ -75,7 +75,7 @@ private extension MandelbrotViewController {
         let shiftY = transform.y - deltaY / transform.zoom
         switch sender.state {
         case .began, .changed:
-            renderer.bridgeBuffer.translation = (shiftX, shiftY)
+            renderer.buffer.translation = (shiftX, shiftY)
         case .ended:
             transform.x = shiftX
             transform.y = shiftY
