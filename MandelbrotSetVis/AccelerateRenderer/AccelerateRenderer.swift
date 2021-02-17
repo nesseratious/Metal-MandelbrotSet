@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import Accelerate
 
+/// Provides the view with mandelbrot image rendered using power of CPU
 final class AccelerateRenderer: UIView {
     private var buffer = RendererBuffer()
     private let mandelbrotImage = UIImageView()
@@ -47,7 +48,7 @@ final class AccelerateRenderer: UIView {
                                      completion: @escaping () -> Void) {
         
         let dispatchGroup = DispatchGroup()
-        // widthBuffer heightBuffer are independent, so they can be calculated concurrentl.
+        // widthBuffer heightBuffer are independent, so they can be calculated concurrently.
         
         /// Buffer of current mandebrot per pixel width transformation.
         var widthBuffer: UnsafeMutablePointer<Float32>!
