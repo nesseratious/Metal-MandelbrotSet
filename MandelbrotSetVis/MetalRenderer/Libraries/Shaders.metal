@@ -6,43 +6,53 @@
 //  Copyright © 2020 Denis Esie. All rights reserved.
 //
 
-#include "Shaders.h"
+#include <metal_stdlib>
+#include "MetalBuffer.h"
 
-inline float getColorPalleteCoords(const int iterations, const float x, const float y) {
-    auto real = 0.0f;
-    auto img = 0.0f;
-    auto i = 0;
+using namespace metal;
+
+inline int getColorCoords(const int iterations, const float x, const float y) {
+    float real = 0;
+    float img = 0;
+    int i = 0;
     while (i < iterations && real * real + img * img < 10.0f) {
-        auto temp = (real * real) - (img * img) + x;
+        float temp = (real * real) - (img * img) + x;
         img = 2.0f * (real * img) + y;
         real = temp;
         i++;
     }
-    return i == iterations ? 0.0 : (float)i;
+    return i == iterations ? 0 : i;
 }
 
-vertex OutputVertex vertexShader(const InputVertex inputVertex [[stage_in]],
-                                 constant MetalBuffer &buffer [[buffer(1)]]) {
-    OutputVertex outputVertex;
-    auto scale = buffer.scale;
-    auto xscale = scale * buffer.aspectRatio.x;
-    auto yscale = scale * buffer.aspectRatio.y;
-    outputVertex.position = float4(inputVertex.position, 1.0f);
-    outputVertex.coordinates.x = inputVertex.position.x * xscale - buffer.translation.x;
-    outputVertex.coordinates.y = inputVertex.position.y * yscale - buffer.translation.y;
-    return outputVertex;
-}
+struct VOutput {
+    float4 position [[position]];
+    float2 coordinates;
+};
 
-fragment float4 colorShader(OutputVertex interpolated [[stage_in]],
-                            metal::texture2d<float> tex2D [[texture(0)]],
-                            constant MetalBuffer &buffer [[buffer(0)]],
-                            metal::sampler sampler2D [[sampler(0)]]) {
-    auto interations = buffer.iterations;
-    auto x = interpolated.coordinates.x;
-    auto y = interpolated.coordinates.y;
-    auto colorShift = getColorPalleteCoords(interations, x, y);
-    auto paletCoord = float2(colorShift/50.0f, 0);
-    auto finalColor = tex2D.sample(sampler2D, paletCoord);
+fragment float4 colorShader(VOutput output [[stage_in]],
+                            texture2d<float> pallete,
+                            constant MetalBuffer &buffer,
+                            sampler sampler) {
+    float x = output.coordinates.x;
+    float y = output.coordinates.y;
+    int colorShift = getColorCoords(buffer.iterations, x, y);
+    float2 palleteCoord = float2(colorShift/65.0f, 0);
+    float4 finalColor = pallete.sample(sampler, palleteCoord);
     return finalColor;
 }
 
+struct VInput {
+    float3 position [[attribute(0)]];
+};
+
+vertex VOutput vertexShader(const VInput input [[stage_in]],
+                            constant MetalBuffer &buffer [[buffer(1)]]) {
+    VOutput outputVertex;
+    float scale = buffer.scale;
+    float xscale = scale * buffer.aspectRatio.x;
+    float yscale = scale * buffer.aspectRatio.y;
+    outputVertex.position = float4(input.position, 1.0f);
+    outputVertex.coordinates.x = input.position.x * xscale - buffer.translation.x;
+    outputVertex.coordinates.y = input.position.y * yscale - buffer.translation.y;
+    return outputVertex;
+}

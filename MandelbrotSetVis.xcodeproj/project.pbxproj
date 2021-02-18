@@ -40,7 +40,6 @@
 		64257D8524FA03D100D17591 /* MetalRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalRenderer.swift; sourceTree = "<group>"; };
 		64257D8724FA03D100D17591 /* Renderer+RendererBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Renderer+RendererBuffer.swift"; sourceTree = "<group>"; };
 		64257D8824FA03D100D17591 /* MetalBufferProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalBufferProvider.swift; sourceTree = "<group>"; };
-		64257D8B24FA03D100D17591 /* Shaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shaders.h; sourceTree = "<group>"; };
 		64257D8C24FA03D100D17591 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		64257D8E24FA03D100D17591 /* MetalVertexBufferProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalVertexBufferProvider.swift; sourceTree = "<group>"; };
 		64257D9124FA03D100D17591 /* pallete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pallete.png; sourceTree = "<group>"; };
@@ -101,8 +100,8 @@
 				64257DA524FA057100D17591 /* AppDelegates */,
 				64257DA124FA03E800D17591 /* Supporting Files */,
 				64ADD95D256058CC009A81D8 /* PerformanceMonitor */,
-				64257D8324FA03D100D17591 /* MetalRenderer */,
 				642550FC255DAA4100C486BD /* AccelerateRenderer */,
+				64257D8324FA03D100D17591 /* MetalRenderer */,
 				64257D9224FA03D100D17591 /* Mandelbrot */,
 				64257D9424FA03D100D17591 /* ViewControllers */,
 				64D706A425D80C5F00B77DD4 /* Resources */,
@@ -136,7 +135,6 @@
 			isa = PBXGroup;
 			children = (
 				64A17B2424FB540A002482D6 /* MetalBuffer.h */,
-				64257D8B24FA03D100D17591 /* Shaders.h */,
 				64257D8C24FA03D100D17591 /* Shaders.metal */,
 			);
 			path = Libraries;
