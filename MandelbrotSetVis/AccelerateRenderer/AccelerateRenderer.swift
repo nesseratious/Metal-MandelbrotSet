@@ -21,16 +21,16 @@ final class AccelerateRenderer: UIView {
         performanceMonitor.calculationStarted(on: .CPU)
         let blankCgImage = makeCGImage()
         
-        DispatchQueue.global(qos: .userInteractive).async {
+        DispatchQueue.global(qos: .userInteractive).async { [self] in
             let bufferWidth = blankCgImage.width
             let bufferHeight = blankCgImage.height
             let lenght = bufferWidth * bufferHeight
-            let cgContext = self.makeContext(from: blankCgImage, width: bufferWidth, height: bufferHeight)
-            let buffer = self.makeBuffer(from: cgContext, lenght: lenght)
-            self.calculateMandelbrot(in: buffer, width: bufferWidth, height: bufferHeight, completion: {
+            let cgContext = makeContext(from: blankCgImage, width: bufferWidth, height: bufferHeight)
+            let buffer = makeBuffer(from: cgContext, lenght: lenght)
+            calculateMandelbrot(in: buffer, width: bufferWidth, height: bufferHeight, completion: {
                 DispatchQueue.main.async {
-                    self.mandelbrotImage.image = self.makeUIImage(from: cgContext)
-                    self.performanceMonitor.calculationEnded()
+                    mandelbrotImage.image = makeUIImage(from: cgContext)
+                    performanceMonitor.calculationEnded()
                 }
             })
         }
