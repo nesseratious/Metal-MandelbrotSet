@@ -8,19 +8,22 @@
 
 import UIKit
 
+/// A reusable view controller that shows the mandelbrot set using the provided Renderer.
 final class MandelbrotViewController: UIViewController {
     private let renderer: Renderer
     
     /// Holds this view controller's transformation of the mandelbrot set.
     private var transform = SceneTransform()
     
+    /// Injects the provided Renderer.
+    /// - Parameter renderer: Entity conforming Renderer protocol, responsible for rendering of the mandelbrot set.
     init(renderer: Renderer) {
         self.renderer = renderer
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError("Not accessible from IB.")
     }
     
     override func loadView() {
@@ -47,10 +50,14 @@ final class MandelbrotViewController: UIViewController {
         renderer.addGestureRecognizer(panGesture)
     }
     
-    /// Calculates aspect ratio of the first frame and writes it to the renderer's bridge buffer.
-    /// Runs only once when the vc is first opened.
+    /// Calculates aspect ratio of the next frame and writes it to the renderer's bridge buffer.
     private func calculateAspectRatio() {
-        let scaleMultiplier: Float = 1.15
+        
+        /// Multiplier for the mandelbrot's scale in inverse percantage of the screen size.
+        /// 1.0 is 100% of the screen.
+        /// The default is 2.0 (50% of the screen).
+        let scaleMultiplier: Float = 2.0
+        
         let width = Float(view.frame.width)
         let height = Float(view.frame.height)
         renderer.buffer.aspectRatio.x = scaleMultiplier
