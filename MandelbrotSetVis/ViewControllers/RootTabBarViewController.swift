@@ -20,14 +20,16 @@ final class RootTabBarController: UITabBarController {
     /// A MandelbrotViewController that shows the mandelbrot set using the MetalRenderer.
     let metalViewController: UIViewController = {
         let metalVC = MandelbrotViewController(renderer: MetalRenderer())
-        metalVC.tabBarItem = UITabBarItem(title: "GPU/METAL", image: UIImage(systemName: "cpu"), tag: 0)
+        let image = UIImage(systemName: "cpu")
+        metalVC.tabBarItem = UITabBarItem(title: "GPU/METAL", image: image, tag: 0)
         return metalVC
     }()
     
     /// A MandelbrotViewController that shows the mandelbrot set using the AccelerateRenderer.
     let accelerateViewController: UIViewController = {
         let accelerateVC = MandelbrotViewController(renderer: AccelerateRenderer())
-        accelerateVC.tabBarItem = UITabBarItem(title: "CPU/ACCELERATE", image: UIImage(systemName: "memorychip"), tag: 1)
+        let image = UIImage(systemName: "memorychip")
+        accelerateVC.tabBarItem = UITabBarItem(title: "CPU/ACCELERATE", image: image, tag: 1)
         return accelerateVC
     }()
 }

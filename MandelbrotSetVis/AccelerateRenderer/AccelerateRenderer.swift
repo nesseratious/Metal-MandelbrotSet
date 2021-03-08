@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import Accelerate
 
-/// Provides the view with mandelbrot image rendered using power of CPU
+/// Provides the view with mandelbrot image rendered using power of CPU.
 final class AccelerateRenderer: UIView {
     private var bridgeBuffer = RendererBuffer()
     private let mandelbrotImage = UIImageView()
@@ -85,18 +85,10 @@ final class AccelerateRenderer: UIView {
                                      widthBuffer: UnsafeMutablePointer<Float32>,
                                      heightBuffer: UnsafeMutablePointer<Float32>) {
         
-        let mandelbrotIterations = Int(self.bridgeBuffer.iterations)
+        let mandelbrotIterations = Int(bridgeBuffer.iterations)
         
-        /// The amount of rows to be processed in a single thread. The default is 1.
-        /// Setting it > 1 will make thread creation more efficient on intel, but will result in some weird graphic glitches.
-        /// On big.little it will be more efficient at 1.
-        let batchSize = 1
-        
-        DispatchQueue.concurrentPerform(iterations: (height / batchSize) - 1) { (iteration) in
-            for batchIndex in 1 ... batchSize {
-                let row = iteration &* batchIndex
+        DispatchQueue.concurrentPerform(iterations: height) { (row) in
                 calculateRow(row, width: width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, targetBuffer: buffer, iterations: mandelbrotIterations)
-            }
         }
     }
     
