@@ -11,6 +11,8 @@ import Accelerate
 
 /// Provides the view with mandelbrot image rendered using power of CPU.
 final class AccelerateRenderer: UIView {
+    typealias Float = Float32
+    
     private var bridgeBuffer = RendererBuffer()
     private let mandelbrotImage = UIImageView()
     private var performanceMonitor = PerformanceMonitor()
@@ -21,10 +23,10 @@ final class AccelerateRenderer: UIView {
         performanceMonitor.calculationStarted(on: .CPU)
         let blankCgImage = makeCGImage()
         
-        DispatchQueue.global(qos: .userInteractive).async { [self] in
+        DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
             let bufferWidth = blankCgImage.width
             let bufferHeight = blankCgImage.height
-            let lenght = bufferWidth * bufferHeight
+            let lenght = bufferWidth &* bufferHeight
             let cgContext = makeContext(from: blankCgImage, width: bufferWidth, height: bufferHeight)
             let buffer = makeBuffer(from: cgContext, lenght: lenght)
             calculateMandelbrot(in: buffer, width: bufferWidth, height: bufferHeight, completion: {
@@ -51,7 +53,7 @@ final class AccelerateRenderer: UIView {
         // widthBuffer heightBuffer are independent, so they can be calculated concurrently.
         
         /// Buffer of current mandebrot per pixel width transformation.
-        var widthBuffer: UnsafeMutablePointer<Float32>!
+        var widthBuffer: UnsafeMutablePointer<Float>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async {
             widthBuffer = self.makeWidthBuffer(lenght: width)
@@ -59,15 +61,15 @@ final class AccelerateRenderer: UIView {
         }
         
         /// Buffer of current mandebrot per pixel heigh transformation.
-        var heightBuffer: UnsafeMutablePointer<Float32>!
+        var heightBuffer: UnsafeMutablePointer<Float>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async {
             heightBuffer = self.makeHeightBuffer(lenght: height)
             dispatchGroup.leave()
         }
         
-        dispatchGroup.notify(queue: DispatchQueue.global(qos: .userInteractive)) {
-            self.calculateMandelbrot(buffer: buffer, width: width, height: height, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
+        dispatchGroup.notify(queue: DispatchQueue.global(qos: .userInteractive)) { [unowned self] in
+            calculateMandelbrot(buffer: buffer, width: width, height: height, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
             completion()
         }
     }
@@ -82,8 +84,8 @@ final class AccelerateRenderer: UIView {
     private func calculateMandelbrot(buffer: UnsafeMutablePointer<UInt32>,
                                      width: Int,
                                      height: Int,
-                                     widthBuffer: UnsafeMutablePointer<Float32>,
-                                     heightBuffer: UnsafeMutablePointer<Float32>) {
+                                     widthBuffer: UnsafeMutablePointer<Float>,
+                                     heightBuffer: UnsafeMutablePointer<Float>) {
         
         let mandelbrotIterations = Int(bridgeBuffer.iterations)
         
@@ -103,16 +105,16 @@ final class AccelerateRenderer: UIView {
     @inline(__always)
     private func calculateRow(_ row: Int,
                               width: Int,
-                              widthBuffer: UnsafeMutablePointer<Float32>,
-                              heightBuffer: UnsafeMutablePointer<Float32>,
+                              widthBuffer: UnsafeMutablePointer<Float>,
+                              heightBuffer: UnsafeMutablePointer<Float>,
                               targetBuffer: UnsafeMutablePointer<UInt32>,
                               iterations: Int) {
 
         for column in 0 ..< width {
             let my = heightBuffer[row]
             let mx = widthBuffer[column]
-            var real: Float32 = 0.0
-            var img: Float32 = 0.0
+            var real: Float = 0.0
+            var img: Float = 0.0
             var i: UInt32 = 0
 
             while i < iterations {
@@ -124,7 +126,7 @@ final class AccelerateRenderer: UIView {
                 i &+= 1
             }
 
-            let pixelOffset = row * width &+ column
+            let pixelOffset = row &* width &+ column
             targetBuffer[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
         }
     }
@@ -177,16 +179,16 @@ final class AccelerateRenderer: UIView {
     /// Makes a Float32 buffer of current mandebrot width transformation.
     /// - Parameter lenght: Buffer lenght
     /// - Returns: Float32 buffer of current mandebrot width transformation
-    private func makeWidthBuffer(lenght: Int) -> UnsafeMutablePointer<Float32> {
-        var widthBuffer = [Float32](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
+    private func makeWidthBuffer(lenght: Int) -> UnsafeMutablePointer<Float> {
+        var widthBuffer = [Float](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for x in 0 ..< lenght {
-                buffer[x] = Float32(x)
+                buffer[x] = Float(x)
             }
             capacity = lenght
         }
         let widthTransformationMultiplier = 2.5 * bridgeBuffer.aspectRatio.x * bridgeBuffer.scale
         let widthTranslation = -1.5 * bridgeBuffer.aspectRatio.x * bridgeBuffer.scale - bridgeBuffer.translation.x
-        vDSP.divide(widthBuffer, Float32(lenght), result: &widthBuffer)
+        vDSP.divide(widthBuffer, Float(lenght), result: &widthBuffer)
         vDSP.multiply(widthTransformationMultiplier, widthBuffer, result: &widthBuffer)
         vDSP.add(widthTranslation, widthBuffer, result: &widthBuffer)
         return UnsafeMutablePointer(mutating: widthBuffer.withUnsafeBufferPointer { $0 }.baseAddress!)
@@ -195,16 +197,16 @@ final class AccelerateRenderer: UIView {
     /// Makes a Float32 buffer of current mandebrot height transformation.
     /// - Parameter lenght: Buffer lenght
     /// - Returns: Float32 buffer of current mandebrot height transformation
-    private func makeHeightBuffer(lenght: Int) -> UnsafeMutablePointer<Float32> {
-        var heightBuffer = [Float32](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
+    private func makeHeightBuffer(lenght: Int) -> UnsafeMutablePointer<Float> {
+        var heightBuffer = [Float](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for y in 0 ..< lenght {
-                buffer[y] = Float32(y)
+                buffer[y] = Float(y)
             }
             capacity = lenght
         }
         let heightTransformationMultiplier = 2.0 * bridgeBuffer.aspectRatio.y * bridgeBuffer.scale
         let heightTranslation = -1.0 * bridgeBuffer.aspectRatio.y * bridgeBuffer.scale + bridgeBuffer.translation.y
-        vDSP.divide(heightBuffer, Float32(lenght), result: &heightBuffer)
+        vDSP.divide(heightBuffer, Float(lenght), result: &heightBuffer)
         vDSP.multiply(heightTransformationMultiplier, heightBuffer, result: &heightBuffer)
         vDSP.add(heightTranslation, heightBuffer, result: &heightBuffer)
         return UnsafeMutablePointer(mutating: heightBuffer.withUnsafeBufferPointer { $0 }.baseAddress!)
