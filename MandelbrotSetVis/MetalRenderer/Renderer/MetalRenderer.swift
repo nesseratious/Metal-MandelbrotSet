@@ -8,7 +8,7 @@
 
 import MetalKit
 
-/// Provides the view with mandelbrot image rendered using power of GPU
+/// Provides the view with mandelbrot image rendered using power of GPU.
 final class MetalRenderer: MTKView {
     private var commandQueue: MTLCommandQueue!
     private var renderPipelineState: MTLRenderPipelineState!
@@ -66,9 +66,8 @@ extension MetalRenderer: MTKViewDelegate {
         currentRenderPassDescriptor.colorAttachments[0].texture = currentDrawable.texture
         
         guard let commandBuffer = commandQueue.makeCommandBuffer(),
-              let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: currentRenderPassDescriptor) else {
-            return
-        }
+              let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: currentRenderPassDescriptor)
+            else { return }
         
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder.setDepthStencilState(depthStencilState)
@@ -85,8 +84,8 @@ extension MetalRenderer: MTKViewDelegate {
         commandBuffer.commit()
         isRedrawNeeded = false
 
-        commandBuffer.addCompletedHandler { _ in
-            self.performanceMonitor.calculationEnded()
+        commandBuffer.addCompletedHandler { [unowned self] _ in
+            performanceMonitor.calculationEnded()
         }
     }
 }
@@ -103,7 +102,8 @@ extension MetalRenderer: Renderer {
     }
     
     func setupRenderer() {
-        let device = MetalDeviceProvider.makeDevice()
+        let deviceProvider = MetalDeviceProvider()
+        let device = deviceProvider.make()
         self.device = device
         delegate = self
         depthStencilPixelFormat = .depth32Float_stencil8

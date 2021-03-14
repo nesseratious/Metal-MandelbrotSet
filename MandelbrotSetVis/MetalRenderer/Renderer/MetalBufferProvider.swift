@@ -8,23 +8,27 @@
 
 import MetalKit
 
+/// Provides a Metal GPU buffer.
 struct MetalBufferProvider {
     private let buffer: MTLBuffer
     
     init(device: MTLDevice) {
         let size = MemoryLayout<Float32>.size * 8
-        let options = MTLResourceOptions()
-        guard let buffer = device.makeBuffer(length: size, options: options) else {
+        guard let buffer = device.makeBuffer(length: size) else {
             fatalError("Failed making buffer")
         }
         self.buffer = buffer
     }
     
+    /// Creates the Metal GPU buffer and copies Swift uniform struct to it.
+    /// - Parameter uniform: Swift uniform struct (bridge buffer used for exchanging uniform data between Swift and C/Metal).
+    /// - Returns: Metal GPU buffer
     func make(with uniform: SwiftToMetalConvertible) -> MTLBuffer {
-        let size = MemoryLayout<Float32>.size * 8
-        let contents = buffer.contents()
-        let ptr = withUnsafePointer(to: uniform, { $0 })
-        memcpy(contents, ptr, size)
+        let _ = withUnsafePointer(to: uniform) {
+            let size = MemoryLayout<Float32>.size * 8
+            let contents = buffer.contents()
+            memcpy(contents, $0, size)
+        }
         return buffer
     }
 }

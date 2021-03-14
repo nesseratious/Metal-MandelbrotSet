@@ -7,6 +7,7 @@
 
 import MetalKit
 
+/// Provides a Metal pipeline state for render.
 struct MetalRenderPipelineProvider {
     private let device: MTLDevice
     private let view: MTKView
@@ -16,6 +17,8 @@ struct MetalRenderPipelineProvider {
         self.view = view
     }
     
+    /// Creates a Metal pipeline state for render with vertex and color shaders.
+    /// - Returns: Metal pipeline state for render.
     func make() -> MTLRenderPipelineState {
         guard let library = device.makeDefaultLibrary() else {
             fatalError("Failed to create a metal library.")
