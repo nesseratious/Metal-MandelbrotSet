@@ -55,20 +55,20 @@ final class AccelerateRenderer: UIView {
         /// Buffer of current mandebrot per pixel width transformation.
         var widthBuffer: UnsafeMutablePointer<Float>!
         dispatchGroup.enter()
-        DispatchQueue.global(qos: .userInteractive).async {
-            widthBuffer = self.makeWidthBuffer(lenght: width)
+        DispatchQueue.global(qos: .userInteractive).async { [self] in
+            widthBuffer = makeWidthBuffer(lenght: width)
             dispatchGroup.leave()
         }
         
         /// Buffer of current mandebrot per pixel heigh transformation.
         var heightBuffer: UnsafeMutablePointer<Float>!
         dispatchGroup.enter()
-        DispatchQueue.global(qos: .userInteractive).async {
-            heightBuffer = self.makeHeightBuffer(lenght: height)
+        DispatchQueue.global(qos: .userInteractive).async { [self] in
+            heightBuffer = makeHeightBuffer(lenght: height)
             dispatchGroup.leave()
         }
         
-        dispatchGroup.notify(queue: DispatchQueue.global(qos: .userInteractive)) { [unowned self] in
+        dispatchGroup.notify(queue: .global(qos: .userInteractive)) { [self] in
             calculateMandelbrot(buffer: buffer, width: width, height: height, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
             completion()
         }
@@ -89,7 +89,7 @@ final class AccelerateRenderer: UIView {
         
         let mandelbrotIterations = Int(bridgeBuffer.iterations)
         
-        DispatchQueue.concurrentPerform(iterations: height) { (row) in
+        DispatchQueue.concurrentPerform(iterations: height) { row in
                 calculateRow(row, width: width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, targetBuffer: buffer, iterations: mandelbrotIterations)
         }
     }
