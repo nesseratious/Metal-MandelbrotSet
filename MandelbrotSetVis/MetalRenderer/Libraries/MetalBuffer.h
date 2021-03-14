@@ -8,22 +8,22 @@
 #ifndef MetalBuffer_h
 #define MetalBuffer_h
 
-struct Translation {
+typedef struct {
     float x;
     float y;
-};
+} Translation;
 
-struct Scaling {
-    float x;
-    float y;
-};
+typedef struct {
+    float w;
+    float h;
+} Scaling;
 
 /// Convertible from Swift using RendererBuffer swift struct.
 struct MetalBuffer {
     float scale;
     float iterations;
-    struct Translation translation;
-    struct Scaling aspectRatio;
+    Translation translation;
+    Scaling aspectRatio;
 };
 
 #endif 

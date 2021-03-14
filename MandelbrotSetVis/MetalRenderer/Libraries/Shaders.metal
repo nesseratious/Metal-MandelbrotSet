@@ -12,8 +12,7 @@
 using namespace metal;
 
 inline int getColorCoords(const int iterations, const float x, const float y) {
-    float real = 0;
-    float img = 0;
+    float real = 0, img = 0;
     int i = 0;
     while (i < iterations && real * real + img * img < 10.0f) {
         float temp = (real * real) - (img * img) + x;
@@ -49,8 +48,8 @@ vertex VOutput vertexShader(const VInput input [[stage_in]],
                             constant MetalBuffer &buffer [[buffer(1)]]) {
     VOutput outputVertex;
     float scale = buffer.scale;
-    float xscale = scale * buffer.aspectRatio.x;
-    float yscale = scale * buffer.aspectRatio.y;
+    float xscale = scale * buffer.aspectRatio.w;
+    float yscale = scale * buffer.aspectRatio.h;
     outputVertex.position = float4(input.position, 1.0f);
     outputVertex.coordinates.x = input.position.x * xscale - buffer.translation.x;
     outputVertex.coordinates.y = input.position.y * yscale - buffer.translation.y;
