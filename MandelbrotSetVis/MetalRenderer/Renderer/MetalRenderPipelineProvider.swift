@@ -7,7 +7,6 @@
 
 import MetalKit
 
-/// Provides a Metal pipeline state for render.
 struct MetalRenderPipelineProvider {
     private let device: MTLDevice
     private let view: MTKView
@@ -25,7 +24,7 @@ struct MetalRenderPipelineProvider {
         }
         guard let vertexShader = library.makeFunction(name: "vertexShader"),
               let fragmentShader = library.makeFunction(name: "colorShader") else {
-            fatalError("Failed to create a metal vertex and color shaders.")
+            fatalError("Failed to create metal vertex and color shaders.")
         }
         return makePipelineState(device: device, vertexShader: vertexShader, fragmentShader: fragmentShader)!
     }
@@ -42,7 +41,7 @@ struct MetalRenderPipelineProvider {
             let pipelineState = try device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
             return pipelineState
         } catch let error {
-            fatalError("Failed to make render pipeline state. Error \(error.localizedDescription)")
+            fatalError("Failed to make render pipeline state with error: \(error.localizedDescription)")
         }
     }
     

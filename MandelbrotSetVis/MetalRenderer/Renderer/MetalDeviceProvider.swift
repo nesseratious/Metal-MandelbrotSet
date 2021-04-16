@@ -7,11 +7,10 @@
 
 import MetalKit
 
-/// Provides a Metal device GPU representation.
 struct MetalDeviceProvider {
     
     /// Creates a Metal device GPU representation.
-    /// On iOS creates a default device.
+    /// On iOS creates the default device.
     /// On Mac priorities external GPU.
     /// Creates low-power device if battery level is below 20%.
     /// - Returns: MTLDevice device GPU representation.
@@ -39,20 +38,24 @@ struct MetalDeviceProvider {
         }
         
         for device in devices {
+            
             // External GPU
             if device.isRemovable {
                 print("Using external GPU \(device.name), buffer: \(device.maxBufferLength/1024/1024)MiB")
                 return device
-                // Internal descrete GPU
+                
+            // Internal descrete GPU
             } else if !device.isLowPower {
                 print("Using built-in descrete GPU \(device.name), buffer: \(device.maxBufferLength/1024/1024)MiB")
                 return device
-                // Internal iGPU
+                
+            // Internal iGPU
             } else {
                 print("Using built-in integrated GPU \(device.name), buffer: \(device.maxBufferLength/1024/1024)MiB")
                 return device
             }
         }
+        
         // If classification above has failed
         guard let unknownDevice = devices.first else {
             fatalError("Failed to create device.")
@@ -61,6 +64,7 @@ struct MetalDeviceProvider {
     }
     #endif
     
+    #if !targetEnvironment(macCatalyst)
     private func makeIOSDevice() -> MTLDevice {
         guard let device = MTLCreateSystemDefaultDevice() else {
             fatalError("Failed to create device.")
@@ -68,4 +72,5 @@ struct MetalDeviceProvider {
         print("Using SoC GPU \(device.name)")
         return device
     }
+    #endif
 }

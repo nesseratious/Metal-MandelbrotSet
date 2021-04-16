@@ -8,7 +8,6 @@
 
 import MetalKit
 
-/// Provides a Metal vertex buffer.
 struct MetalVertexBufferProvider {
     private let device: MTLDevice
     
@@ -16,17 +15,17 @@ struct MetalVertexBufferProvider {
         self.device = device
     }
     
-    /// Created a Metal vertex buffer.
+    /// Creates a Metal vertex buffer.
     /// - Returns: Metal vertex buffer.
     func make() -> MTLBuffer? {
-        let vertices: [Float] =
+        let vertices: [Float32] =
             [-1.0, -1.0,  0.0,
              -1.0,  1.0,  0.0,
               1.0, -1.0,  0.0,
              -1.0,  1.0,  0.0,
               1.0,  1.0,  0.0,
               1.0, -1.0,  0.0]
-        let lenght = vertices.count * MemoryLayout<Float>.size * 3
+        let lenght = vertices.count * MemoryLayout<Float32>.size * 3
         return device.makeBuffer(bytes: vertices, length: lenght)
     }
 }

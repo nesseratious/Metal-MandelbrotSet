@@ -7,7 +7,6 @@
 
 import MetalKit
 
-/// Provides a Metal MTLSamplerState
 struct MetalSamplerProvider {
     private let device: MTLDevice
     
@@ -15,8 +14,8 @@ struct MetalSamplerProvider {
         self.device = device
     }
     
-    /// Creates MTLSamplerState.
-    /// - Returns: MTLSamplerState.
+    /// Creates a metal texture sampler.
+    /// - Returns: Metal texture sampler.
     func make() -> MTLSamplerState? {
         let sampler = MTLSamplerDescriptor()
         return device.makeSamplerState(descriptor: sampler)

@@ -108,11 +108,14 @@ extension MetalRenderer: Renderer {
         delegate = self
         depthStencilPixelFormat = .depth32Float_stencil8
         commandQueue = device.makeCommandQueue()
+        
         vertexBufferProvider = MetalVertexBufferProvider(device: device)
         let samplerProvider = MetalSamplerProvider(device: device)
         samplerState = samplerProvider.make()
+        
         bufferProvider = MetalBufferProvider(device: device)
         paletteTexture = makeColorPalleteTexture(device: device)
+        
         let renderPipelineProvider = MetalRenderPipelineProvider(device: device, view: self)
         renderPipelineState = renderPipelineProvider.make()
         depthStencilState = makeCompiledDepthState(device: device)
