@@ -24,7 +24,6 @@ struct MetalBufferProvider {
             fatalError("Failed making buffer")
         }
         let _ = withUnsafePointer(to: uniform) {
-            let size = MemoryLayout<Float32>.size * 8
             let contents = buffer.contents()
             memcpy(contents, $0, size)
         }

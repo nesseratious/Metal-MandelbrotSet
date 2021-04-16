@@ -90,7 +90,7 @@ final class AccelerateRenderer: UIView {
         let mandelbrotIterations = Int(bridgeBuffer.iterations)
         
         DispatchQueue.concurrentPerform(iterations: height) { row in
-                calculateRow(row, width: width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, targetBuffer: buffer, iterations: mandelbrotIterations)
+            calculateRow(row, width: width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, targetBuffer: buffer, iterations: mandelbrotIterations)
         }
     }
     
@@ -147,7 +147,7 @@ final class AccelerateRenderer: UIView {
     /// Makes a CGContext from a given CGImage.
     /// - Parameters:
     ///   - cgImage: Input CGImage
-    ///   - width: CGImage's and CGContext's width in pixels.
+    ///   - width: CGImage's CGContext's width in pixels.
     ///   - height: CGImage's CGContext's height in pixels.
     /// - Returns: CGContext
     private func makeContext(from cgImage: CGImage, width: Int, height: Int) -> CGContext {
