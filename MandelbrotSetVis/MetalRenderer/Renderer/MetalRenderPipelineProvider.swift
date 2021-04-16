@@ -19,21 +19,32 @@ struct MetalRenderPipelineProvider {
     /// Creates a Metal pipeline state for render with vertex and color shaders.
     /// - Returns: Metal pipeline state for render.
     func make() -> MTLRenderPipelineState {
-        guard let library = device.makeDefaultLibrary() else {
-            fatalError("Failed to create a metal library.")
-        }
-        guard let vertexFunction = library.makeFunction(name: "vertexFunction"),
-              let fragmentFunction = library.makeFunction(name: "colorFunction") else {
-            fatalError("Failed to create metal vertex and color functions.")
-        }
-        return makePipelineState(device: device, vertexFunction: vertexFunction, fragmentFunction: fragmentFunction)
+        let colorFunction = makeColorFunction()
+        let vertexFunction = makeVertexFunction()
+        return makePipelineState(device: device, vertexFunction: vertexFunction, colorFunction: colorFunction)
     }
     
-    private func makePipelineState(device: MTLDevice, vertexFunction: MTLFunction, fragmentFunction: MTLFunction) -> MTLRenderPipelineState {
+    private func makeVertexFunction() -> MTLFunction {
+        guard let library = device.makeDefaultLibrary(),
+              let vertexFunction = library.makeFunction(name: "vertexFunction") else {
+            fatalError("Failed to create metal vertex function")
+        }
+        return vertexFunction
+    }
+    
+    private func makeColorFunction() -> MTLFunction {
+        guard let library = device.makeDefaultLibrary(),
+              let colorFunction = library.makeFunction(name: "colorFunction") else {
+            fatalError("Failed to create metal color function")
+        }
+        return colorFunction
+    }
+    
+    private func makePipelineState(device: MTLDevice, vertexFunction: MTLFunction, colorFunction: MTLFunction) -> MTLRenderPipelineState {
         let descriptor = MTLRenderPipelineDescriptor()
         descriptor.vertexDescriptor = makeVertexDescriptor()
         descriptor.vertexFunction = vertexFunction
-        descriptor.fragmentFunction = fragmentFunction
+        descriptor.fragmentFunction = colorFunction
         descriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
         do {
             let pipelineState = try device.makeRenderPipelineState(descriptor: descriptor)
