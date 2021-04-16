@@ -22,25 +22,23 @@ struct MetalRenderPipelineProvider {
         guard let library = device.makeDefaultLibrary() else {
             fatalError("Failed to create a metal library.")
         }
-        guard let vertexShader = library.makeFunction(name: "vertexFunction"),
-              let fragmentShader = library.makeFunction(name: "colorFunction") else {
+        guard let vertexFunction = library.makeFunction(name: "vertexFunction"),
+              let fragmentFunction = library.makeFunction(name: "colorFunction") else {
             fatalError("Failed to create metal vertex and color functions.")
         }
-        return makePipelineState(device: device, vertexShader: vertexShader, fragmentShader: fragmentShader)
+        return makePipelineState(device: device, vertexFunction: vertexFunction, fragmentFunction: fragmentFunction)
     }
     
-    private func makePipelineState(device: MTLDevice, vertexShader: MTLFunction, fragmentShader: MTLFunction) -> MTLRenderPipelineState {
-        let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
-        pipelineStateDescriptor.vertexDescriptor = makeVertexDescriptor()
-        pipelineStateDescriptor.vertexFunction = vertexShader
-        pipelineStateDescriptor.fragmentFunction = fragmentShader
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
-        pipelineStateDescriptor.depthAttachmentPixelFormat = view.depthStencilPixelFormat
-        pipelineStateDescriptor.stencilAttachmentPixelFormat = view.depthStencilPixelFormat
+    private func makePipelineState(device: MTLDevice, vertexFunction: MTLFunction, fragmentFunction: MTLFunction) -> MTLRenderPipelineState {
+        let descriptor = MTLRenderPipelineDescriptor()
+        descriptor.vertexDescriptor = makeVertexDescriptor()
+        descriptor.vertexFunction = vertexFunction
+        descriptor.fragmentFunction = fragmentFunction
+        descriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
         do {
-            let pipelineState = try device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
+            let pipelineState = try device.makeRenderPipelineState(descriptor: descriptor)
             return pipelineState
-        } catch let error {
+        } catch {
             fatalError("Failed to make render pipeline state with error: \(error.localizedDescription)")
         }
     }
