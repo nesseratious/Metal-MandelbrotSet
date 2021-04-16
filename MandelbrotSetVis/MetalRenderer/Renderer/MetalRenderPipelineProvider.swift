@@ -24,12 +24,12 @@ struct MetalRenderPipelineProvider {
         }
         guard let vertexShader = library.makeFunction(name: "vertexFunction"),
               let fragmentShader = library.makeFunction(name: "colorFunction") else {
-            fatalError("Failed to create metal vertex and color shaders.")
+            fatalError("Failed to create metal vertex and color functions.")
         }
-        return makePipelineState(device: device, vertexShader: vertexShader, fragmentShader: fragmentShader)!
+        return makePipelineState(device: device, vertexShader: vertexShader, fragmentShader: fragmentShader)
     }
     
-    private func makePipelineState(device: MTLDevice, vertexShader: MTLFunction, fragmentShader: MTLFunction) -> MTLRenderPipelineState? {
+    private func makePipelineState(device: MTLDevice, vertexShader: MTLFunction, fragmentShader: MTLFunction) -> MTLRenderPipelineState {
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexDescriptor = makeVertexDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexShader
@@ -47,14 +47,8 @@ struct MetalRenderPipelineProvider {
     
     private func makeVertexDescriptor() -> MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
-        guard let attribute = vertexDescriptor.attributes[0],
-              let layout = vertexDescriptor.layouts[0] else {
-            fatalError("Failed to create attribute or layout.")
-        }
-        attribute.format = .float3
-        attribute.offset = 0
-        attribute.bufferIndex = 0
-        layout.stride = MemoryLayout<Float>.size * 3
+        vertexDescriptor.attributes[0]?.format = .float2
+        vertexDescriptor.layouts[0]?.stride = MemoryLayout<Float>.stride * 3
         return vertexDescriptor
     }
 }
