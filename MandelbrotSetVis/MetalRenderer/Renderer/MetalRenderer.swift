@@ -84,9 +84,10 @@ extension MetalRenderer: MTKViewDelegate {
         commandBuffer.commit()
         isRedrawNeeded = false
 
-        commandBuffer.addCompletedHandler { [unowned self] _ in
-            performanceMonitor.calculationEnded()
-        }
+        //FIXME: -[_MTLCommandBuffer addCompletedHandler:], line 673: error '<private>'
+//        commandBuffer.addCompletedHandler { [unowned self] _ in
+//            performanceMonitor.calculationEnded()
+//        }
     }
 }
 
