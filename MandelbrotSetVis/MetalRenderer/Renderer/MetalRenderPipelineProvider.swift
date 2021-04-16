@@ -19,9 +19,10 @@ struct MetalRenderPipelineProvider {
     /// Creates a Metal pipeline state for render with vertex and color shaders.
     /// - Returns: Metal pipeline state for render.
     func make() -> MTLRenderPipelineState {
-        let colorFunction = makeColorFunction()
         let vertexFunction = makeVertexFunction()
-        return makePipelineState(device: device, vertexFunction: vertexFunction, colorFunction: colorFunction)
+        let colorFunction = makeColorFunction()
+        let despriptor = makePipelineDescriptor(vertexFunction: vertexFunction, colorFunction: colorFunction)
+        return makePipelineState(device: device, descriptor: despriptor)
     }
     
     private func makeVertexFunction() -> MTLFunction {
@@ -40,12 +41,16 @@ struct MetalRenderPipelineProvider {
         return colorFunction
     }
     
-    private func makePipelineState(device: MTLDevice, vertexFunction: MTLFunction, colorFunction: MTLFunction) -> MTLRenderPipelineState {
+    private func makePipelineDescriptor(vertexFunction: MTLFunction, colorFunction: MTLFunction) -> MTLRenderPipelineDescriptor {
         let descriptor = MTLRenderPipelineDescriptor()
         descriptor.vertexDescriptor = makeVertexDescriptor()
         descriptor.vertexFunction = vertexFunction
         descriptor.fragmentFunction = colorFunction
         descriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
+        return descriptor
+    }
+    
+    private func makePipelineState(device: MTLDevice, descriptor: MTLRenderPipelineDescriptor) -> MTLRenderPipelineState {
         do {
             let pipelineState = try device.makeRenderPipelineState(descriptor: descriptor)
             return pipelineState
