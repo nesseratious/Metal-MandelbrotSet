@@ -22,8 +22,8 @@ struct MetalRenderPipelineProvider {
         guard let library = device.makeDefaultLibrary() else {
             fatalError("Failed to create a metal library.")
         }
-        guard let vertexShader = library.makeFunction(name: "vertexShader"),
-              let fragmentShader = library.makeFunction(name: "colorShader") else {
+        guard let vertexShader = library.makeFunction(name: "vertexFunction"),
+              let fragmentShader = library.makeFunction(name: "colorFunction") else {
             fatalError("Failed to create metal vertex and color shaders.")
         }
         return makePipelineState(device: device, vertexShader: vertexShader, fragmentShader: fragmentShader)!

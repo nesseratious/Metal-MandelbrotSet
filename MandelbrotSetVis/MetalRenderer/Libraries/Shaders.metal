@@ -9,9 +9,7 @@
 #include <metal_stdlib>
 #include "MetalBuffer.h"
 
-using namespace metal;
-
-inline int getColorCoords(const int iterations, const float x, const float y) {
+inline int calculate(const int iterations, const float x, const float y) {
     float real = 0, img = 0;
     int i = 0;
     while (i < iterations && real * real + img * img < 10.0f) {
@@ -28,13 +26,13 @@ struct VOutput {
     float2 coordinates;
 };
 
-fragment float4 colorShader(VOutput output [[stage_in]],
-                            texture2d<float> pallete,
-                            constant MetalBuffer &buffer,
-                            sampler sampler) {
+fragment float4 colorFunction(VOutput output [[stage_in]],
+                              metal::texture2d<float> pallete,
+                              constant MetalBuffer &buffer,
+                              metal::sampler sampler) {
     float x = output.coordinates.x;
     float y = output.coordinates.y;
-    int colorShift = getColorCoords(buffer.iterations, x, y);
+    int colorShift = calculate(buffer.iterations, x, y);
     float2 palleteCoord = float2(colorShift/65.0f, 0);
     float4 finalColor = pallete.sample(sampler, palleteCoord);
     return finalColor;
@@ -44,8 +42,8 @@ struct VInput {
     float3 position [[attribute(0)]];
 };
 
-vertex VOutput vertexShader(const VInput input [[stage_in]],
-                            constant MetalBuffer &buffer [[buffer(1)]]) {
+vertex VOutput vertexFunction(const VInput input [[stage_in]],
+                              constant MetalBuffer &buffer [[buffer(1)]]) {
     VOutput outputVertex;
     float scale = buffer.scale;
     float xscale = scale * buffer.aspectRatio.w;
