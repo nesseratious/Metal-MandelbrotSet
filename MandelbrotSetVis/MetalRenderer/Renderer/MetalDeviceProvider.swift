@@ -28,7 +28,8 @@ struct MetalDeviceProvider {
         // Detect device battery level, and force using iGPU for calculations if it's below 20%
         UIDevice.current.isBatteryMonitoringEnabled = true
         let batteryLevel = UIDevice.current.batteryLevel
-        if batteryLevel <= 0.2 {
+        let isNotCharging = UIDevice.current.batteryState != .charging
+        if batteryLevel <= 0.2 && isNotCharging {
             // Get iGPU from the devices array
             if let integratedGPU = devices.filter({ $0.isLowPower }).first {
                 print("Battery level below 20%, using built-in integrated GPU \(integratedGPU.name), buffer: \(integratedGPU.maxBufferLength/1024/1024)MiB")
