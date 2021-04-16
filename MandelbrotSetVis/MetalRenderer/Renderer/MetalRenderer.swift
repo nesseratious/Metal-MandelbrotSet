@@ -111,8 +111,9 @@ extension MetalRenderer: Renderer {
         commandQueue = device.makeCommandQueue()
         
         vertexBufferProvider = MetalVertexBufferProvider(device: device)
-        let samplerProvider = MetalSamplerProvider(device: device)
-        samplerState = samplerProvider.make()
+    
+        let sampler = MTLSamplerDescriptor()
+        samplerState = device.makeSamplerState(descriptor: sampler)
         
         bufferProvider = MetalBufferProvider(device: device)
         paletteTexture = makeColorPalleteTexture(device: device)
