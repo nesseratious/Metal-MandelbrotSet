@@ -21,16 +21,18 @@ final class MetalRenderer: MTKView {
     private var bridgeBuffer = RendererBuffer()
     private var performanceMonitor = PerformanceMonitor()
     
-    private func makeColorPalleteTexture(device: MTLDevice) -> MTLTexture {
-        guard let path = Bundle.main.path(forResource: "pallete", ofType: "png") else {
+    private func makePalleteTexture(device: MTLDevice) -> MTLTexture {
+        guard let palletePath = Bundle.main.path(forResource: "pallete", ofType: "png") else {
             fatalError("Failed to load color pallete. ")
         }
         do {
-            let data = try Data(contentsOf: URL(fileURLWithPath: path))
+            let data = try Data(contentsOf: URL(fileURLWithPath: palletePath))
             let textureLoader = MTKTextureLoader(device: device)
+            
             guard let image = UIImage(data: data)?.cgImage else {
                 fatalError("Failed to load color pallete from image.")
             }
+            
             let paletteTexture = try textureLoader.newTexture(cgImage: image)
             return paletteTexture
         } catch let error {
@@ -38,7 +40,7 @@ final class MetalRenderer: MTKView {
         }
     }
     
-    private func makeCompiledDepthState(device: MTLDevice) -> MTLDepthStencilState {
+    private func makeDepthState(device: MTLDevice) -> MTLDepthStencilState {
         let depthStencilDesc = MTLDepthStencilDescriptor()
         depthStencilDesc.depthCompareFunction = .less
         depthStencilDesc.isDepthWriteEnabled = true
@@ -53,33 +55,33 @@ extension MetalRenderer: MTKViewDelegate {
     
     func draw(in view: MTKView) {
         guard isRedrawNeeded,
-              let currentRenderPassDescriptor = view.currentRenderPassDescriptor,
+              let descriptor = view.currentRenderPassDescriptor,
               let currentDrawable = view.currentDrawable else {
             return
         }
         performanceMonitor.calculationStarted(on: .GPU)
         
         let clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
-        currentRenderPassDescriptor.colorAttachments[0].clearColor = clearColor
-        currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
-        currentRenderPassDescriptor.colorAttachments[0].texture = currentDrawable.texture
+        descriptor.colorAttachments[0].loadAction = .clear
+        descriptor.colorAttachments[0].clearColor = clearColor
+        descriptor.colorAttachments[0].storeAction = .store
+        descriptor.colorAttachments[0].texture = currentDrawable.texture
         
         guard let commandBuffer = commandQueue.makeCommandBuffer(),
-              let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: currentRenderPassDescriptor)
+              let commandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)
             else { return }
         
-        renderCommandEncoder.setRenderPipelineState(renderPipelineState)
-        renderCommandEncoder.setDepthStencilState(depthStencilState)
-        renderCommandEncoder.setVertexBuffer(vertexBufferProvider.make(), offset: 0, index: 0)
+        commandEncoder.setRenderPipelineState(renderPipelineState)
+        commandEncoder.setDepthStencilState(depthStencilState)
+        commandEncoder.setVertexBuffer(vertexBufferProvider.make(), offset: 0, index: 0)
         
         let uniformBuffer = bufferProvider.make(with: bridgeBuffer)
-        renderCommandEncoder.setVertexBuffer(uniformBuffer, offset: 0, index: 1)
-        renderCommandEncoder.setFragmentBuffer(uniformBuffer, offset: 0, index: 0)
-        renderCommandEncoder.setFragmentTexture(paletteTexture, index: 0)
-        renderCommandEncoder.setFragmentSamplerState(samplerState, index: 0)
-        renderCommandEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
-        renderCommandEncoder.endEncoding()
+        commandEncoder.setVertexBuffer(uniformBuffer, offset: 0, index: 1)
+        commandEncoder.setFragmentBuffer(uniformBuffer, offset: 0, index: 0)
+        commandEncoder.setFragmentTexture(paletteTexture, index: 0)
+        commandEncoder.setFragmentSamplerState(samplerState, index: 0)
+        commandEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
+        commandEncoder.endEncoding()
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
         isRedrawNeeded = false
@@ -116,10 +118,10 @@ extension MetalRenderer: Renderer {
         samplerState = device.makeSamplerState(descriptor: sampler)
         
         bufferProvider = MetalBufferProvider(device: device)
-        paletteTexture = makeColorPalleteTexture(device: device)
+        paletteTexture = makePalleteTexture(device: device)
         
         let renderPipelineProvider = MetalRenderPipelineProvider(device: device, view: self)
         renderPipelineState = renderPipelineProvider.make()
-        depthStencilState = makeCompiledDepthState(device: device)
+        depthStencilState = makeDepthState(device: device)
     }
 }
