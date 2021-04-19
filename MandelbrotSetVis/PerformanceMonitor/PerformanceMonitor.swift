@@ -10,28 +10,33 @@ import Foundation
 struct PerformanceMonitor {
     private var time: TimeInterval?
     private var inference: TimeInterval?
-    private var device: Device?
+    private var source: Source?
     var isRunning = false
     
-    mutating func calculationStarted(on device: Device) {
-        time = CFAbsoluteTimeGetCurrent()
-        self.device = device
-        isRunning = true
-        print("[PERFORMANCE] [\(device.rawValue)] Started rendering frame...")
+    enum Source: String {
+        case CPU, GPU
     }
     
+    /// Called before each frame render to save the start time and calculate the inference.
+    /// - Parameter source: Type of the source (device, algorithm etc)
+    mutating func calculationStarted(on source: Source) {
+        self.source = source
+        time = CFAbsoluteTimeGetCurrent()
+        isRunning = true
+        print("[PERFORMANCE] [\(source.rawValue)] Started rendering frame...")
+    }
+    
+    /// Called after each frame render finishes.
     mutating func calculationEnded() {
-        guard let time = time, let device = device else {
+        guard let time = time, let source = source else {
             print("[WARNING] calculationEnded() called before calculationStarted().")
             return
         }
         let inference = CFAbsoluteTimeGetCurrent() - time
         self.inference = inference
         isRunning = false
-        print("[PERFORMANCE] [\(device.rawValue)] Frame rendered in ", inference, "s.")
+        print("[PERFORMANCE] [\(source.rawValue)] Frame rendered in ", inference, "s.")
     }
-
-    enum Device: String {
-        case CPU, GPU
-    }
+    
+    //TODO: Add FPS counter
 }
