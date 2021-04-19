@@ -8,7 +8,7 @@
 
 /// Holds view controller's transformation of the mandelbrot set.
 struct SceneTransform {
-    var x: Float = 0.0
-    var y: Float = 0.0
-    var zoom: Float = 1.0
+    var x: FloatType = 0.0
+    var y: FloatType = 0.0
+    var zoom: FloatType = 1.0
 }

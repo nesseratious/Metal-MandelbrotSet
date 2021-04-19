@@ -56,10 +56,10 @@ final class MandelbrotViewController: UIViewController {
         /// Multiplier for the mandelbrot's scale in inverse percantage of the screen size.
         /// 1.0 is 100% of the screen.
         /// The default is 2.0 (50% of the screen).
-        let scaleMultiplier: Float = 2.0
+        let scaleMultiplier: FloatType = 2.0
         
-        let width = Float(view.frame.width)
-        let height = Float(view.frame.height)
+        let width = FloatType(view.frame.width)
+        let height = FloatType(view.frame.height)
         renderer.buffer.aspectRatio.x = scaleMultiplier
         renderer.buffer.aspectRatio.y = height / width * scaleMultiplier
     }
@@ -75,10 +75,10 @@ final class MandelbrotViewController: UIViewController {
         /// The default is 1 point = 175 pixels.
         let pixelsPerPoint: CGFloat = 175
         
-        let deltaX = Float(sender.translation(in: view).x / view.frame.width)
-        let deltaY = Float(sender.translation(in: view).y / view.frame.height)
-        let shiftX = transform.x + deltaX * Float(view.frame.width / pixelsPerPoint) / transform.zoom
-        let shiftY = transform.y - deltaY * Float(view.frame.height / pixelsPerPoint) / transform.zoom
+        let deltaX = FloatType(sender.translation(in: view).x / view.frame.width)
+        let deltaY = FloatType(sender.translation(in: view).y / view.frame.height)
+        let shiftX = transform.x + deltaX * FloatType(view.frame.width / pixelsPerPoint) / transform.zoom
+        let shiftY = transform.y - deltaY * FloatType(view.frame.height / pixelsPerPoint) / transform.zoom
         switch sender.state {
         case .began, .changed:
             renderer.buffer.translation = (shiftX, shiftY)
@@ -93,7 +93,7 @@ final class MandelbrotViewController: UIViewController {
      func zoom(sender: UIPinchGestureRecognizer) {
         guard sender.view != nil else { return }
         
-        let scale = transform.zoom * Float(sender.scale)
+        let scale = transform.zoom * FloatType(sender.scale)
         switch sender.state {
         case .began, .changed:
             renderer.buffer.scale = 1.0 / scale
