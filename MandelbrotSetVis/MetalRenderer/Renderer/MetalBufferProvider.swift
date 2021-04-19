@@ -9,7 +9,7 @@
 import MetalKit
 
 struct MetalBufferProvider {
-    private let device: MTLDevice
+    private unowned let device: MTLDevice
     
     init(with device: MTLDevice) {
         self.device = device

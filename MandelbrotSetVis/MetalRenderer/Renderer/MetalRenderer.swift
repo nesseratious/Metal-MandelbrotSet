@@ -12,7 +12,6 @@ import MetalKit
 final class MetalRenderer: MTKView {
     private var commandQueue: MTLCommandQueue!
     private var renderPipelineState: MTLRenderPipelineState!
-//    private var depthStencilState: MTLDepthStencilState!
     private var paletteTexture: MTLTexture!
     private var samplerState: MTLSamplerState!
     private var bufferProvider: MetalBufferProvider!

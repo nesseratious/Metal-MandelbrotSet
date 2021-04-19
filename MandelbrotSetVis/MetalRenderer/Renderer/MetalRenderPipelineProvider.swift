@@ -8,8 +8,8 @@
 import MetalKit
 
 struct MetalRenderPipelineProvider {
-    private let device: MTLDevice
-    private let view: MTKView
+    private unowned let device: MTLDevice
+    private unowned let view: MTKView
     
     init(with device: MTLDevice, in view: MTKView) {
         self.device = device
