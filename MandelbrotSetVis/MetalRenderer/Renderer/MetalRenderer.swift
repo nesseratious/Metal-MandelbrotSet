@@ -12,7 +12,7 @@ import MetalKit
 final class MetalRenderer: MTKView {
     private var commandQueue: MTLCommandQueue!
     private var renderPipelineState: MTLRenderPipelineState!
-    private var depthStencilState: MTLDepthStencilState!
+//    private var depthStencilState: MTLDepthStencilState!
     private var paletteTexture: MTLTexture!
     private var samplerState: MTLSamplerState!
     private var bufferProvider: MetalBufferProvider!
@@ -21,30 +21,23 @@ final class MetalRenderer: MTKView {
     private var bridgeBuffer = RendererBuffer()
     private var performanceMonitor = PerformanceMonitor()
     
-    private func makePalleteTexture(device: MTLDevice) -> MTLTexture {
+    private func loadPalleteTexture(for device: MTLDevice) -> MTLTexture {
         guard let palletePath = Bundle.main.path(forResource: "pallete", ofType: "png") else {
-            fatalError("Failed to load color pallete. ")
+            fatalError("Failed to load pallete.png Check the app's bundle.")
         }
         do {
             let data = try Data(contentsOf: URL(fileURLWithPath: palletePath))
-            let textureLoader = MTKTextureLoader(device: device)
             
             guard let image = UIImage(data: data)?.cgImage else {
                 fatalError("Failed to load color pallete from image.")
             }
             
+            let textureLoader = MTKTextureLoader(device: device)
             let paletteTexture = try textureLoader.newTexture(cgImage: image)
             return paletteTexture
-        } catch let error {
-            fatalError("Failed to load color pallete texture. Error \(error.localizedDescription)")
+        } catch {
+            fatalError("Failed to load pallete texture with error: \(error.localizedDescription)")
         }
-    }
-    
-    private func makeDepthState(device: MTLDevice) -> MTLDepthStencilState {
-        let depthStencilDesc = MTLDepthStencilDescriptor()
-        depthStencilDesc.depthCompareFunction = .less
-        depthStencilDesc.isDepthWriteEnabled = true
-        return device.makeDepthStencilState(descriptor: depthStencilDesc)!
     }
 }
 
@@ -56,28 +49,18 @@ extension MetalRenderer: MTKViewDelegate {
     func draw(in view: MTKView) {
         guard isRedrawNeeded,
               let descriptor = view.currentRenderPassDescriptor,
-              let currentDrawable = view.currentDrawable else {
-            return
-        }
-        performanceMonitor.calculationStarted(on: .GPU)
-        
-        let clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        descriptor.colorAttachments[0].loadAction = .clear
-        descriptor.colorAttachments[0].clearColor = clearColor
-        descriptor.colorAttachments[0].storeAction = .store
-        descriptor.colorAttachments[0].texture = currentDrawable.texture
-        
-        guard let commandBuffer = commandQueue.makeCommandBuffer(),
+              let currentDrawable = view.currentDrawable,
+              let commandBuffer = commandQueue.makeCommandBuffer(),
               let commandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)
             else { return }
         
+        performanceMonitor.calculationStarted(on: .GPU)
+
+        let buffer = bufferProvider.make(with: bridgeBuffer)
         commandEncoder.setRenderPipelineState(renderPipelineState)
-        commandEncoder.setDepthStencilState(depthStencilState)
         commandEncoder.setVertexBuffer(vertexBufferProvider.make(), offset: 0, index: 0)
-        
-        let uniformBuffer = bufferProvider.make(with: bridgeBuffer)
-        commandEncoder.setVertexBuffer(uniformBuffer, offset: 0, index: 1)
-        commandEncoder.setFragmentBuffer(uniformBuffer, offset: 0, index: 0)
+        commandEncoder.setVertexBuffer(buffer, offset: 0, index: 1)
+        commandEncoder.setFragmentBuffer(buffer, offset: 0, index: 0)
         commandEncoder.setFragmentTexture(paletteTexture, index: 0)
         commandEncoder.setFragmentSamplerState(samplerState, index: 0)
         commandEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
@@ -109,19 +92,14 @@ extension MetalRenderer: Renderer {
         let device = deviceProvider.make()
         self.device = device
         delegate = self
-        depthStencilPixelFormat = .depth32Float_stencil8
+
         commandQueue = device.makeCommandQueue()
+        bufferProvider = MetalBufferProvider(with: device)
+        paletteTexture = loadPalleteTexture(for: device)
+        vertexBufferProvider = MetalVertexBufferProvider(with: device)
+        samplerState = device.makeSamplerState(descriptor: MTLSamplerDescriptor())
         
-        vertexBufferProvider = MetalVertexBufferProvider(device: device)
-    
-        let sampler = MTLSamplerDescriptor()
-        samplerState = device.makeSamplerState(descriptor: sampler)
-        
-        bufferProvider = MetalBufferProvider(device: device)
-        paletteTexture = makePalleteTexture(device: device)
-        
-        let renderPipelineProvider = MetalRenderPipelineProvider(device: device, view: self)
+        let renderPipelineProvider = MetalRenderPipelineProvider(with: device, in: self)
         renderPipelineState = renderPipelineProvider.make()
-        depthStencilState = makeDepthState(device: device)
     }
 }

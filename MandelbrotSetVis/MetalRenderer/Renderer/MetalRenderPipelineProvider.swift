@@ -11,7 +11,7 @@ struct MetalRenderPipelineProvider {
     private let device: MTLDevice
     private let view: MTKView
     
-    init(device: MTLDevice, view: MTKView) {
+    init(with device: MTLDevice, in view: MTKView) {
         self.device = device
         self.view = view
     }

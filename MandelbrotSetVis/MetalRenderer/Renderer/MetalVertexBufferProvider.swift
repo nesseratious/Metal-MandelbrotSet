@@ -11,7 +11,7 @@ import MetalKit
 struct MetalVertexBufferProvider {
     private let device: MTLDevice
     
-    init(device: MTLDevice) {
+    init(with device: MTLDevice) {
         self.device = device
     }
     
