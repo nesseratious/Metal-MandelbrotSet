@@ -16,7 +16,7 @@ final class MandelbrotViewController: UIViewController {
     private var transform = SceneTransform()
     
     /// Injects the provided Renderer.
-    /// - Parameter renderer: Entity conforming Renderer protocol, responsible for rendering of the mandelbrot set.
+    /// - Parameter renderer: Entity conforming to Renderer protocol, responsible for rendering of the mandelbrot set.
     init(renderer: Renderer) {
         self.renderer = renderer
         super.init(nibName: nil, bundle: nil)
@@ -41,11 +41,11 @@ final class MandelbrotViewController: UIViewController {
         calculateAspectRatio()
     }
     
-    /// Adds gestures to pan and zoom mandelbrot view.
+    /// Adds gestures to pan and zoom the mandelbrot view.
     private func addGestures() {
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(zoom(sender:)))
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(pan(sender:)))
-        panGesture.allowedScrollTypesMask = [.continuous]
+        panGesture.allowedScrollTypesMask = [.continuous] // iPad mouse support
         renderer.addGestureRecognizer(pinchGesture)
         renderer.addGestureRecognizer(panGesture)
     }
