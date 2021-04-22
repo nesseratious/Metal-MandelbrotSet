@@ -19,17 +19,18 @@ final class AccelerateRenderer: UIView {
     private func render() {
         guard !performanceMonitor.isRunning else { return }
         performanceMonitor.calculationStarted(on: .CPU)
-        let blankCgImage = makeCGImage()
+        
+        var image = ImageProvider(for: self)
+        
+        let lenght = image.cgImage.width &* image.cgImage.height
+        let cgContext = makeContext(from: &image)
+
+        let buffer = makeBuffer(from: cgContext, lenght: lenght)
         
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
-            let bufferWidth = blankCgImage.width
-            let bufferHeight = blankCgImage.height
-            let lenght = bufferWidth &* bufferHeight
-            let cgContext = makeContext(from: blankCgImage, width: bufferWidth, height: bufferHeight)
-            let buffer = makeBuffer(from: cgContext, lenght: lenght)
-            calculateMandelbrot(in: buffer, width: bufferWidth, height: bufferHeight, completion: {
+            calculateMandelbrot(in: buffer, width: image.cgImage.width, height: image.cgImage.height, completion: {
                 DispatchQueue.main.async {
-                    mandelbrotImage.image = makeUIImage(from: cgContext)
+                    mandelbrotImage.image = image.makeUIImage(from: cgContext)
                     performanceMonitor.calculationEnded()
                 }
             })
@@ -129,36 +130,23 @@ final class AccelerateRenderer: UIView {
         }
     }
     
-    /// Creates a blank cg image from graphic context.
-    /// - Returns: Blank cg image.
-    private func makeCGImage() -> CGImage {
-        UIGraphicsBeginImageContextWithOptions(frame.size, true, 0)
-        drawHierarchy(in: bounds, afterScreenUpdates: true)
-        guard let image = UIGraphicsGetImageFromCurrentImageContext(),
-              let cgImage = image.cgImage else {
-            fatalError("Error creating a blank cg image.")
-        }
-        UIGraphicsEndImageContext()
-        return cgImage
-    }
-    
     /// Makes a CGContext from a given CGImage.
     /// - Parameters:
     ///   - cgImage: Input CGImage
     ///   - width: CGImage's CGContext's width in pixels.
     ///   - height: CGImage's CGContext's height in pixels.
     /// - Returns: CGContext
-    private func makeContext(from cgImage: CGImage, width: Int, height: Int) -> CGContext {
+    private func makeContext(from image: inout ImageProvider) -> CGContext {
         let bytesPerPixel = 4
         let bitsPerComponent = 8
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
-        let bytesPerRow = bytesPerPixel * width
-        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent,
+        let bytesPerRow = bytesPerPixel * image.cgImage.width
+        guard let context = CGContext(data: nil, width: image.cgImage.width, height: image.cgImage.height, bitsPerComponent: bitsPerComponent,
                                       bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
             fatalError("Failed to create Quartz destination context.")
         }
-        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+        context.draw(image.cgImage, in: CGRect(x: 0, y: 0, width: image.cgImage.width, height: image.cgImage.height))
         return context
     }
     
@@ -208,17 +196,6 @@ final class AccelerateRenderer: UIView {
         vDSP.multiply(heightTransformationMultiplier, heightBuffer, result: &heightBuffer)
         vDSP.add(heightTranslation, heightBuffer, result: &heightBuffer)
         return UnsafeMutablePointer(mutating: heightBuffer.withUnsafeBufferPointer { $0 }.baseAddress!)
-    }
-    
-    /// Makes a UIImage from the given CGContext.
-    /// - Parameter context: CGContext
-    /// - Returns: UIImage from the given CGContext
-    private func makeUIImage(from context: CGContext) -> UIImage {
-        guard let outputCGImage = context.makeImage() else {
-            fatalError("Failed to create cgimage from context.")
-        }
-        let scale = UIScreen.main.scale
-        return UIImage(cgImage: outputCGImage, scale: scale, orientation: .up)
     }
 }
 

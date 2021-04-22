@@ -27,6 +27,7 @@
 		64D706AD25D815DC00B77DD4 /* MetalDeviceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706AC25D815DC00B77DD4 /* MetalDeviceProvider.swift */; };
 		64D706B025D81D8500B77DD4 /* MetalRenderPipelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */; };
 		64DF1DD8262E0E9C00EA1B4E /* Shaders.h in Sources */ = {isa = PBXBuildFile; fileRef = 64DF1DD7262E0E9C00EA1B4E /* Shaders.h */; };
+		64DF1DE02631DB6A00EA1B4E /* ImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DF1DDF2631DB6A00EA1B4E /* ImageProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		64D706AC25D815DC00B77DD4 /* MetalDeviceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalDeviceProvider.swift; sourceTree = "<group>"; };
 		64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRenderPipelineProvider.swift; sourceTree = "<group>"; };
 		64DF1DD7262E0E9C00EA1B4E /* Shaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shaders.h; sourceTree = "<group>"; };
+		64DF1DDF2631DB6A00EA1B4E /* ImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */,
+				64DF1DDF2631DB6A00EA1B4E /* ImageProvider.swift */,
 			);
 			path = AccelerateRenderer;
 			sourceTree = "<group>";
@@ -296,6 +299,7 @@
 				64257D9624FA03D100D17591 /* MetalRenderer.swift in Sources */,
 				64257D9B24FA03D100D17591 /* Shaders.metal in Sources */,
 				64ADD960256058F1009A81D8 /* PerformanceMonitor.swift in Sources */,
+				64DF1DE02631DB6A00EA1B4E /* ImageProvider.swift in Sources */,
 				64257D9C24FA03D100D17591 /* MetalVertexBufferProvider.swift in Sources */,
 				64257D7124FA037200D17591 /* SceneDelegate.swift in Sources */,
 				64257D9F24FA03D100D17591 /* SceneTransform.swift in Sources */,
