@@ -7,14 +7,14 @@
 
 import UIKit
 
-struct ImageProvider {
+struct MandelbrotImage {
     private unowned let view: UIView
     
     init(for view: UIView) {
         self.view = view
     }
     
-    /// a blank cg image from graphic context.
+    /// Blank cg image with size of the provided owner view.
     lazy var cgImage: CGImage = {
         UIGraphicsBeginImageContextWithOptions(view.frame.size, true, 0)
         view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
@@ -26,14 +26,8 @@ struct ImageProvider {
         return cgImage
     }()
     
-    /// Makes a UIImage from the given CGContext.
-    /// - Parameter context: CGContext
-    /// - Returns: UIImage from the given CGContext
-    func makeUIImage(from context: CGContext) -> UIImage {
-        guard let outputCGImage = context.makeImage() else {
-            fatalError("Failed to create cgimage from context.")
-        }
-        let scale = UIScreen.main.scale
-        return UIImage(cgImage: outputCGImage, scale: scale, orientation: .up)
-    }
+    /// Total count of pixels in the image.
+    lazy var size: Int = {
+        return cgImage.width &* cgImage.height
+    }()
 }

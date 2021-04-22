@@ -19,22 +19,30 @@ final class AccelerateRenderer: UIView {
     private func render() {
         guard !performanceMonitor.isRunning else { return }
         performanceMonitor.calculationStarted(on: .CPU)
+        var image = MandelbrotImage(for: self)
         
-        var image = ImageProvider(for: self)
-        
-        let lenght = image.cgImage.width &* image.cgImage.height
-        let cgContext = makeContext(from: &image)
-
-        let buffer = makeBuffer(from: cgContext, lenght: lenght)
+        let context = makeContext(from: &image)
+        let buffer = makeBuffer(from: context, lenght: image.size)
         
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
             calculateMandelbrot(in: buffer, width: image.cgImage.width, height: image.cgImage.height, completion: {
                 DispatchQueue.main.async {
-                    mandelbrotImage.image = image.makeUIImage(from: cgContext)
+                    mandelbrotImage.image = makeUIImage(from: context)
                     performanceMonitor.calculationEnded()
                 }
             })
         }
+    }
+    
+    /// Makes a UIImage from the given CGContext.
+    /// - Parameter context: CGContext
+    /// - Returns: UIImage from the given CGContext
+    func makeUIImage(from context: CGContext) -> UIImage {
+        guard let outputCGImage = context.makeImage() else {
+            fatalError("Failed to create cgimage from context.")
+        }
+        let scale = UIScreen.main.scale
+        return UIImage(cgImage: outputCGImage, scale: scale, orientation: .up)
     }
     
     /// Performs a full mandelbrot calculation cycle (for one frame).
@@ -136,7 +144,7 @@ final class AccelerateRenderer: UIView {
     ///   - width: CGImage's CGContext's width in pixels.
     ///   - height: CGImage's CGContext's height in pixels.
     /// - Returns: CGContext
-    private func makeContext(from image: inout ImageProvider) -> CGContext {
+    private func makeContext(from image: inout MandelbrotImage) -> CGContext {
         let bytesPerPixel = 4
         let bitsPerComponent = 8
         let colorSpace = CGColorSpaceCreateDeviceRGB()
