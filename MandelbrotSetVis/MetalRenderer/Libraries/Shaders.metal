@@ -8,48 +8,47 @@
 
 #include <metal_stdlib>
 #include "MetalBuffer.h"
+#include "Shaders.h"
 
-inline int calculate(const int iterations, const float x, const float y) {
+inline int calculate(const MandelbrotVertexData data) {
     float real = 0, img = 0;
     int i = 0;
-    while (i < iterations && real * real + img * img < 10.0f) {
-        float temp = (real * real) - (img * img) + x;
-        img = 2.0f * (real * img) + y;
+    while (i < data.iterations && real * real + img * img < 10.0f) {
+        float temp = (real * real) - (img * img) + data.position.x;
+        img = 2.0f * (real * img) + data.position.y;
         real = temp;
         i++;
     }
-    return i == iterations ? 0 : i;
+    return i == data.iterations ? 0 : i;
 }
 
-struct VOutput {
-    float4 position [[position]];
-    float2 coordinates;
-};
-
-fragment float4 colorFunction(VOutput output [[stage_in]],
-                              metal::texture2d<float> pallete,
-                              constant MetalBuffer &buffer,
-                              metal::sampler sampler) {
-    float x = output.coordinates.x;
-    float y = output.coordinates.y;
-    int colorShift = calculate(buffer.iterations, x, y);
-    float2 palleteCoord = float2(colorShift/65.0f, 0);
-    float4 finalColor = pallete.sample(sampler, palleteCoord);
-    return finalColor;
+inline float4 mandelbrot(const MandelbrotVertexData data,
+                         metal::texture2d<float> pallete,
+                         metal::sampler sampler) {
+    int colorShift = calculate(data);
+    float2 palleteCoords = float2(colorShift/65.0f, 0);
+    return pallete.sample(sampler, palleteCoords);;
 }
 
-struct VInput {
-    float3 position [[attribute(0)]];
-};
+fragment float4 fragmentFunction(OutputVertex outputVertex [[stage_in]],
+                                 metal::texture2d<float> pallete,
+                                 metal::sampler sampler,
+                                 constant MetalBuffer &buffer) {
+    float x = outputVertex.coordinates.x;
+    float y = outputVertex.coordinates.y;
+    int iterations = (int)buffer.iterations;
+    auto data = MandelbrotVertexData { float2(x,y), iterations };
+    return mandelbrot(data, pallete, sampler);
+}
 
-vertex VOutput vertexFunction(const VInput input [[stage_in]],
-                              constant MetalBuffer &buffer [[buffer(1)]]) {
-    VOutput outputVertex;
+vertex OutputVertex vertexFunction(const InputVertex inputVertex [[stage_in]],
+                                   constant MetalBuffer &buffer [[buffer(1)]]) {
+    OutputVertex outputVertex;
     float scale = buffer.scale;
     float xscale = scale * buffer.aspectRatio.w;
     float yscale = scale * buffer.aspectRatio.h;
-    outputVertex.position = float4(input.position, 1.0f);
-    outputVertex.coordinates.x = input.position.x * xscale - buffer.translation.x;
-    outputVertex.coordinates.y = input.position.y * yscale - buffer.translation.y;
+    outputVertex.position = float4(inputVertex.position, 1.0f);
+    outputVertex.coordinates.x = inputVertex.position.x * xscale - buffer.translation.x;
+    outputVertex.coordinates.y = inputVertex.position.y * yscale - buffer.translation.y;
     return outputVertex;
 }

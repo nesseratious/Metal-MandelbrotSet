@@ -35,7 +35,7 @@ struct MetalRenderPipelineProvider {
     
     private func makeColorFunction() -> MTLFunction {
         guard let library = device.makeDefaultLibrary(),
-              let colorFunction = library.makeFunction(name: "colorFunction") else {
+              let colorFunction = library.makeFunction(name: "fragmentFunction") else {
             fatalError("Failed to create metal color function")
         }
         return colorFunction
@@ -62,7 +62,7 @@ struct MetalRenderPipelineProvider {
     private func makeVertexDescriptor() -> MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0]?.format = .float2
-        vertexDescriptor.layouts[0]?.stride = MemoryLayout<Float>.stride * 3
+        vertexDescriptor.layouts[0]?.stride = MemoryLayout<Float32>.stride * 3
         return vertexDescriptor
     }
 }
