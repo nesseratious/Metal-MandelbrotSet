@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct ContextProvider {
     private static let bytesPerPixel = 4
@@ -45,4 +46,14 @@ struct ContextProvider {
     lazy var bufferLenght: Int = {
         return image.size.width &* image.size.height
     }()
+    
+    /// Makes an UIImage from the current CGContext.
+    /// - Returns: UIImage from the current CGContext
+    mutating func generateUIImage() -> UIImage {
+        guard let outputCGImage = context.makeImage() else {
+            fatalError("Failed to create cgimage from the current context.")
+        }
+        let scale = UIScreen.main.scale
+        return UIImage(cgImage: outputCGImage, scale: scale, orientation: .up)
+    }
 }

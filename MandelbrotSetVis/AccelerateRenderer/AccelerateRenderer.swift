@@ -26,34 +26,18 @@ final class AccelerateRenderer: UIView {
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
             calculateMandelbrot(in: buffer, contextProvider: contextProvider, completion: {
                 DispatchQueue.main.async {
-                    mandelbrotImage.image = makeUIImage(from: contextProvider.context)
+                    mandelbrotImage.image = contextProvider.generateUIImage()
                     performanceMonitor.calculationEnded()
                 }
             })
         }
     }
     
-    /// Makes a UIImage from the given CGContext.
-    /// - Parameter context: CGContext
-    /// - Returns: UIImage from the given CGContext
-    func makeUIImage(from context: CGContext) -> UIImage {
-        guard let outputCGImage = context.makeImage() else {
-            fatalError("Failed to create cgimage from context.")
-        }
-        let scale = UIScreen.main.scale
-        return UIImage(cgImage: outputCGImage, scale: scale, orientation: .up)
-    }
-    
-    /// Performs a full mandelbrot calculation cycle (for one frame).
-    /// - Parameters:
-    ///   - buffer: Target UInt32 buffer where the result should be written to.
-    ///   - width: Render target's width.
-    ///   - height: Render target's height.
-    ///   - completion: Fires when mandelbrot calculation cycle has ended.
     private func calculateMandelbrot(in buffer: UnsafeMutablePointer<UInt32>,
                                      contextProvider: ContextProvider,
                                      completion: @escaping () -> Void) {
-        var contextProvider = contextProvider
+        
+        var image = contextProvider.image
         let dispatchGroup = DispatchGroup()
         // widthBuffer heightBuffer are independent, so they can be calculated concurrently.
         
@@ -61,7 +45,7 @@ final class AccelerateRenderer: UIView {
         var widthBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            widthBuffer = makeWidthBuffer(lenght: contextProvider.image.size.width)
+            widthBuffer = makeWidthBuffer(lenght: image.size.width)
             dispatchGroup.leave()
         }
         
@@ -69,13 +53,14 @@ final class AccelerateRenderer: UIView {
         var heightBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            heightBuffer = makeHeightBuffer(lenght: contextProvider.image.size.height)
+            heightBuffer = makeHeightBuffer(lenght: image.size.height)
             dispatchGroup.leave()
         }
         
         dispatchGroup.notify(queue: .global(qos: .userInteractive)) { [self] in
-            calculateMandelbrot(buffer: buffer, width: contextProvider.image.targetCgImage.width, 
-                                height: contextProvider.image.targetCgImage.height,
+            calculateMandelbrot(buffer: buffer,
+                                width: image.size.width,
+                                height: image.size.height,
                                 widthBuffer: widthBuffer,
                                 heightBuffer: heightBuffer)
             completion()
