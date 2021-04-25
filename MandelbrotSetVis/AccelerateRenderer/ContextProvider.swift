@@ -8,6 +8,11 @@
 import Foundation
 
 struct ContextProvider {
+    private static let bytesPerPixel = 4
+    private static let bitsPerComponent = 8
+    private static let colorSpace = CGColorSpaceCreateDeviceRGB()
+    private static let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+    
     var image: MandelbrotImage
     
     init(image: MandelbrotImage) {
@@ -21,16 +26,18 @@ struct ContextProvider {
     ///   - height: CGImage's CGContext's height in pixels.
     /// - Returns: CGContext
     lazy var context: CGContext = {
-        let bytesPerPixel = 4
-        let bitsPerComponent = 8
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
-        let bytesPerRow = bytesPerPixel * image.targetCgImage.width
+        let bytesPerRow = ContextProvider.bytesPerPixel &* image.targetCgImage.width
         
-        guard let context = CGContext(data: nil, width: image.targetCgImage.width, height: image.targetCgImage.height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
+        guard let context = CGContext(data: nil,
+                                      width: image.targetCgImage.width,
+                                      height: image.targetCgImage.height,
+                                      bitsPerComponent: ContextProvider.bitsPerComponent,
+                                      bytesPerRow: bytesPerRow,
+                                      space: ContextProvider.colorSpace,
+                                      bitmapInfo: ContextProvider.bitmapInfo) else {
             fatalError("Failed to create Quartz destination context.")
         }
-        let frame = CGRect(x: 0, y: 0, width: image.targetCgImage.width, height: image.targetCgImage.height)
+        let frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
         context.draw(image.targetCgImage, in: frame)
         return context
     }()
