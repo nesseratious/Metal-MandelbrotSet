@@ -24,7 +24,7 @@ final class AccelerateRenderer: UIView {
         let buffer = makeBuffer(from: contextProvider.context, lenght: contextProvider.bufferLenght)
         
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
-            calculateMandelbrot(in: buffer, contextProvider: contextProvider, completion: {
+            calculateMandelbrot(in: buffer, contextProvider: contextProvider, onCompleted: {
                 DispatchQueue.main.async {
                     mandelbrotImage.image = contextProvider.generateUIImage()
                     performanceMonitor.calculationEnded()
@@ -35,9 +35,10 @@ final class AccelerateRenderer: UIView {
     
     private func calculateMandelbrot(in buffer: UnsafeMutablePointer<UInt32>,
                                      contextProvider: ContextProvider,
-                                     completion: @escaping () -> Void) {
+                                     onCompleted: @escaping () -> Void) {
         
         var image = contextProvider.image
+        var bufferProvider = BufferProvider(with: contextProvider, bridgeBuffer: bridgeBuffer)
         let dispatchGroup = DispatchGroup()
         // widthBuffer heightBuffer are independent, so they can be calculated concurrently.
         
@@ -45,7 +46,7 @@ final class AccelerateRenderer: UIView {
         var widthBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            widthBuffer = makeWidthBuffer(lenght: image.size.width)
+            widthBuffer = bufferProvider.makeWidthBuffer()
             dispatchGroup.leave()
         }
         
@@ -53,37 +54,25 @@ final class AccelerateRenderer: UIView {
         var heightBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            heightBuffer = makeHeightBuffer(lenght: image.size.height)
+            heightBuffer = bufferProvider.makeHeightBuffer()
             dispatchGroup.leave()
         }
         
         dispatchGroup.notify(queue: .global(qos: .userInteractive)) { [self] in
-            calculateMandelbrot(buffer: buffer,
-                                width: image.size.width,
-                                height: image.size.height,
-                                widthBuffer: widthBuffer,
-                                heightBuffer: heightBuffer)
-            completion()
+            concurrentCalculate(writeTo: buffer, image: &image, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
+            onCompleted()
         }
     }
     
-    /// Peforms a mandebrot calculation cycle (for one frame).
-    /// - Parameters:
-    ///   - buffer: Target UInt32 buffer where the result should be written to.
-    ///   - width: Render target's width in pixels.
-    ///   - height: Render target's height in pixels.
-    ///   - widthBuffer: Float32 buffer of current mandebrot width transformation.
-    ///   - heightBuffer: Float32 buffer of current mandebrot heigh transformation.
-    private func calculateMandelbrot(buffer: UnsafeMutablePointer<UInt32>,
-                                     width: Int,
-                                     height: Int,
+    private func concurrentCalculate(writeTo buffer: UnsafeMutablePointer<UInt32>,
+                                     image: inout MandelbrotImage,
                                      widthBuffer: UnsafeMutablePointer<FloatType>,
                                      heightBuffer: UnsafeMutablePointer<FloatType>) {
         
         let mandelbrotIterations = Int(bridgeBuffer.iterations)
         
-        DispatchQueue.concurrentPerform(iterations: height) { row in
-            calculateRow(row, width: width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, targetBuffer: buffer, iterations: mandelbrotIterations)
+        DispatchQueue.concurrentPerform(iterations: image.size.height) { row in
+            calculateRow(row, width: image.size.width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, writeTo: buffer, iterations: mandelbrotIterations)
         }
     }
     
@@ -100,7 +89,7 @@ final class AccelerateRenderer: UIView {
                               width: Int,
                               widthBuffer: UnsafeMutablePointer<FloatType>,
                               heightBuffer: UnsafeMutablePointer<FloatType>,
-                              targetBuffer: UnsafeMutablePointer<UInt32>,
+                              writeTo targetBuffer: UnsafeMutablePointer<UInt32>,
                               iterations: Int) {
 
         for column in 0 ..< width {

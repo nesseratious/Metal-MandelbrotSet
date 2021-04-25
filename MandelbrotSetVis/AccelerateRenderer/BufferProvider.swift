@@ -13,8 +13,8 @@ struct BufferProvider {
     var contextProvider: ContextProvider
     var bridgeBuffer: RendererBuffer
     
-    init(image: MandelbrotImage, contextProvider: ContextProvider, bridgeBuffer: RendererBuffer) {
-        self.image = image
+    init(with contextProvider: ContextProvider, bridgeBuffer: RendererBuffer) {
+        self.image = contextProvider.image
         self.contextProvider = contextProvider
         self.bridgeBuffer = bridgeBuffer
     }
