@@ -27,10 +27,9 @@ struct ContextProvider {
     /// - Returns: CGContext
     lazy var context: CGContext = {
         let bytesPerRow = ContextProvider.bytesPerPixel &* image.targetCgImage.width
-        
         guard let context = CGContext(data: nil,
-                                      width: image.targetCgImage.width,
-                                      height: image.targetCgImage.height,
+                                      width: image.size.width,
+                                      height: image.size.height,
                                       bitsPerComponent: ContextProvider.bitsPerComponent,
                                       bytesPerRow: bytesPerRow,
                                       space: ContextProvider.colorSpace,

@@ -139,26 +139,6 @@ final class AccelerateRenderer: UIView {
         }
     }
     
-    /// Makes a CGContext from a given CGImage.
-    /// - Parameters:
-    ///   - cgImage: Input CGImage
-    ///   - width: CGImage's CGContext's width in pixels.
-    ///   - height: CGImage's CGContext's height in pixels.
-    /// - Returns: CGContext
-    private func makeContext(from image: inout MandelbrotImage) -> CGContext {
-        let bytesPerPixel = 4
-        let bitsPerComponent = 8
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
-        let bytesPerRow = bytesPerPixel * image.targetCgImage.width
-        guard let context = CGContext(data: nil, width: image.targetCgImage.width, height: image.targetCgImage.height, bitsPerComponent: bitsPerComponent,
-                                      bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
-            fatalError("Failed to create Quartz destination context.")
-        }
-        context.draw(image.targetCgImage, in: CGRect(x: 0, y: 0, width: image.targetCgImage.width, height: image.targetCgImage.height))
-        return context
-    }
-    
     /// Makes a word buffer from a given CGContext.
     /// - Parameters:
     ///   - context: CGContext
