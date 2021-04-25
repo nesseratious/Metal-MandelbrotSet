@@ -61,7 +61,7 @@ final class AccelerateRenderer: UIView {
         var widthBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            widthBuffer = makeWidthBuffer(lenght: Int(contextProvider.image.size.width))
+            widthBuffer = makeWidthBuffer(lenght: contextProvider.image.size.width)
             dispatchGroup.leave()
         }
         
@@ -69,7 +69,7 @@ final class AccelerateRenderer: UIView {
         var heightBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            heightBuffer = makeHeightBuffer(lenght: Int(contextProvider.image.size.height))
+            heightBuffer = makeHeightBuffer(lenght: contextProvider.image.size.height)
             dispatchGroup.leave()
         }
         

@@ -37,6 +37,6 @@ struct ContextProvider {
     
     /// Total count of pixels in the image.
     lazy var bufferLenght: Int = {
-        return Int(image.size.width) &* Int(image.size.height)
+        return image.size.width &* image.size.height
     }()
 }

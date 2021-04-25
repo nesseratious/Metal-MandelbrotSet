@@ -27,7 +27,7 @@ struct MandelbrotImage {
     }()
     
     /// Total count of pixels in the image.
-    lazy var size: CGSize = {
-        return CGSize(width: targetCgImage.width, height: targetCgImage.height)
+    lazy var size: (width: Int, height: Int) = {
+        return (width: targetCgImage.width, height: targetCgImage.height)
     }()
 }
