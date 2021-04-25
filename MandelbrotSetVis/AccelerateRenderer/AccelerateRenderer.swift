@@ -21,7 +21,6 @@ final class AccelerateRenderer: UIView {
         performanceMonitor.calculationStarted(on: .CPU)
         var image = MandelbrotImage(for: self)
         var contextProvider = ContextProvider(image: image)
-        
         let buffer = makeBuffer(from: contextProvider.context, lenght: image.size)
         
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
