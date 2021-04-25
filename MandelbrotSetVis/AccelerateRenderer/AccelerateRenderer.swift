@@ -20,14 +20,14 @@ final class AccelerateRenderer: UIView {
         guard !performanceMonitor.isRunning else { return }
         performanceMonitor.calculationStarted(on: .CPU)
         var image = MandelbrotImage(for: self)
+        var contextProvider = ContextProvider(image: image)
         
-        let context = makeContext(from: &image)
-        let buffer = makeBuffer(from: context, lenght: image.size)
+        let buffer = makeBuffer(from: contextProvider.context, lenght: image.size)
         
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
             calculateMandelbrot(in: buffer, width: image.cgImage.width, height: image.cgImage.height, completion: {
                 DispatchQueue.main.async {
-                    mandelbrotImage.image = makeUIImage(from: context)
+                    mandelbrotImage.image = makeUIImage(from: contextProvider.context)
                     performanceMonitor.calculationEnded()
                 }
             })
