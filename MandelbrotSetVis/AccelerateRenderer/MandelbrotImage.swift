@@ -15,7 +15,7 @@ struct MandelbrotImage {
     }
     
     /// Blank cg image with size of the provided owner view.
-    lazy var cgImage: CGImage = {
+    lazy var targetCgImage: CGImage = {
         UIGraphicsBeginImageContextWithOptions(view.frame.size, true, 0)
         view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
         guard let image = UIGraphicsGetImageFromCurrentImageContext(),
@@ -27,7 +27,7 @@ struct MandelbrotImage {
     }()
     
     /// Total count of pixels in the image.
-    lazy var size: Int = {
-        return cgImage.width &* cgImage.height
+    lazy var size: CGSize = {
+        return CGSize(width: targetCgImage.width, height: targetCgImage.height)
     }()
 }

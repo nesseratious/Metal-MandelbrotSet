@@ -25,13 +25,18 @@ struct ContextProvider {
         let bitsPerComponent = 8
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
-        let bytesPerRow = bytesPerPixel * image.cgImage.width
+        let bytesPerRow = bytesPerPixel * image.targetCgImage.width
         
-        guard let context = CGContext(data: nil, width: image.cgImage.width, height: image.cgImage.height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
+        guard let context = CGContext(data: nil, width: image.targetCgImage.width, height: image.targetCgImage.height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
             fatalError("Failed to create Quartz destination context.")
         }
-        let frame = CGRect(x: 0, y: 0, width: image.cgImage.width, height: image.cgImage.height)
-        context.draw(image.cgImage, in: frame)
+        let frame = CGRect(x: 0, y: 0, width: image.targetCgImage.width, height: image.targetCgImage.height)
+        context.draw(image.targetCgImage, in: frame)
         return context
+    }()
+    
+    /// Total count of pixels in the image.
+    lazy var bufferLenght: Int = {
+        return Int(image.size.width) &* Int(image.size.height)
     }()
 }

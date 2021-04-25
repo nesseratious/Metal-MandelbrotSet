@@ -19,12 +19,12 @@ final class AccelerateRenderer: UIView {
     private func render() {
         guard !performanceMonitor.isRunning else { return }
         performanceMonitor.calculationStarted(on: .CPU)
-        var image = MandelbrotImage(for: self)
+        let image = MandelbrotImage(for: self)
         var contextProvider = ContextProvider(image: image)
-        let buffer = makeBuffer(from: contextProvider.context, lenght: image.size)
+        let buffer = makeBuffer(from: contextProvider.context, lenght: contextProvider.bufferLenght)
         
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
-            calculateMandelbrot(in: buffer, width: image.cgImage.width, height: image.cgImage.height, completion: {
+            calculateMandelbrot(in: buffer, contextProvider: contextProvider, completion: {
                 DispatchQueue.main.async {
                     mandelbrotImage.image = makeUIImage(from: contextProvider.context)
                     performanceMonitor.calculationEnded()
@@ -51,10 +51,9 @@ final class AccelerateRenderer: UIView {
     ///   - height: Render target's height.
     ///   - completion: Fires when mandelbrot calculation cycle has ended.
     private func calculateMandelbrot(in buffer: UnsafeMutablePointer<UInt32>,
-                                     width: Int,
-                                     height: Int,
+                                     contextProvider: ContextProvider,
                                      completion: @escaping () -> Void) {
-        
+        var contextProvider = contextProvider
         let dispatchGroup = DispatchGroup()
         // widthBuffer heightBuffer are independent, so they can be calculated concurrently.
         
@@ -62,7 +61,7 @@ final class AccelerateRenderer: UIView {
         var widthBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            widthBuffer = makeWidthBuffer(lenght: width)
+            widthBuffer = makeWidthBuffer(lenght: Int(contextProvider.image.size.width))
             dispatchGroup.leave()
         }
         
@@ -70,12 +69,15 @@ final class AccelerateRenderer: UIView {
         var heightBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            heightBuffer = makeHeightBuffer(lenght: height)
+            heightBuffer = makeHeightBuffer(lenght: Int(contextProvider.image.size.height))
             dispatchGroup.leave()
         }
         
         dispatchGroup.notify(queue: .global(qos: .userInteractive)) { [self] in
-            calculateMandelbrot(buffer: buffer, width: width, height: height, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
+            calculateMandelbrot(buffer: buffer, width: contextProvider.image.targetCgImage.width, 
+                                height: contextProvider.image.targetCgImage.height,
+                                widthBuffer: widthBuffer,
+                                heightBuffer: heightBuffer)
             completion()
         }
     }
@@ -148,12 +150,12 @@ final class AccelerateRenderer: UIView {
         let bitsPerComponent = 8
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
-        let bytesPerRow = bytesPerPixel * image.cgImage.width
-        guard let context = CGContext(data: nil, width: image.cgImage.width, height: image.cgImage.height, bitsPerComponent: bitsPerComponent,
+        let bytesPerRow = bytesPerPixel * image.targetCgImage.width
+        guard let context = CGContext(data: nil, width: image.targetCgImage.width, height: image.targetCgImage.height, bitsPerComponent: bitsPerComponent,
                                       bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
             fatalError("Failed to create Quartz destination context.")
         }
-        context.draw(image.cgImage, in: CGRect(x: 0, y: 0, width: image.cgImage.width, height: image.cgImage.height))
+        context.draw(image.targetCgImage, in: CGRect(x: 0, y: 0, width: image.targetCgImage.width, height: image.targetCgImage.height))
         return context
     }
     

@@ -28,14 +28,14 @@ struct BufferProvider {
         guard let dataBuffer = contextProvider.context.data else {
             fatalError("Failed to create a bitmap pointer.")
         }
-        return dataBuffer.bindMemory(to: UInt32.self, capacity: image.size)
+        return dataBuffer.bindMemory(to: UInt32.self, capacity: contextProvider.bufferLenght)
     }
     
     /// Makes a Float32 buffer of current mandebrot width transformation.
     /// - Parameter lenght: Buffer lenght
     /// - Returns: Float32 buffer of current mandebrot width transformation
     mutating func makeWidthBuffer() -> UnsafeMutablePointer<FloatType> {
-        let lenght = image.cgImage.width
+        let lenght = image.targetCgImage.width
         var widthBuffer = [FloatType](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for x in 0 ..< lenght {
                 buffer[x] = FloatType(x)
@@ -54,7 +54,7 @@ struct BufferProvider {
     /// - Parameter lenght: Buffer lenght
     /// - Returns: Float32 buffer of current mandebrot height transformation
     mutating func makeHeightBuffer() -> UnsafeMutablePointer<FloatType> {
-        let lenght = image.cgImage.height
+        let lenght = image.targetCgImage.height
         var heightBuffer = [FloatType](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for y in 0 ..< lenght {
                 buffer[y] = FloatType(y)
