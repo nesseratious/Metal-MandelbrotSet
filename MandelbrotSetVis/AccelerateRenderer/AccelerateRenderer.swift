@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import Accelerate
 
 /// Provides the view with mandelbrot image rendered using power of CPU.
 final class AccelerateRenderer: UIView {
@@ -71,19 +70,19 @@ final class AccelerateRenderer: UIView {
         let mandelbrotIterations = Int(bridgeBuffer.iterations)
         
         DispatchQueue.concurrentPerform(iterations: image.size.height) { row in
-            calculateRow(row, width: image.size.width, widthBuffer: widthBuffer, heightBuffer: heightBuffer, writeTo: buffer, iterations: mandelbrotIterations)
+            calculate(writeTo: buffer, row: row, lenght: image.size.width, widthBuffer: widthBuffer, heightBuffer: heightBuffer,  iterations: mandelbrotIterations)
         }
     }
     
     @inline(__always)
-    private func calculateRow(_ row: Int,
-                              width: Int,
-                              widthBuffer: UnsafeMutablePointer<FloatType>,
-                              heightBuffer: UnsafeMutablePointer<FloatType>,
-                              writeTo targetBuffer: UnsafeMutablePointer<UInt32>,
-                              iterations: Int) {
-
-        for column in 0 ..< width {
+    private func calculate(writeTo targetBuffer: UnsafeMutablePointer<UInt32>,
+                           row: Int,
+                           lenght: Int,
+                           widthBuffer: UnsafeMutablePointer<FloatType>,
+                           heightBuffer: UnsafeMutablePointer<FloatType>,
+                           iterations: Int) {
+        
+        for column in 0 ..< lenght {
             let my = heightBuffer[row]
             let mx = widthBuffer[column]
             var real: FloatType = 0.0
@@ -99,7 +98,7 @@ final class AccelerateRenderer: UIView {
                 i &+= 1
             }
 
-            let pixelOffset = row &* width &+ column
+            let pixelOffset = row &* lenght &+ column
             targetBuffer[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
         }
     }
