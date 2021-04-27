@@ -1,5 +1,5 @@
 //
-//  BufferProvider.swift
+//  TransformBufferProvider.swift
 //  MandelbrotSetVis
 //
 //  Created by Esie on 4/25/21.
@@ -8,27 +8,13 @@
 import Foundation
 import Accelerate
 
-struct BufferProvider {
+struct TransformBufferProvider {
     var image: MandelbrotImage
-    var contextProvider: ContextProvider
     var bridgeBuffer: RendererBuffer
     
     init(with contextProvider: ContextProvider, bridgeBuffer: RendererBuffer) {
         self.image = contextProvider.image
-        self.contextProvider = contextProvider
         self.bridgeBuffer = bridgeBuffer
-    }
-    
-    /// Makes a word buffer from a given CGContext.
-    /// - Parameters:
-    ///   - context: CGContext
-    ///   - lenght: CGContext's lenght (widht x height).
-    /// - Returns: Pointer to word buffer.
-    mutating func makeBuffer() -> UnsafeMutablePointer<UInt32> {
-        guard let dataBuffer = contextProvider.context.data else {
-            fatalError("Failed to create a bitmap pointer.")
-        }
-        return dataBuffer.bindMemory(to: UInt32.self, capacity: contextProvider.bufferLenght)
     }
     
     /// Makes a Float32 buffer of current mandebrot width transformation.

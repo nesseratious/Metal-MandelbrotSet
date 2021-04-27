@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		642499D0263562D000E248B5 /* ContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 642499CF263562D000E248B5 /* ContextProvider.swift */; };
-		642499D4263563E000E248B5 /* BufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 642499D3263563E000E248B5 /* BufferProvider.swift */; };
+		642499D4263563E000E248B5 /* TransformBufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 642499D3263563E000E248B5 /* TransformBufferProvider.swift */; };
 		6425510A255DAF9C00C486BD /* RootTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64255109255DAF9C00C486BD /* RootTabBarViewController.swift */; };
 		64257D6F24FA037200D17591 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D6E24FA037200D17591 /* AppDelegate.swift */; };
 		64257D7124FA037200D17591 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D7024FA037200D17591 /* SceneDelegate.swift */; };
@@ -34,7 +34,7 @@
 
 /* Begin PBXFileReference section */
 		642499CF263562D000E248B5 /* ContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextProvider.swift; sourceTree = "<group>"; };
-		642499D3263563E000E248B5 /* BufferProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferProvider.swift; sourceTree = "<group>"; };
+		642499D3263563E000E248B5 /* TransformBufferProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformBufferProvider.swift; sourceTree = "<group>"; };
 		64255109255DAF9C00C486BD /* RootTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabBarViewController.swift; sourceTree = "<group>"; };
 		64257D6B24FA037200D17591 /* MandelbrotSetVis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MandelbrotSetVis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64257D6E24FA037200D17591 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -80,7 +80,7 @@
 				64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */,
 				64DF1DDF2631DB6A00EA1B4E /* MandelbrotImage.swift */,
 				642499CF263562D000E248B5 /* ContextProvider.swift */,
-				642499D3263563E000E248B5 /* BufferProvider.swift */,
+				642499D3263563E000E248B5 /* TransformBufferProvider.swift */,
 			);
 			path = AccelerateRenderer;
 			sourceTree = "<group>";
@@ -295,7 +295,7 @@
 			files = (
 				64257D9824FA03D100D17591 /* Renderer+RendererBuffer.swift in Sources */,
 				64D706AD25D815DC00B77DD4 /* MetalDeviceProvider.swift in Sources */,
-				642499D4263563E000E248B5 /* BufferProvider.swift in Sources */,
+				642499D4263563E000E248B5 /* TransformBufferProvider.swift in Sources */,
 				64D706B025D81D8500B77DD4 /* MetalRenderPipelineProvider.swift in Sources */,
 				64DF1DD8262E0E9C00EA1B4E /* Shaders.h in Sources */,
 				64257D9924FA03D100D17591 /* MetalBufferProvider.swift in Sources */,

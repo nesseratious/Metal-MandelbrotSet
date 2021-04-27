@@ -38,10 +38,9 @@ final class AccelerateRenderer: UIView {
                                      onCompleted: @escaping () -> Void) {
         
         var image = contextProvider.image
-        var bufferProvider = BufferProvider(with: contextProvider, bridgeBuffer: bridgeBuffer)
+        var bufferProvider = TransformBufferProvider(with: contextProvider, bridgeBuffer: bridgeBuffer)
         let dispatchGroup = DispatchGroup()
-        // widthBuffer heightBuffer are independent, so they can be calculated concurrently.
-        
+
         /// Buffer of current mandebrot per pixel width transformation.
         var widthBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
@@ -76,14 +75,6 @@ final class AccelerateRenderer: UIView {
         }
     }
     
-    /// Performs calculation of a single mandolbrot row.
-    /// - Parameters:
-    ///   - row: Row index (Y position from top).
-    ///   - rowWidth: Row width in pixels.
-    ///   - widthBuffer: Float32 buffer of current mandebrot width transformation.
-    ///   - heightBuffer: Float32 buffer of current mandebrot heigh transformation.
-    ///   - targetBuffer: Target buffer where the result should be written to.
-    ///   - iterations: Number of mandelbrot iterations.
     @inline(__always)
     private func calculateRow(_ row: Int,
                               width: Int,
@@ -113,52 +104,11 @@ final class AccelerateRenderer: UIView {
         }
     }
     
-    /// Makes a word buffer from a given CGContext.
-    /// - Parameters:
-    ///   - context: CGContext
-    ///   - lenght: CGContext's lenght (widht x height).
-    /// - Returns: Pointer to word buffer.
     private func makeBuffer(from context: CGContext, lenght: Int) -> UnsafeMutablePointer<UInt32> {
         guard let dataBuffer = context.data else {
             fatalError("Failed to create bitmap pointer.")
         }
         return dataBuffer.bindMemory(to: UInt32.self, capacity: lenght)
-    }
-    
-    /// Makes a Float32 buffer of current mandebrot width transformation.
-    /// - Parameter lenght: Buffer lenght
-    /// - Returns: Float32 buffer of current mandebrot width transformation
-    private func makeWidthBuffer(lenght: Int) -> UnsafeMutablePointer<FloatType> {
-        var widthBuffer = [FloatType](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
-            for x in 0 ..< lenght {
-                buffer[x] = FloatType(x)
-            }
-            capacity = lenght
-        }
-        let widthTransformationMultiplier = 2.5 * bridgeBuffer.aspectRatio.x * bridgeBuffer.scale
-        let widthTranslation = -1.5 * bridgeBuffer.aspectRatio.x * bridgeBuffer.scale - bridgeBuffer.translation.x
-        vDSP.divide(widthBuffer, FloatType(lenght), result: &widthBuffer)
-        vDSP.multiply(widthTransformationMultiplier, widthBuffer, result: &widthBuffer)
-        vDSP.add(widthTranslation, widthBuffer, result: &widthBuffer)
-        return UnsafeMutablePointer(mutating: widthBuffer.withUnsafeBufferPointer { $0 }.baseAddress!)
-    }
-    
-    /// Makes a Float32 buffer of current mandebrot height transformation.
-    /// - Parameter lenght: Buffer lenght
-    /// - Returns: Float32 buffer of current mandebrot height transformation
-    private func makeHeightBuffer(lenght: Int) -> UnsafeMutablePointer<FloatType> {
-        var heightBuffer = [FloatType](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
-            for y in 0 ..< lenght {
-                buffer[y] = FloatType(y)
-            }
-            capacity = lenght
-        }
-        let heightTransformationMultiplier = 2.0 * bridgeBuffer.aspectRatio.y * bridgeBuffer.scale
-        let heightTranslation = -1.0 * bridgeBuffer.aspectRatio.y * bridgeBuffer.scale + bridgeBuffer.translation.y
-        vDSP.divide(heightBuffer, FloatType(lenght), result: &heightBuffer)
-        vDSP.multiply(heightTransformationMultiplier, heightBuffer, result: &heightBuffer)
-        vDSP.add(heightTranslation, heightBuffer, result: &heightBuffer)
-        return UnsafeMutablePointer(mutating: heightBuffer.withUnsafeBufferPointer { $0 }.baseAddress!)
     }
 }
 
