@@ -5,7 +5,6 @@
 //  Created by Esie on 4/25/21.
 //
 
-import Foundation
 import Accelerate
 
 struct TransformBufferProvider {
@@ -17,9 +16,8 @@ struct TransformBufferProvider {
         self.bridgeBuffer = bridgeBuffer
     }
     
-    /// Makes a Float32 buffer of current mandebrot width transformation.
-    /// - Parameter lenght: Buffer lenght
-    /// - Returns: Float32 buffer of current mandebrot width transformation
+    /// Makes a buffer of current mandebrot width transformation.
+    /// - Returns: Buffer of current mandebrot width transformation
     mutating func makeWidthBuffer() -> UnsafeMutablePointer<FloatType> {
         let lenght = image.targetCgImage.width
         var widthBuffer = [FloatType](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
@@ -36,9 +34,8 @@ struct TransformBufferProvider {
         return UnsafeMutablePointer(mutating: widthBuffer.withUnsafeBufferPointer { $0 }.baseAddress!)
     }
     
-    /// Makes a Float32 buffer of current mandebrot height transformation.
-    /// - Parameter lenght: Buffer lenght
-    /// - Returns: Float32 buffer of current mandebrot height transformation
+    /// Makes a buffer of current mandebrot height transformation.
+    /// - Returns: Buffer of current mandebrot height transformation
     mutating func makeHeightBuffer() -> UnsafeMutablePointer<FloatType> {
         let lenght = image.targetCgImage.height
         var heightBuffer = [FloatType](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
