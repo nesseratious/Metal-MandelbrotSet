@@ -20,12 +20,7 @@ struct ContextProvider {
         self.image = image
     }
     
-    /// Makes a CGContext from a given CGImage.
-    /// - Parameters:
-    ///   - cgImage: Input CGImage
-    ///   - width: CGImage's CGContext's width in pixels.
-    ///   - height: CGImage's CGContext's height in pixels.
-    /// - Returns: CGContext
+    /// CGContext from a given MandelbrotImage.
     lazy var context: CGContext = {
         let bytesPerRow = ContextProvider.bytesPerPixel &* image.targetCgImage.width
         guard let context = CGContext(data: nil,

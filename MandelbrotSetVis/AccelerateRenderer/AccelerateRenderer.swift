@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-/// Provides the view with mandelbrot image rendered using power of CPU.
+/// View with mandelbrot image rendered using the power of CPU.
 final class AccelerateRenderer: UIView {
     private var bridgeBuffer = RendererBuffer()
     private let mandelbrotImage = UIImageView()
@@ -20,7 +20,7 @@ final class AccelerateRenderer: UIView {
         performanceMonitor.calculationStarted(on: .CPU)
         let image = MandelbrotImage(for: self)
         var contextProvider = ContextProvider(image: image)
-        let buffer = makeBuffer(from: contextProvider.context, lenght: contextProvider.bufferLenght)
+        let buffer = makeBuffer(from: &contextProvider)
         
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
             calculateMandelbrot(in: buffer, contextProvider: contextProvider, onCompleted: {
@@ -32,6 +32,13 @@ final class AccelerateRenderer: UIView {
         }
     }
     
+    private func makeBuffer(from context: inout ContextProvider) -> UnsafeMutablePointer<UInt32> {
+        guard let dataBuffer = context.context.data else {
+            fatalError("Failed to create bitmap pointer.")
+        }
+        return dataBuffer.bindMemory(to: UInt32.self, capacity: context.bufferLenght)
+    }
+    
     private func calculateMandelbrot(in buffer: UnsafeMutablePointer<UInt32>,
                                      contextProvider: ContextProvider,
                                      onCompleted: @escaping () -> Void) {
@@ -40,7 +47,7 @@ final class AccelerateRenderer: UIView {
         var bufferProvider = TransformBufferProvider(with: contextProvider, bridgeBuffer: bridgeBuffer)
         let dispatchGroup = DispatchGroup()
 
-        /// Buffer of current mandebrot per pixel width transformation.
+        /// Buffer of the current mandebrot per pixel width transformation.
         var widthBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async { [self] in
@@ -48,7 +55,7 @@ final class AccelerateRenderer: UIView {
             dispatchGroup.leave()
         }
         
-        /// Buffer of current mandebrot per pixel heigh transformation.
+        /// Buffer of the current mandebrot per pixel heigh transformation.
         var heightBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
         DispatchQueue.global(qos: .userInteractive).async { [self] in
@@ -62,7 +69,7 @@ final class AccelerateRenderer: UIView {
         }
     }
     
-    private func concurrentCalculate(writeTo buffer: UnsafeMutablePointer<UInt32>,
+    private func concurrentCalculate(writeTo targetBuffer: UnsafeMutablePointer<UInt32>,
                                      image: inout MandelbrotImage,
                                      widthBuffer: UnsafeMutablePointer<FloatType>,
                                      heightBuffer: UnsafeMutablePointer<FloatType>) {
@@ -70,7 +77,7 @@ final class AccelerateRenderer: UIView {
         let mandelbrotIterations = Int(bridgeBuffer.iterations)
         
         DispatchQueue.concurrentPerform(iterations: image.size.height) { row in
-            calculate(writeTo: buffer, row: row, lenght: image.size.width, widthBuffer: widthBuffer, heightBuffer: heightBuffer,  iterations: mandelbrotIterations)
+            calculate(writeTo: targetBuffer, row: row, lenght: image.size.width, widthBuffer: widthBuffer, heightBuffer: heightBuffer,  iterations: mandelbrotIterations)
         }
     }
     
@@ -101,13 +108,6 @@ final class AccelerateRenderer: UIView {
             let pixelOffset = row &* lenght &+ column
             targetBuffer[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
         }
-    }
-    
-    private func makeBuffer(from context: CGContext, lenght: Int) -> UnsafeMutablePointer<UInt32> {
-        guard let dataBuffer = context.data else {
-            fatalError("Failed to create bitmap pointer.")
-        }
-        return dataBuffer.bindMemory(to: UInt32.self, capacity: lenght)
     }
 }
 
