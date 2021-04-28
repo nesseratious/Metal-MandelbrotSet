@@ -50,7 +50,7 @@ final class AccelerateRenderer: UIView {
         /// Buffer of the current mandebrot per pixel width transformation.
         var widthBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
-        DispatchQueue.global(qos: .userInteractive).async { [self] in
+        DispatchQueue.global(qos: .userInteractive).async {
             widthBuffer = bufferProvider.makeWidthBuffer()
             dispatchGroup.leave()
         }
@@ -58,7 +58,7 @@ final class AccelerateRenderer: UIView {
         /// Buffer of the current mandebrot per pixel heigh transformation.
         var heightBuffer: UnsafeMutablePointer<FloatType>!
         dispatchGroup.enter()
-        DispatchQueue.global(qos: .userInteractive).async { [self] in
+        DispatchQueue.global(qos: .userInteractive).async { 
             heightBuffer = bufferProvider.makeHeightBuffer()
             dispatchGroup.leave()
         }
