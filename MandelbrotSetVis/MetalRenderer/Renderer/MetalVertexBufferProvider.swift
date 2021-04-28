@@ -25,7 +25,7 @@ struct MetalVertexBufferProvider {
              -1.0,  1.0,  0.0,
               1.0,  1.0,  0.0,
               1.0, -1.0,  0.0]
-        let lenght = vertices.count * MemoryLayout<Float32>.size * 3
+        let lenght = vertices.count * MemoryLayout<Float32>.stride * 3
         return device.makeBuffer(bytes: vertices, length: lenght)
     }
 }
