@@ -45,28 +45,10 @@ final class AccelerateRenderer: UIView {
         
         var image = contextProvider.image
         var bufferProvider = TransformBufferProvider(with: contextProvider, bridgeBuffer: bridgeBuffer)
-        let dispatchGroup = DispatchGroup()
-
-        /// Buffer of the current mandebrot per pixel width transformation.
-        var widthBuffer: UnsafeMutablePointer<FloatType>!
-        dispatchGroup.enter()
-        DispatchQueue.global(qos: .userInteractive).async {
-            widthBuffer = bufferProvider.makeWidthBuffer()
-            dispatchGroup.leave()
-        }
-        
-        /// Buffer of the current mandebrot per pixel heigh transformation.
-        var heightBuffer: UnsafeMutablePointer<FloatType>!
-        dispatchGroup.enter()
-        DispatchQueue.global(qos: .userInteractive).async { 
-            heightBuffer = bufferProvider.makeHeightBuffer()
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.notify(queue: .global(qos: .userInteractive)) { [self] in
-            concurrentCalculate(writeTo: buffer, image: &image, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
-            onCompleted()
-        }
+        let widthBuffer = bufferProvider.makeWidthBuffer()
+        let heightBuffer = bufferProvider.makeHeightBuffer()
+        concurrentCalculate(writeTo: buffer, image: &image, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
+        onCompleted()
     }
     
     private func concurrentCalculate(writeTo targetBuffer: UnsafeMutablePointer<UInt32>,
