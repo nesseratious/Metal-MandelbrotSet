@@ -28,6 +28,8 @@ struct TransformBufferProvider {
         }
         let widthTransformationMultiplier = 2.5 * bridgeBuffer.aspectRatio.x * bridgeBuffer.scale
         let widthTranslation = -1.5 * bridgeBuffer.aspectRatio.x * bridgeBuffer.scale - bridgeBuffer.translation.x
+        
+        //TODO: Add fallback for 80 bit float support
         vDSP.divide(widthBuffer, FloatType(lenght), result: &widthBuffer)
         vDSP.multiply(widthTransformationMultiplier, widthBuffer, result: &widthBuffer)
         vDSP.add(widthTranslation, widthBuffer, result: &widthBuffer)
@@ -46,6 +48,8 @@ struct TransformBufferProvider {
         }
         let heightTransformationMultiplier = 2.0 * bridgeBuffer.aspectRatio.y * bridgeBuffer.scale
         let heightTranslation = -1.0 * bridgeBuffer.aspectRatio.y * bridgeBuffer.scale + bridgeBuffer.translation.y
+        
+        //TODO: Add fallback for 80 bit float support
         vDSP.divide(heightBuffer, FloatType(lenght), result: &heightBuffer)
         vDSP.multiply(heightTransformationMultiplier, heightBuffer, result: &heightBuffer)
         vDSP.add(heightTranslation, heightBuffer, result: &heightBuffer)
