@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A7A7B422671ED080049C293 /* MacToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7A7B412671ED080049C293 /* MacToolbar.swift */; };
 		642499D0263562D000E248B5 /* ContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 642499CF263562D000E248B5 /* ContextProvider.swift */; };
 		642499D4263563E000E248B5 /* TransformBufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 642499D3263563E000E248B5 /* TransformBufferProvider.swift */; };
 		6425510A255DAF9C00C486BD /* RootTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64255109255DAF9C00C486BD /* RootTabBarViewController.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5A7A7B412671ED080049C293 /* MacToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacToolbar.swift; sourceTree = "<group>"; };
 		642499CF263562D000E248B5 /* ContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextProvider.swift; sourceTree = "<group>"; };
 		642499D3263563E000E248B5 /* TransformBufferProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformBufferProvider.swift; sourceTree = "<group>"; };
 		64255109255DAF9C00C486BD /* RootTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabBarViewController.swift; sourceTree = "<group>"; };
@@ -106,7 +108,7 @@
 		64257D6D24FA037200D17591 /* MandelbrotSetVis */ = {
 			isa = PBXGroup;
 			children = (
-				64257DA524FA057100D17591 /* AppDelegates */,
+				64257DA524FA057100D17591 /* App */,
 				64257DA124FA03E800D17591 /* Supporting Files */,
 				64ADD95D256058CC009A81D8 /* PerformanceMonitor */,
 				642550FC255DAA4100C486BD /* AccelerateRenderer */,
@@ -186,13 +188,14 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		64257DA524FA057100D17591 /* AppDelegates */ = {
+		64257DA524FA057100D17591 /* App */ = {
 			isa = PBXGroup;
 			children = (
 				64257D6E24FA037200D17591 /* AppDelegate.swift */,
 				64257D7024FA037200D17591 /* SceneDelegate.swift */,
+				5A7A7B412671ED080049C293 /* MacToolbar.swift */,
 			);
-			path = AppDelegates;
+			path = App;
 			sourceTree = "<group>";
 		};
 		64A17B2B24FB6B90002482D6 /* Images */ = {
@@ -294,6 +297,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				64257D9824FA03D100D17591 /* Renderer+RendererBuffer.swift in Sources */,
+				5A7A7B422671ED080049C293 /* MacToolbar.swift in Sources */,
 				64D706AD25D815DC00B77DD4 /* MetalDeviceProvider.swift in Sources */,
 				642499D4263563E000E248B5 /* TransformBufferProvider.swift in Sources */,
 				64D706B025D81D8500B77DD4 /* MetalRenderPipelineProvider.swift in Sources */,

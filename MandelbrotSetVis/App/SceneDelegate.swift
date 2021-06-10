@@ -15,5 +15,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: scene)
         window?.rootViewController = RootTabBarController()
         window?.makeKeyAndVisible()
+        
+        #if targetEnvironment(macCatalyst)
+        scene.titlebar?.toolbar = MacToolbar(titles: ["GPU/METAL", "CPU/ACCELERATE"])
+        scene.titlebar?.toolbarStyle = .automatic
+        #endif
     }
 }
