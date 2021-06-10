@@ -18,7 +18,7 @@ class TransformBufferProvider {
     
     /// Makes a buffer of current mandebrot width transformation.
     /// - Returns: Buffer of current mandebrot width transformation
-    func makeWidthBuffer() async -> UnsafeMutablePointer<FloatType> {
+    func makeWidthBuffer() -> Buffer {
         let lenght = image.targetCgImage.width
         var widthBuffer = [FloatType](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for x in 0 ..< lenght {
@@ -38,7 +38,7 @@ class TransformBufferProvider {
     
     /// Makes a buffer of current mandebrot height transformation.
     /// - Returns: Buffer of current mandebrot height transformation
-    func makeHeightBuffer() async -> UnsafeMutablePointer<FloatType> {
+    func makeHeightBuffer() -> Buffer {
         let lenght = image.targetCgImage.height
         var heightBuffer = [FloatType](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for y in 0 ..< lenght {

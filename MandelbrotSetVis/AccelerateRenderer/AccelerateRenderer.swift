@@ -41,47 +41,35 @@ final class AccelerateRenderer: UIView {
         let bufferProvider = TransformBufferProvider(with: contextProvider, bridgeBuffer: bridgeBuffer)
         async let widthBuffer = bufferProvider.makeWidthBuffer()
         async let heightBuffer = bufferProvider.makeHeightBuffer()
-        await concurrentCalculate(writeTo: buffer, image: &image, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
+        let matrix = await Matrix(width: widthBuffer, heigh: heightBuffer)
+        calculate(target: buffer, image: &image, transform: matrix)
     }
     
-    private func concurrentCalculate(writeTo targetBuffer: UnsafeMutablePointer<UInt32>,
-                                     image: inout MandelbrotImage,
-                                     widthBuffer: UnsafeMutablePointer<FloatType>,
-                                     heightBuffer: UnsafeMutablePointer<FloatType>) {
+    private func calculate(target: UnsafeMutablePointer<UInt32>, image: inout MandelbrotImage, transform: Matrix) {
         
-        let mandelbrotIterations = Int(bridgeBuffer.iterations)
+        let iterations = Int(bridgeBuffer.iterations)
+        let lenght = image.size.width
         
         DispatchQueue.concurrentPerform(iterations: image.size.height) { row in
-            calculate(writeTo: targetBuffer, row: row, lenght: image.size.width, widthBuffer: widthBuffer, heightBuffer: heightBuffer,  iterations: mandelbrotIterations)
-        }
-    }
-    
-    @inline(__always)
-    private func calculate(writeTo targetBuffer: UnsafeMutablePointer<UInt32>,
-                           row: Int,
-                           lenght: Int,
-                           widthBuffer: UnsafeMutablePointer<FloatType>,
-                           heightBuffer: UnsafeMutablePointer<FloatType>,
-                           iterations: Int) {
-        
-        for column in 0 ..< lenght {
-            let my = heightBuffer[row]
-            let mx = widthBuffer[column]
-            var real: FloatType = 0.0
-            var img: FloatType = 0.0
-            var i: UInt32 = 0
-
-            while i < iterations {
-                let r2 = real * real
-                let i2 = img * img
-                if r2 + i2 > 4.0 { break }
-                img = 2.0 * real * img + my
-                real = r2 - i2 + mx
-                i &+= 1
+            for column in 0 ..< lenght {
+                let my = transform.heigh[row]
+                let mx = transform.width[column]
+                var real: FloatType = 0.0
+                var img: FloatType = 0.0
+                var i: UInt32 = 0
+                
+                while i < iterations {
+                    let r2 = real * real
+                    let i2 = img * img
+                    if r2 + i2 > 4.0 { break }
+                    img = 2.0 * real * img + my
+                    real = r2 - i2 + mx
+                    i &+= 1
+                }
+                
+                let pixelOffset = row &* lenght &+ column
+                target[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
             }
-
-            let pixelOffset = row &* lenght &+ column
-            targetBuffer[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
         }
     }
 }

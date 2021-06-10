@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5A7A7B422671ED080049C293 /* MacToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7A7B412671ED080049C293 /* MacToolbar.swift */; };
+		5A7A7B65267234680049C293 /* Matrix+Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7A7B64267234680049C293 /* Matrix+Buffer.swift */; };
 		642499D0263562D000E248B5 /* ContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 642499CF263562D000E248B5 /* ContextProvider.swift */; };
 		642499D4263563E000E248B5 /* TransformBufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 642499D3263563E000E248B5 /* TransformBufferProvider.swift */; };
 		6425510A255DAF9C00C486BD /* RootTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64255109255DAF9C00C486BD /* RootTabBarViewController.swift */; };
@@ -35,6 +36,7 @@
 
 /* Begin PBXFileReference section */
 		5A7A7B412671ED080049C293 /* MacToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacToolbar.swift; sourceTree = "<group>"; };
+		5A7A7B64267234680049C293 /* Matrix+Buffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+Buffer.swift"; sourceTree = "<group>"; };
 		642499CF263562D000E248B5 /* ContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextProvider.swift; sourceTree = "<group>"; };
 		642499D3263563E000E248B5 /* TransformBufferProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformBufferProvider.swift; sourceTree = "<group>"; };
 		64255109255DAF9C00C486BD /* RootTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabBarViewController.swift; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 				64A17B2024FB52FD002482D6 /* BridgingHeader.h */,
 				64257D8724FA03D100D17591 /* Renderer+RendererBuffer.swift */,
 				64257D9324FA03D100D17591 /* SceneTransform.swift */,
+				5A7A7B64267234680049C293 /* Matrix+Buffer.swift */,
 			);
 			path = Mandelbrot;
 			sourceTree = "<group>";
@@ -309,6 +312,7 @@
 				6425510A255DAF9C00C486BD /* RootTabBarViewController.swift in Sources */,
 				64257D9624FA03D100D17591 /* MetalRenderer.swift in Sources */,
 				64257D9B24FA03D100D17591 /* Shaders.metal in Sources */,
+				5A7A7B65267234680049C293 /* Matrix+Buffer.swift in Sources */,
 				64ADD960256058F1009A81D8 /* PerformanceMonitor.swift in Sources */,
 				64DF1DE02631DB6A00EA1B4E /* MandelbrotImage.swift in Sources */,
 				64257D9C24FA03D100D17591 /* MetalVertexBufferProvider.swift in Sources */,
