@@ -13,14 +13,14 @@ final class AccelerateRenderer: UIView {
     private var bridgeBuffer = RendererBuffer()
     private let mandelbrotImage = UIImageView()
     private var performanceMonitor = PerformanceMonitor()
-        
+    private lazy var image = MandelbrotImage(for: self)
+    private lazy var contextProvider = ContextProvider(of: image)
+    
     /// Starts the mandelbrot render process.
     private func render() {
         guard !performanceMonitor.isRunning else { return }
         performanceMonitor.calculationStarted(on: .CPU)
-        let image = MandelbrotImage(for: self)
-        let contextProvider = ContextProvider(image: image)
-        let buffer = makeBuffer(from: contextProvider)
+        let buffer = contextProvider.makeBuffer()
         
         async(priority: .userInteractive) {
             await calculateMandelbrot(in: buffer, contextProvider: contextProvider)
@@ -28,25 +28,16 @@ final class AccelerateRenderer: UIView {
             performanceMonitor.calculationEnded()
         }
     }
-    
-    private func makeBuffer(from context: ContextProvider) -> UnsafeMutablePointer<UInt32> {
-        guard let dataBuffer = context.context.data else {
-            fatalError("Failed to create bitmap pointer.")
-        }
-        return dataBuffer.bindMemory(to: UInt32.self, capacity: context.bufferLenght)
-    }
-    
+
     private func calculateMandelbrot(in buffer: UnsafeMutablePointer<UInt32>, contextProvider: ContextProvider) async {
-        var image = contextProvider.image
         let bufferProvider = TransformBufferProvider(with: contextProvider, bridgeBuffer: bridgeBuffer)
         async let widthBuffer = bufferProvider.makeWidthBuffer()
         async let heightBuffer = bufferProvider.makeHeightBuffer()
         let matrix = await Matrix(width: widthBuffer, heigh: heightBuffer)
-        calculate(target: buffer, image: &image, transform: matrix)
+        calculate(target: buffer, image: contextProvider.image, transform: matrix)
     }
     
-    private func calculate(target: UnsafeMutablePointer<UInt32>, image: inout MandelbrotImage, transform: Matrix) {
-        
+    private func calculate(target: UnsafeMutablePointer<UInt32>, image: MandelbrotImage, transform: Matrix) {
         let iterations = Int(bridgeBuffer.iterations)
         let lenght = image.size.width
         

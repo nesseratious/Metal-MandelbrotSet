@@ -14,11 +14,23 @@ final class ContextProvider {
     private static let colorSpace = CGColorSpaceCreateDeviceRGB()
     private static let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
     
-    var image: MandelbrotImage
+    unowned var image: MandelbrotImage
     
-    init(image: MandelbrotImage) {
+    init(of image: MandelbrotImage) {
         self.image = image
     }
+    
+    func makeBuffer() -> UnsafeMutablePointer<UInt32> {
+        guard let dataBuffer = context.data else {
+            fatalError("Failed to create bitmap pointer.")
+        }
+        return dataBuffer.bindMemory(to: UInt32.self, capacity: bufferLenght)
+    }
+    
+    /// Total count of pixels in the image.
+    lazy var bufferLenght: Int = {
+        return image.size.width &* image.size.height
+    }()
     
     /// CGContext from a given MandelbrotImage.
     lazy var context: CGContext = {
@@ -35,11 +47,6 @@ final class ContextProvider {
         let frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
         context.draw(image.targetCgImage, in: frame)
         return context
-    }()
-    
-    /// Total count of pixels in the image.
-    lazy var bufferLenght: Int = {
-        return image.size.width &* image.size.height
     }()
     
     /// Makes an UIImage from the current CGContext.

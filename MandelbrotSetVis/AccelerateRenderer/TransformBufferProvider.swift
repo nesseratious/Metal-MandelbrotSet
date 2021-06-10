@@ -9,7 +9,7 @@ import Accelerate
 import simd
 
 final class TransformBufferProvider {
-    let image: MandelbrotImage
+    unowned let image: MandelbrotImage
     var buffer: RendererBuffer
     
     init(with contextProvider: ContextProvider, bridgeBuffer: RendererBuffer) {
