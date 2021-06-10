@@ -17,6 +17,7 @@ protocol Renderer: UIView {
 /// Can be switched between 16, 32 or 64 bit
 /// GPU (Metal) doesn't support 64 and 80 bit float
 /// Accelerate VDSP doesn't support 80 bit float
+/// Mac on intel doesn't support 16 bit float
 typealias FloatType = Float32
 
 //TODO: Add 80 bit float support
