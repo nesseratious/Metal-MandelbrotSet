@@ -19,36 +19,29 @@ final class AccelerateRenderer: UIView {
         guard !performanceMonitor.isRunning else { return }
         performanceMonitor.calculationStarted(on: .CPU)
         let image = MandelbrotImage(for: self)
-        var contextProvider = ContextProvider(image: image)
-        let buffer = makeBuffer(from: &contextProvider)
+        let contextProvider = ContextProvider(image: image)
+        let buffer = makeBuffer(from: contextProvider)
         
-        DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
-            calculateMandelbrot(in: buffer, contextProvider: contextProvider, onCompleted: {
-                DispatchQueue.main.async {
-                    mandelbrotImage.image = contextProvider.generateUIImage()
-                    performanceMonitor.calculationEnded()
-                }
-            })
+        async(priority: .userInteractive) {
+            await calculateMandelbrot(in: buffer, contextProvider: contextProvider)
+            mandelbrotImage.image = contextProvider.generateUIImage()
+            performanceMonitor.calculationEnded()
         }
     }
     
-    private func makeBuffer(from context: inout ContextProvider) -> UnsafeMutablePointer<UInt32> {
+    private func makeBuffer(from context: ContextProvider) -> UnsafeMutablePointer<UInt32> {
         guard let dataBuffer = context.context.data else {
             fatalError("Failed to create bitmap pointer.")
         }
         return dataBuffer.bindMemory(to: UInt32.self, capacity: context.bufferLenght)
     }
     
-    private func calculateMandelbrot(in buffer: UnsafeMutablePointer<UInt32>,
-                                     contextProvider: ContextProvider,
-                                     onCompleted: @escaping () -> Void) {
-        
+    private func calculateMandelbrot(in buffer: UnsafeMutablePointer<UInt32>, contextProvider: ContextProvider) async {
         var image = contextProvider.image
-        var bufferProvider = TransformBufferProvider(with: contextProvider, bridgeBuffer: bridgeBuffer)
-        let widthBuffer = bufferProvider.makeWidthBuffer()
-        let heightBuffer = bufferProvider.makeHeightBuffer()
-        concurrentCalculate(writeTo: buffer, image: &image, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
-        onCompleted()
+        let bufferProvider = TransformBufferProvider(with: contextProvider, bridgeBuffer: bridgeBuffer)
+        async let widthBuffer = bufferProvider.makeWidthBuffer()
+        async let heightBuffer = bufferProvider.makeHeightBuffer()
+        await concurrentCalculate(writeTo: buffer, image: &image, widthBuffer: widthBuffer, heightBuffer: heightBuffer)
     }
     
     private func concurrentCalculate(writeTo targetBuffer: UnsafeMutablePointer<UInt32>,

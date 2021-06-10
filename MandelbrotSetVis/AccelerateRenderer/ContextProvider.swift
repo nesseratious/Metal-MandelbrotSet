@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-struct ContextProvider {
+class ContextProvider {
     private static let bytesPerPixel = 4
     private static let bitsPerComponent = 8
     private static let colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -44,7 +44,7 @@ struct ContextProvider {
     
     /// Makes an UIImage from the current CGContext.
     /// - Returns: UIImage from the current CGContext
-    mutating func generateUIImage() -> UIImage {
+    func generateUIImage() -> UIImage {
         guard let outputCGImage = context.makeImage() else {
             fatalError("Failed to create cgimage from the current context.")
         }

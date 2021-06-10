@@ -7,7 +7,7 @@
 
 import Accelerate
 
-struct TransformBufferProvider {
+class TransformBufferProvider {
     var image: MandelbrotImage
     var bridgeBuffer: RendererBuffer
     
@@ -18,7 +18,7 @@ struct TransformBufferProvider {
     
     /// Makes a buffer of current mandebrot width transformation.
     /// - Returns: Buffer of current mandebrot width transformation
-    mutating func makeWidthBuffer() -> UnsafeMutablePointer<FloatType> {
+    func makeWidthBuffer() async -> UnsafeMutablePointer<FloatType> {
         let lenght = image.targetCgImage.width
         var widthBuffer = [FloatType](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for x in 0 ..< lenght {
@@ -38,7 +38,7 @@ struct TransformBufferProvider {
     
     /// Makes a buffer of current mandebrot height transformation.
     /// - Returns: Buffer of current mandebrot height transformation
-    mutating func makeHeightBuffer() -> UnsafeMutablePointer<FloatType> {
+    func makeHeightBuffer() async -> UnsafeMutablePointer<FloatType> {
         let lenght = image.targetCgImage.height
         var heightBuffer = [FloatType](unsafeUninitializedCapacity: lenght) { (buffer, capacity) in
             for y in 0 ..< lenght {

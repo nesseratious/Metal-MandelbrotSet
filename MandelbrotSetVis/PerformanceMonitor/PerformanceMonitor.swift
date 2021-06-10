@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PerformanceMonitor {
+@MainActor struct PerformanceMonitor {
     private var time: TimeInterval?
     private var inference: TimeInterval?
     private var source: Source?
