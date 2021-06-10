@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class ContextProvider {
+final class ContextProvider {
     private static let bytesPerPixel = 4
     private static let bitsPerComponent = 8
     private static let colorSpace = CGColorSpaceCreateDeviceRGB()

@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct MandelbrotImage {
+final class MandelbrotImage {
     private unowned let view: UIView
     
     init(for view: UIView) {
