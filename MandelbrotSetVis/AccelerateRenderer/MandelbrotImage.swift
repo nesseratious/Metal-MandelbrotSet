@@ -16,7 +16,7 @@ final class MandelbrotImage {
     
     /// Blank CGImage with size of the provided owner view.
     lazy var targetCgImage: CGImage = {
-        UIGraphicsImageRenderer(size: view.frame.size).image { context in
+        return UIGraphicsImageRenderer(size: view.frame.size).image { context in
             view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
         }.cgImage!
     }()

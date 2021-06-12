@@ -68,10 +68,22 @@ extension MetalRenderer: MTKViewDelegate {
         commandBuffer.commit()
         isRedrawNeeded = false
 
+        if runtimeCheckForDebugger() {
+    
         //FIXME: -[_MTLCommandBuffer addCompletedHandler:], line 673: error '<private>'
-//        commandBuffer.addCompletedHandler { [unowned self] _ in
-//            performanceMonitor.calculationEnded()
-//        }
+            commandBuffer.addCompletedHandler { [unowned self] _ in
+                performanceMonitor.calculationEnded()
+            }
+        }
+    }
+    
+    func runtimeCheckForDebugger() -> Bool {
+        var info = kinfo_proc()
+        var mib = [CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid()]
+        var stride = MemoryLayout<kinfo_proc>.stride
+        let junk = sysctl(&mib, UInt32(mib.count), &info, &stride, nil, 0)
+        guard junk == 0 else { return false }
+        return (info.kp_proc.p_flag & P_TRACED) != 0
     }
 }
 
