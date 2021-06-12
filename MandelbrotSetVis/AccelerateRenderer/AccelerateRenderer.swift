@@ -43,18 +43,16 @@ final class AccelerateRenderer: UIView {
         
         DispatchQueue.concurrentPerform(iterations: image.size.height) { row in
             for column in 0 ..< lenght {
-                let my = transform.heigh[row]
-                let mx = transform.width[column]
-                var real: FloatType = 0.0
-                var img: FloatType = 0.0
+                let transformVec = SIMD2<FloatType>(x: transform.width[column], y: transform.heigh[row])
+                var complex = SIMD2<FloatType>(x: 0, y: 0) // x is real, y is img
                 var i: UInt32 = 0
                 
                 while i < iterations {
-                    let r2 = real * real
-                    let i2 = img * img
-                    if r2 + i2 > 4.0 { break }
-                    img = 2.0 * real * img + my
-                    real = r2 - i2 + mx
+                    let r3 = complex * complex
+                    if r3.sum() > 4.0 { break }
+                    complex.y = 2.0 * complex.x * complex.y
+                    complex.x = r3.x - r3.y
+                    complex += transformVec
                     i &+= 1
                 }
                 
