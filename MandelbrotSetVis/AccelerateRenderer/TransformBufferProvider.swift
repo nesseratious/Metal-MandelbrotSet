@@ -29,7 +29,7 @@ final class TransformBufferProvider {
         }
         let transformVec = SIMD2<FloatType>(x: 2.5, y: -1.5 - buffer.translation.x) * buffer.aspectRatio.x * buffer.scale
 
-        //TODO: Add fallback for 80 bit float support
+        //TODO: Add fallback for 80 bit float support on intel macs
         vDSP.divide(widthBuffer, FloatType(lenght), result: &widthBuffer)
         vDSP.multiply(transformVec.x, widthBuffer, result: &widthBuffer)
         vDSP.add(transformVec.y, widthBuffer, result: &widthBuffer)
@@ -48,7 +48,7 @@ final class TransformBufferProvider {
         }
         let transformVec = SIMD2<FloatType>(x: 2.0, y: -1.0 + buffer.translation.y) * buffer.aspectRatio.y * buffer.scale
 
-        //TODO: Add fallback for 80 bit float support
+        //TODO: Add fallback for 80 bit float support on intel macs
         vDSP.divide(heightBuffer, FloatType(lenght), result: &heightBuffer)
         vDSP.multiply(transformVec.x, heightBuffer, result: &heightBuffer)
         vDSP.add(transformVec.y, heightBuffer, result: &heightBuffer)
