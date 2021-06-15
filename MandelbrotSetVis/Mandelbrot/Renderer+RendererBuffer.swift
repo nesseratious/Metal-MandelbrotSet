@@ -18,9 +18,10 @@ protocol Renderer: UIView {
 /// GPU (Metal) doesn't support 64 and 80 bit float
 /// Accelerate VDSP doesn't support 80 bit float
 /// Mac on intel doesn't support 16 bit float
+/// Mac on M1 doesn't support 80 bit float
 typealias FloatType = Float32
 
-//TODO: Add 80 bit float support
+//TODO: Add 16 and 80 bit float support
 
 /// Bridge buffer used for exchanging uniform data between Swift and C/Metal.
 /// RendererBuffer struct has the same memory layout as C's MetalBuffer struct.

@@ -62,7 +62,7 @@ struct MetalRenderPipelineProvider {
     private func makeVertexDescriptor() -> MTLVertexDescriptor {
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0]?.format = .float2
-        vertexDescriptor.layouts[0]?.stride = MemoryLayout<Float32>.stride * 3
+        vertexDescriptor.layouts[0]?.stride = MemoryLayout<FloatType>.stride * 3
         return vertexDescriptor
     }
 }
