@@ -1,5 +1,5 @@
 //
-//  MetalBuffer.h
+//  VertexBuffer.h
 //  MandelbrotSetVis
 //
 //  Created by Esie on 8/30/20.
@@ -19,7 +19,7 @@ typedef struct {
 } Scaling;
 
 /// Convertible from Swift using RendererBuffer swift struct.
-struct MetalBuffer {
+struct VertexBuffer {
     float scale;
     float iterations;
     Translation translation;

@@ -9,7 +9,7 @@
 import MetalKit
 
 /// Provides the view with mandelbrot image rendered using power of GPU.
-final class MetalRenderer: MTKView {
+final class MetalRenderer: MTKView, Renderer {
     private var commandQueue: MTLCommandQueue!
     private var renderPipelineState: MTLRenderPipelineState!
     private var paletteTexture: MTLTexture!
@@ -17,8 +17,29 @@ final class MetalRenderer: MTKView {
     private var bufferProvider: MetalBufferProvider!
     private var isRedrawNeeded = true
     private var vertexBufferProvider: MetalVertexBufferProvider!
-    private var bridgeBuffer = RendererBuffer()
     private var performanceMonitor = PerformanceMonitor()
+    
+    var vertexBuffer = VertexBuffer() {
+        didSet {
+            isRedrawNeeded = true
+        }
+    }
+    
+    func setupRenderer() {
+        let deviceProvider = MetalDeviceProvider()
+        let device = deviceProvider.make()
+        self.device = device
+        delegate = self
+
+        commandQueue = device.makeCommandQueue()
+        bufferProvider = MetalBufferProvider(with: device)
+        paletteTexture = loadPalleteTexture(for: device)
+        vertexBufferProvider = MetalVertexBufferProvider(with: device)
+        samplerState = device.makeSamplerState(descriptor: MTLSamplerDescriptor())
+        
+        let renderPipelineProvider = MetalRenderPipelineProvider(with: device, in: self)
+        renderPipelineState = renderPipelineProvider.make()
+    }
     
     private func loadPalleteTexture(for device: MTLDevice) -> MTLTexture {
         guard let palletePath = Bundle.main.path(forResource: "pallete", ofType: "png") else {
@@ -55,7 +76,7 @@ extension MetalRenderer: MTKViewDelegate {
         
         performanceMonitor.calculationStarted(on: .GPU)
 
-        let buffer = bufferProvider.make(with: bridgeBuffer)
+        let buffer = bufferProvider.make(with: vertexBuffer)
         commandEncoder.setRenderPipelineState(renderPipelineState)
         commandEncoder.setVertexBuffer(vertexBufferProvider.make(), offset: 0, index: 0)
         commandEncoder.setVertexBuffer(buffer, offset: 0, index: 1)
@@ -69,8 +90,7 @@ extension MetalRenderer: MTKViewDelegate {
         isRedrawNeeded = false
 
         if runtimeCheckForDebugger() {
-    
-        //FIXME: -[_MTLCommandBuffer addCompletedHandler:], line 673: error '<private>'
+            //FIXME: -[_MTLCommandBuffer addCompletedHandler:], line 673: error '<private>'
             commandBuffer.addCompletedHandler { [unowned self] _ in
                 performanceMonitor.calculationEnded()
             }
@@ -84,33 +104,5 @@ extension MetalRenderer: MTKViewDelegate {
         let junk = sysctl(&mib, UInt32(mib.count), &info, &stride, nil, 0)
         guard junk == 0 else { return false }
         return (info.kp_proc.p_flag & P_TRACED) != 0
-    }
-}
-
-extension MetalRenderer: Renderer {
-    var buffer: RendererBuffer {
-        get {
-            return bridgeBuffer
-        }
-        set {
-            bridgeBuffer = newValue
-            isRedrawNeeded = true
-        }
-    }
-    
-    func setupRenderer() {
-        let deviceProvider = MetalDeviceProvider()
-        let device = deviceProvider.make()
-        self.device = device
-        delegate = self
-
-        commandQueue = device.makeCommandQueue()
-        bufferProvider = MetalBufferProvider(with: device)
-        paletteTexture = loadPalleteTexture(for: device)
-        vertexBufferProvider = MetalVertexBufferProvider(with: device)
-        samplerState = device.makeSamplerState(descriptor: MTLSamplerDescriptor())
-        
-        let renderPipelineProvider = MetalRenderPipelineProvider(with: device, in: self)
-        renderPipelineState = renderPipelineProvider.make()
     }
 }

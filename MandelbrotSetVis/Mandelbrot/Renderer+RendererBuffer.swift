@@ -10,7 +10,7 @@ import UIKit
 
 /// Interface for exchanging bridge renderer buffer between a view controller and a conforming entity responsible for rendering.
 protocol Renderer: UIView {
-    var buffer: RendererBuffer { get set }
+    var vertexBuffer: VertexBuffer { get set }
     func setupRenderer()
 }
 
@@ -26,7 +26,7 @@ typealias FloatType = Float32
 /// Bridge buffer used for exchanging uniform data between Swift and C/Metal.
 /// RendererBuffer struct has the same memory layout as C's MetalBuffer struct.
 /// Can be casted as SwiftToMetalConvertible protocol using memcopy or reinterpret cast.
-struct RendererBuffer: SwiftToMetalConvertible {
+struct VertexBuffer: SwiftToMetalConvertible {
     var scale: FloatType = 1.0
     var iterations: FloatType = 256
     var translation: (x: FloatType, y: FloatType) = (0.0, 0.0)

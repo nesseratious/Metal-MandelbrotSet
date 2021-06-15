@@ -7,7 +7,7 @@
 //
 
 #include <metal_stdlib>
-#include "MetalBuffer.h"
+#include "VertexBuffer.h"
 #include "Shaders.h"
 
 inline int calculate(const MandelbrotVertexData data) {
@@ -33,7 +33,7 @@ inline float4 mandelbrot(const MandelbrotVertexData data,
 fragment float4 fragmentFunction(OutputVertex outputVertex [[stage_in]],
                                  metal::texture2d<float> pallete,
                                  metal::sampler sampler,
-                                 constant MetalBuffer &buffer) {
+                                 constant VertexBuffer &buffer) {
     float x = outputVertex.coordinates.x;
     float y = outputVertex.coordinates.y;
     int iterations = (int)buffer.iterations;
@@ -42,7 +42,7 @@ fragment float4 fragmentFunction(OutputVertex outputVertex [[stage_in]],
 }
 
 vertex OutputVertex vertexFunction(const InputVertex inputVertex [[stage_in]],
-                                   constant MetalBuffer &buffer [[buffer(1)]]) {
+                                   constant VertexBuffer &buffer [[buffer(1)]]) {
     OutputVertex outputVertex;
     float scale = buffer.scale;
     float xscale = scale * buffer.aspectRatio.w;

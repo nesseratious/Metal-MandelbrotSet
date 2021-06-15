@@ -10,9 +10,9 @@ import simd
 
 final class TransformBufferProvider {
     unowned let image: MandelbrotImage
-    var buffer: RendererBuffer
+    var buffer: VertexBuffer
     
-    init(with contextProvider: ContextProvider, bridgeBuffer: RendererBuffer) {
+    init(with contextProvider: ContextProvider, bridgeBuffer: VertexBuffer) {
         self.image = contextProvider.image
         self.buffer = bridgeBuffer
     }

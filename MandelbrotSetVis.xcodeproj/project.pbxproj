@@ -57,7 +57,7 @@
 		64257DA324FA03E800D17591 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6456ABE92628954C00905448 /* RPReplay_Final1618500227.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = RPReplay_Final1618500227.gif; sourceTree = "<group>"; };
 		64A17B2024FB52FD002482D6 /* BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
-		64A17B2424FB540A002482D6 /* MetalBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalBuffer.h; sourceTree = "<group>"; };
+		64A17B2424FB540A002482D6 /* VertexBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VertexBuffer.h; sourceTree = "<group>"; };
 		64A17B2924FB6B52002482D6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		64ADD95F256058F1009A81D8 /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
 		64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelerateRenderer.swift; sourceTree = "<group>"; };
@@ -146,7 +146,7 @@
 		64257D8A24FA03D100D17591 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				64A17B2424FB540A002482D6 /* MetalBuffer.h */,
+				64A17B2424FB540A002482D6 /* VertexBuffer.h */,
 				64DF1DD7262E0E9C00EA1B4E /* Shaders.h */,
 				64257D8C24FA03D100D17591 /* Shaders.metal */,
 			);
