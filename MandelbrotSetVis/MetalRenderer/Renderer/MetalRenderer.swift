@@ -10,14 +10,15 @@ import MetalKit
 
 /// Provides the view with mandelbrot image rendered using power of GPU.
 final class MetalRenderer: MTKView, Renderer {
-    private var commandQueue: MTLCommandQueue!
-    private var renderPipelineState: MTLRenderPipelineState!
-    private var paletteTexture: MTLTexture!
-    private var samplerState: MTLSamplerState!
-    private var bufferProvider: MetalBufferProvider!
     private var isRedrawNeeded = true
-    private var vertexBufferProvider: MetalVertexBufferProvider!
     private var performanceMonitor = PerformanceMonitor()
+    private lazy var defaultDevice = GPUDevice.getDefault()
+    private lazy var commandQueue = defaultDevice.makeCommandQueue()
+    private lazy var bufferProvider = MetalBufferProvider(with: defaultDevice)
+    private lazy var vertexBufferProvider = MetalVertexBufferProvider(with: defaultDevice)
+    private lazy var samplerState = defaultDevice.makeSamplerState(descriptor: MTLSamplerDescriptor())
+    private lazy var renderPipelineProvider = MetalRenderPipelineProvider(with: defaultDevice, in: self)
+    private lazy var renderPipelineState = renderPipelineProvider.make()
     
     var vertexBuffer = VertexBuffer() {
         didSet {
@@ -26,39 +27,38 @@ final class MetalRenderer: MTKView, Renderer {
     }
     
     func setupRenderer() {
-        let deviceProvider = MetalDeviceProvider()
-        let device = deviceProvider.make()
-        self.device = device
+        device = defaultDevice
         delegate = self
-
-        commandQueue = device.makeCommandQueue()
-        bufferProvider = MetalBufferProvider(with: device)
-        paletteTexture = loadPalleteTexture(for: device)
-        vertexBufferProvider = MetalVertexBufferProvider(with: device)
-        samplerState = device.makeSamplerState(descriptor: MTLSamplerDescriptor())
-        
-        let renderPipelineProvider = MetalRenderPipelineProvider(with: device, in: self)
-        renderPipelineState = renderPipelineProvider.make()
     }
     
-    private func loadPalleteTexture(for device: MTLDevice) -> MTLTexture {
+    private lazy var paletteTexture: MTLTexture = {
         guard let palletePath = Bundle.main.path(forResource: "pallete", ofType: "png") else {
-            fatalError("Failed to load pallete.png Check the app's bundle.")
+            fatalError("Failed to load pallete.png. Check the app's bundle.")
         }
         do {
-            let data = try Data(contentsOf: URL(fileURLWithPath: palletePath))
+            let url = URL(fileURLWithPath: palletePath)
+            let data = try Data(contentsOf: url)
             
             guard let image = UIImage(data: data)?.cgImage else {
-                fatalError("Failed to load color pallete from image.")
+                fatalError("Failed to load color pallete.")
             }
             
-            let textureLoader = MTKTextureLoader(device: device)
+            let textureLoader = MTKTextureLoader(device: defaultDevice)
             let paletteTexture = try textureLoader.newTexture(cgImage: image)
             return paletteTexture
         } catch {
             fatalError("Failed to load pallete texture with error: \(error.localizedDescription)")
         }
-    }
+    }()
+    
+    private lazy var isDebuggerAttached: Bool = {
+        var info = kinfo_proc()
+        var mib = [CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid()]
+        var stride = MemoryLayout<kinfo_proc>.stride
+        let junk = sysctl(&mib, UInt32(mib.count), &info, &stride, nil, 0)
+        guard junk == 0 else { return false }
+        return (info.kp_proc.p_flag & P_TRACED) != 0
+    }()
 }
 
 extension MetalRenderer: MTKViewDelegate {
@@ -70,7 +70,7 @@ extension MetalRenderer: MTKViewDelegate {
         guard isRedrawNeeded,
               let descriptor = view.currentRenderPassDescriptor,
               let currentDrawable = view.currentDrawable,
-              let commandBuffer = commandQueue.makeCommandBuffer(),
+              let commandBuffer = commandQueue?.makeCommandBuffer(),
               let commandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)
             else { return }
         
@@ -89,20 +89,11 @@ extension MetalRenderer: MTKViewDelegate {
         commandBuffer.commit()
         isRedrawNeeded = false
 
-        if runtimeCheckForDebugger() {
+        if isDebuggerAttached {
             //FIXME: -[_MTLCommandBuffer addCompletedHandler:], line 673: error '<private>'
             commandBuffer.addCompletedHandler { [unowned self] _ in
                 performanceMonitor.calculationEnded()
             }
         }
-    }
-    
-    func runtimeCheckForDebugger() -> Bool {
-        var info = kinfo_proc()
-        var mib = [CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid()]
-        var stride = MemoryLayout<kinfo_proc>.stride
-        let junk = sysctl(&mib, UInt32(mib.count), &info, &stride, nil, 0)
-        guard junk == 0 else { return false }
-        return (info.kp_proc.p_flag & P_TRACED) != 0
     }
 }

@@ -7,23 +7,23 @@
 
 import MetalKit
 
-struct MetalDeviceProvider {
+enum GPUDevice {
     
     /// Creates a Metal device GPU representation.
     /// On iOS creates the default device.
     /// On Mac priorities external GPU.
     /// Creates low-power device if battery level is below 20%.
     /// - Returns: MTLDevice device GPU representation.
-    func make() -> MTLDevice {
-        #if targetEnvironment(macCatalyst)
+    static func getDefault() -> MTLDevice {
+        #if canImport(AppKit)
         return makeMacDevice()
         #else
         return makeIOSDevice()
         #endif
     }
     
-    #if targetEnvironment(macCatalyst)
-    private func makeMacDevice() -> MTLDevice {
+    #if canImport(AppKit)
+    static private func makeMacDevice() -> MTLDevice {
         let devices = MTLCopyAllDevices()
         // Detect device battery level, and force using iGPU for calculations if it's below 20%
         UIDevice.current.isBatteryMonitoringEnabled = true
@@ -65,8 +65,8 @@ struct MetalDeviceProvider {
     }
     #endif
     
-    #if !targetEnvironment(macCatalyst)
-    private func makeIOSDevice() -> MTLDevice {
+    #if !canImport(AppKit)
+    static private func makeIOSDevice() -> MTLDevice {
         guard let device = MTLCreateSystemDefaultDevice() else {
             fatalError("Failed to create device.")
         }

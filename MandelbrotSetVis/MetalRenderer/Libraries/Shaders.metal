@@ -33,7 +33,7 @@ inline float4 mandelbrot(const MandelbrotVertexData data,
 fragment float4 fragmentFunction(OutputVertex outputVertex [[stage_in]],
                                  metal::texture2d<float> pallete,
                                  metal::sampler sampler,
-                                 constant VertexBuffer &buffer) {
+                                 constant VertexBuffer &buffer [[buffer(0)]]) {
     float x = outputVertex.coordinates.x;
     float y = outputVertex.coordinates.y;
     int iterations = (int)buffer.iterations;
