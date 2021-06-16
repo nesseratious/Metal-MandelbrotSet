@@ -12,12 +12,14 @@
 using namespace Mandelbrot;
 
 inline int calculate(const MandelbrotVertexData data) {
-    float real = 0, img = 0;
+    float2 complex = float2(0, 0);
     uint i = 0;
-    while (i < data.iterations && real * real + img * img < 10.0f) {
-        float temp = (real * real) - (img * img) + data.position.x;
-        img = 2.0f * (real * img) + data.position.y;
-        real = temp;
+    while (i < data.iterations) {
+        float2 vec = complex * complex;
+        if (vec.x + vec.y > 10.0) { break; }
+        float x = vec.x - vec.y;
+        float y = 2.0 * complex.x * complex.y;
+        complex = float2(x, y) + data.position;
         i++;
     }
     return i == data.iterations ? 0 : i;
