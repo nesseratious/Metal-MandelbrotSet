@@ -7,12 +7,13 @@
 //
 
 #include <metal_stdlib>
-#include "MetalBuffer.h"
 #include "Shaders.h"
+
+using namespace Mandelbrot;
 
 inline int calculate(const MandelbrotVertexData data) {
     float real = 0, img = 0;
-    int i = 0;
+    uint i = 0;
     while (i < data.iterations && real * real + img * img < 10.0f) {
         float temp = (real * real) - (img * img) + data.position.x;
         img = 2.0f * (real * img) + data.position.y;
@@ -33,22 +34,18 @@ inline float4 mandelbrot(const MandelbrotVertexData data,
 fragment float4 fragmentFunction(OutputVertex outputVertex [[stage_in]],
                                  metal::texture2d<float> pallete,
                                  metal::sampler sampler,
-                                 constant MetalBuffer &buffer) {
-    float x = outputVertex.coordinates.x;
-    float y = outputVertex.coordinates.y;
-    int iterations = (int)buffer.iterations;
-    auto data = MandelbrotVertexData { float2(x,y), iterations };
+                                 constant VertexBuffer &buffer [[buffer(0)]]) {
+    uint iterations = (uint)buffer.iterations;
+    auto data = MandelbrotVertexData { outputVertex.coordinates, iterations };
     return mandelbrot(data, pallete, sampler);
 }
 
 vertex OutputVertex vertexFunction(const InputVertex inputVertex [[stage_in]],
-                                   constant MetalBuffer &buffer [[buffer(1)]]) {
+                                   constant VertexBuffer &buffer [[buffer(1)]]) {
     OutputVertex outputVertex;
-    float scale = buffer.scale;
-    float xscale = scale * buffer.aspectRatio.w;
-    float yscale = scale * buffer.aspectRatio.h;
+    float2 scale = buffer.aspectRatio * buffer.scale;
+    float2 position = getFloat2(inputVertex.position);
     outputVertex.position = float4(inputVertex.position, 1.0f);
-    outputVertex.coordinates.x = inputVertex.position.x * xscale - buffer.translation.x;
-    outputVertex.coordinates.y = inputVertex.position.y * yscale - buffer.translation.y;
+    outputVertex.coordinates = position * scale - buffer.translation;
     return outputVertex;
 }

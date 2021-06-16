@@ -28,7 +28,7 @@
 		64A17B2A24FB6B52002482D6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 64A17B2924FB6B52002482D6 /* README.md */; };
 		64ADD960256058F1009A81D8 /* PerformanceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64ADD95F256058F1009A81D8 /* PerformanceMonitor.swift */; };
 		64C355C8255FFBF300440B3B /* AccelerateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */; };
-		64D706AD25D815DC00B77DD4 /* MetalDeviceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706AC25D815DC00B77DD4 /* MetalDeviceProvider.swift */; };
+		64D706AD25D815DC00B77DD4 /* GPUDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706AC25D815DC00B77DD4 /* GPUDevice.swift */; };
 		64D706B025D81D8500B77DD4 /* MetalRenderPipelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */; };
 		64DF1DD8262E0E9C00EA1B4E /* Shaders.h in Sources */ = {isa = PBXBuildFile; fileRef = 64DF1DD7262E0E9C00EA1B4E /* Shaders.h */; };
 		64DF1DE02631DB6A00EA1B4E /* MandelbrotImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DF1DDF2631DB6A00EA1B4E /* MandelbrotImage.swift */; };
@@ -56,14 +56,12 @@
 		64257D9524FA03D100D17591 /* MandelbrotViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MandelbrotViewController.swift; sourceTree = "<group>"; };
 		64257DA324FA03E800D17591 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6456ABE92628954C00905448 /* RPReplay_Final1618500227.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = RPReplay_Final1618500227.gif; sourceTree = "<group>"; };
-		64A17B2024FB52FD002482D6 /* BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
-		64A17B2424FB540A002482D6 /* MetalBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalBuffer.h; sourceTree = "<group>"; };
 		64A17B2924FB6B52002482D6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		64ADD95F256058F1009A81D8 /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
 		64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelerateRenderer.swift; sourceTree = "<group>"; };
-		64D706AC25D815DC00B77DD4 /* MetalDeviceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalDeviceProvider.swift; sourceTree = "<group>"; };
+		64D706AC25D815DC00B77DD4 /* GPUDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPUDevice.swift; sourceTree = "<group>"; };
 		64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRenderPipelineProvider.swift; sourceTree = "<group>"; };
-		64DF1DD7262E0E9C00EA1B4E /* Shaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shaders.h; sourceTree = "<group>"; };
+		64DF1DD7262E0E9C00EA1B4E /* Shaders.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = Shaders.h; sourceTree = "<group>"; };
 		64DF1DDF2631DB6A00EA1B4E /* MandelbrotImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandelbrotImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -136,9 +134,9 @@
 			children = (
 				64257D8524FA03D100D17591 /* MetalRenderer.swift */,
 				64257D8824FA03D100D17591 /* MetalBufferProvider.swift */,
-				64D706AC25D815DC00B77DD4 /* MetalDeviceProvider.swift */,
 				64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */,
 				64257D8E24FA03D100D17591 /* MetalVertexBufferProvider.swift */,
+				64D706AC25D815DC00B77DD4 /* GPUDevice.swift */,
 			);
 			path = Renderer;
 			sourceTree = "<group>";
@@ -146,7 +144,6 @@
 		64257D8A24FA03D100D17591 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				64A17B2424FB540A002482D6 /* MetalBuffer.h */,
 				64DF1DD7262E0E9C00EA1B4E /* Shaders.h */,
 				64257D8C24FA03D100D17591 /* Shaders.metal */,
 			);
@@ -164,7 +161,6 @@
 		64257D9224FA03D100D17591 /* Mandelbrot */ = {
 			isa = PBXGroup;
 			children = (
-				64A17B2024FB52FD002482D6 /* BridgingHeader.h */,
 				64257D8724FA03D100D17591 /* Renderer+RendererBuffer.swift */,
 				64257D9324FA03D100D17591 /* SceneTransform.swift */,
 				5A7A7B64267234680049C293 /* Matrix+Buffer.swift */,
@@ -301,7 +297,7 @@
 			files = (
 				64257D9824FA03D100D17591 /* Renderer+RendererBuffer.swift in Sources */,
 				5A7A7B422671ED080049C293 /* MacToolbar.swift in Sources */,
-				64D706AD25D815DC00B77DD4 /* MetalDeviceProvider.swift in Sources */,
+				64D706AD25D815DC00B77DD4 /* GPUDevice.swift in Sources */,
 				642499D4263563E000E248B5 /* TransformBufferProvider.swift in Sources */,
 				64D706B025D81D8500B77DD4 /* MetalRenderPipelineProvider.swift in Sources */,
 				64DF1DD8262E0E9C00EA1B4E /* Shaders.h in Sources */,
@@ -472,14 +468,15 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				MTL_IGNORE_WARNINGS = YES;
+				MTL_IGNORE_WARNINGS = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.esie.MandelbrotSetVis;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG MTL_FP32";
 				SWIFT_DISABLE_SAFETY_CHECKS = YES;
 				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = off;
-				SWIFT_OBJC_BRIDGING_HEADER = MandelbrotSetVis/Mandelbrot/BridgingHeader.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_OPTIMIZE_OBJECT_LIFETIME = YES;
 				SWIFT_VERSION = 5.0;
@@ -506,14 +503,15 @@
 					"@executable_path/Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				MTL_IGNORE_WARNINGS = YES;
+				MTL_IGNORE_WARNINGS = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.esie.MandelbrotSetVis;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = MTL_FP32;
 				SWIFT_DISABLE_SAFETY_CHECKS = YES;
 				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = off;
-				SWIFT_OBJC_BRIDGING_HEADER = MandelbrotSetVis/Mandelbrot/BridgingHeader.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_OPTIMIZE_OBJECT_LIFETIME = YES;
 				SWIFT_VERSION = 5.0;

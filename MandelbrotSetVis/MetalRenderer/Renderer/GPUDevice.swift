@@ -7,38 +7,40 @@
 
 import MetalKit
 
-struct MetalDeviceProvider {
+enum GPUDevice {
     
     /// Creates a Metal device GPU representation.
-    /// On iOS creates the default device.
-    /// On Mac priorities external GPU.
-    /// Creates low-power device if battery level is below 20%.
+    /// On iOS and Macs with Apple Silicon creates the default device.
+    /// On intel Macs priorities external GPU. Creates low-power device (iGPU) if battery level is below 20%.
     /// - Returns: MTLDevice device GPU representation.
-    func make() -> MTLDevice {
-        #if targetEnvironment(macCatalyst)
-        return makeMacDevice()
+    static func getDefault() -> MTLDevice {
+        #if arch(i386) || arch(x86_64)
+        return makeIntelMacDevice()
+        #elseif arch(arm64)
+        return makeAppleSiliconDevice()
         #else
-        return makeIOSDevice()
+        #error("Unknown arch...")
         #endif
     }
     
-    #if targetEnvironment(macCatalyst)
-    private func makeMacDevice() -> MTLDevice {
-        let devices = MTLCopyAllDevices()
+    #if arch(i386) || arch(x86_64)
+    static private func makeIntelMacDevice() -> MTLDevice {
+        let gpuDevices = MTLCopyAllDevices()
         // Detect device battery level, and force using iGPU for calculations if it's below 20%
         UIDevice.current.isBatteryMonitoringEnabled = true
         let batteryLevel = UIDevice.current.batteryLevel
         let isNotCharging = UIDevice.current.batteryState != .charging
+        
         if batteryLevel <= 0.2 && isNotCharging {
             // Get iGPU from the devices array
-            if let integratedGPU = devices.filter({ $0.isLowPower }).first {
-                print("Battery level below 20%, using built-in integrated GPU \(integratedGPU.name), buffer: \(integratedGPU.maxBufferLength/1024/1024)MiB")
-                return integratedGPU
+            if let iGPU = gpuDevices.filter({ $0.isLowPower }).first {
+                print("Battery level below 20%, using built-in integrated GPU \(iGPU.name), buffer: \(iGPU.maxBufferLength/1024/1024)MiB")
+                return iGPU
             }
             print("Battery level below 20%, but no integrated GPU was found... hackintosh?")
         }
         
-        for device in devices {
+        for device in gpuDevices {
             
             // External GPU
             if device.isRemovable {
@@ -58,19 +60,19 @@ struct MetalDeviceProvider {
         }
         
         // If classification above has failed
-        guard let unknownDevice = devices.first else {
+        guard let unknownDevice = gpuDevices.first else {
             fatalError("Failed to create device.")
         }
         return unknownDevice
     }
     #endif
     
-    #if !targetEnvironment(macCatalyst)
-    private func makeIOSDevice() -> MTLDevice {
+    #if arch(arm64)
+    static private func makeAppleSiliconDevice() -> MTLDevice {
         guard let device = MTLCreateSystemDefaultDevice() else {
             fatalError("Failed to create device.")
         }
-        print("Using SoC GPU \(device.name)")
+        print("Using SoC's GPU \(device.name)")
         return device
     }
     #endif

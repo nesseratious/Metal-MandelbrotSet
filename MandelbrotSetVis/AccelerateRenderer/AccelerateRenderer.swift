@@ -9,14 +9,25 @@ import Foundation
 import UIKit
 
 /// View with mandelbrot image rendered using the power of CPU.
-final class AccelerateRenderer: UIView {
-    private var bridgeBuffer = RendererBuffer()
+final class AccelerateRenderer: UIView, Renderer {
     private let mandelbrotImage = UIImageView()
     private var performanceMonitor = PerformanceMonitor()
     private lazy var image = MandelbrotImage(for: self)
     private lazy var contextProvider = ContextProvider(of: image)
     
-    /// Starts the mandelbrot render process.
+    var vertexBuffer = VertexBuffer() {
+        didSet {
+            render()
+        }
+    }
+    
+    func setupRenderer() {
+        backgroundColor = .white
+        addSubview(mandelbrotImage)
+        mandelbrotImage.contentMode = .scaleToFill
+        mandelbrotImage.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+    }
+    
     private func render() {
         guard !performanceMonitor.isRunning else { return }
         performanceMonitor.calculationStarted(on: .CPU)
@@ -30,7 +41,7 @@ final class AccelerateRenderer: UIView {
     }
 
     private func calculateMandelbrot(in buffer: UnsafeMutablePointer<UInt32>, contextProvider: ContextProvider) async {
-        let bufferProvider = TransformBufferProvider(with: contextProvider, bridgeBuffer: bridgeBuffer)
+        let bufferProvider = TransformBufferProvider(with: contextProvider, bridgeBuffer: vertexBuffer)
         async let widthBuffer = bufferProvider.makeWidthBuffer()
         async let heightBuffer = bufferProvider.makeHeightBuffer()
         let matrix = await Matrix(width: widthBuffer, heigh: heightBuffer)
@@ -38,7 +49,7 @@ final class AccelerateRenderer: UIView {
     }
     
     private func calculate(target: UnsafeMutablePointer<UInt32>, image: MandelbrotImage, transform: Matrix) {
-        let iterations = Int(bridgeBuffer.iterations)
+        let iterations = Int(vertexBuffer.iterations)
         let lenght = image.size.width
         
         DispatchQueue.concurrentPerform(iterations: image.size.height) { row in
@@ -60,24 +71,5 @@ final class AccelerateRenderer: UIView {
                 target[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
             }
         }
-    }
-}
-
-extension AccelerateRenderer: Renderer {
-    var buffer: RendererBuffer {
-        get {
-            return bridgeBuffer
-        }
-        set {
-            bridgeBuffer = newValue
-            render()
-        }
-    }
-    
-    func setupRenderer() {
-        backgroundColor = .white
-        addSubview(mandelbrotImage)
-        mandelbrotImage.contentMode = .scaleToFill
-        mandelbrotImage.autoresizingMask = [.flexibleHeight, .flexibleWidth]
     }
 }
