@@ -13,7 +13,7 @@ using namespace Mandelbrot;
 
 inline int calculate(const MandelbrotVertexData data) {
     float real = 0, img = 0;
-    int i = 0;
+    uint i = 0;
     while (i < data.iterations && real * real + img * img < 10.0f) {
         float temp = (real * real) - (img * img) + data.position.x;
         img = 2.0f * (real * img) + data.position.y;
@@ -35,7 +35,7 @@ fragment float4 fragmentFunction(OutputVertex outputVertex [[stage_in]],
                                  metal::texture2d<float> pallete,
                                  metal::sampler sampler,
                                  constant VertexBuffer &buffer [[buffer(0)]]) {
-    int iterations = (int)buffer.iterations;
+    uint iterations = (uint)buffer.iterations;
     auto data = MandelbrotVertexData { outputVertex.coordinates, iterations };
     return mandelbrot(data, pallete, sampler);
 }

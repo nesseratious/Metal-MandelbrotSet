@@ -32,7 +32,7 @@ struct OutputVertex {
 
 struct MandelbrotVertexData {
     float2 position;
-    int iterations;
+    uint iterations;
 };
 
 
