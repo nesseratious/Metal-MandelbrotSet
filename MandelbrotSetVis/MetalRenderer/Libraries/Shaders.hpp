@@ -21,6 +21,11 @@ struct VertexBuffer {
     float2 aspectRatio;
 };
 
+struct MandelbrotVertexData {
+    float2 position;
+    uint iterations;
+};
+
 struct InputVertex {
     float3 position [[attribute(0)]];
 };
@@ -28,11 +33,6 @@ struct InputVertex {
 struct OutputVertex {
     float4 position [[position]];
     float2 coordinates;
-};
-
-struct MandelbrotVertexData {
-    float2 position;
-    uint iterations;
 };
 
 

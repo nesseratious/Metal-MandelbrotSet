@@ -7,7 +7,7 @@
 //
 
 #include <metal_stdlib>
-#include "Shaders.h"
+#include "Shaders.hpp"
 
 using namespace Mandelbrot;
 

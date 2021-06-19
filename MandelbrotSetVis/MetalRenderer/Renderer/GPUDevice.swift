@@ -14,7 +14,7 @@ enum GPUDevice {
     /// On intel Macs priorities external GPU. Creates low-power device (iGPU) if battery level is below 20%.
     /// - Returns: MTLDevice device GPU representation.
     static func getDefault() -> MTLDevice {
-        #if arch(i386) || arch(x86_64)
+        #if arch(x86_64)
         return makeIntelMacDevice()
         #elseif arch(arm64)
         return makeAppleSiliconDevice()
@@ -23,7 +23,7 @@ enum GPUDevice {
         #endif
     }
     
-    #if arch(i386) || arch(x86_64)
+    #if arch(x86_64)
     static private func makeIntelMacDevice() -> MTLDevice {
         let gpuDevices = MTLCopyAllDevices()
         // Detect device battery level, and force using iGPU for calculations if it's below 20%

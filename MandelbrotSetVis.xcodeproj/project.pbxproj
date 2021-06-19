@@ -30,7 +30,7 @@
 		64C355C8255FFBF300440B3B /* AccelerateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */; };
 		64D706AD25D815DC00B77DD4 /* GPUDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706AC25D815DC00B77DD4 /* GPUDevice.swift */; };
 		64D706B025D81D8500B77DD4 /* MetalRenderPipelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */; };
-		64DF1DD8262E0E9C00EA1B4E /* Shaders.h in Sources */ = {isa = PBXBuildFile; fileRef = 64DF1DD7262E0E9C00EA1B4E /* Shaders.h */; };
+		64DF1DD8262E0E9C00EA1B4E /* Shaders.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 64DF1DD7262E0E9C00EA1B4E /* Shaders.hpp */; };
 		64DF1DE02631DB6A00EA1B4E /* MandelbrotImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DF1DDF2631DB6A00EA1B4E /* MandelbrotImage.swift */; };
 /* End PBXBuildFile section */
 
@@ -61,7 +61,7 @@
 		64C355C7255FFBF300440B3B /* AccelerateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelerateRenderer.swift; sourceTree = "<group>"; };
 		64D706AC25D815DC00B77DD4 /* GPUDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPUDevice.swift; sourceTree = "<group>"; };
 		64D706AF25D81D8500B77DD4 /* MetalRenderPipelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRenderPipelineProvider.swift; sourceTree = "<group>"; };
-		64DF1DD7262E0E9C00EA1B4E /* Shaders.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = Shaders.h; sourceTree = "<group>"; };
+		64DF1DD7262E0E9C00EA1B4E /* Shaders.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = Shaders.hpp; sourceTree = "<group>"; };
 		64DF1DDF2631DB6A00EA1B4E /* MandelbrotImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandelbrotImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,7 +144,7 @@
 		64257D8A24FA03D100D17591 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				64DF1DD7262E0E9C00EA1B4E /* Shaders.h */,
+				64DF1DD7262E0E9C00EA1B4E /* Shaders.hpp */,
 				64257D8C24FA03D100D17591 /* Shaders.metal */,
 			);
 			path = Libraries;
@@ -300,7 +300,7 @@
 				64D706AD25D815DC00B77DD4 /* GPUDevice.swift in Sources */,
 				642499D4263563E000E248B5 /* TransformBufferProvider.swift in Sources */,
 				64D706B025D81D8500B77DD4 /* MetalRenderPipelineProvider.swift in Sources */,
-				64DF1DD8262E0E9C00EA1B4E /* Shaders.h in Sources */,
+				64DF1DD8262E0E9C00EA1B4E /* Shaders.hpp in Sources */,
 				64257D9924FA03D100D17591 /* MetalBufferProvider.swift in Sources */,
 				64257DA024FA03D100D17591 /* MandelbrotViewController.swift in Sources */,
 				64C355C8255FFBF300440B3B /* AccelerateRenderer.swift in Sources */,
