@@ -1,5 +1,5 @@
 //
-//  RendererProtocol.swift
+//  Renderer+VertexBuffer.swift
 //  MandelbrotSetVis
 //
 //  Created by Esie on 8/26/20.
@@ -22,10 +22,10 @@ protocol Renderer: UIView {
 typealias FloatType = Float32
 
 //TODO: Add 16 and 80 bit float support
+//TODO: Add custom lenght float support
 
-/// Bridge buffer used for exchanging uniform data between Swift and C/Metal.
-/// RendererBuffer struct has the same memory layout as C's MetalBuffer struct.
-/// Can be casted as SwiftToMetalConvertible protocol using memcopy or reinterpret cast.
+/// Bridge buffer used for exchanging uniform data between Swift and Metal.
+/// RendererBuffer struct has the same memory layout as Metal's VertexBuffer struct.
 struct VertexBuffer: SwiftToMetalConvertible {
     var scale: FloatType = 1.0
     var iterations: FloatType = 256

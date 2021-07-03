@@ -8,8 +8,8 @@
 #ifndef Shaders_h
 #define Shaders_h
 
-#include <simd/simd.h>
-#include <metal_stdlib>
+#import <simd/simd.h>
+#import <metal_stdlib>
 
 namespace Mandelbrot {
 
@@ -35,11 +35,10 @@ struct OutputVertex {
     float2 coordinates;
 };
 
-
-inline float2 getFloat2(float3 vec) {
-    return float2(vec.x, vec.y);
 }
 
+METAL_FUNC float2 getFloat2(float3 vec) {
+    return float2(vec.x, vec.y);
 }
 
 #endif
