@@ -29,22 +29,22 @@ final class ContextProvider {
     
     /// Total count of pixels in the image.
     lazy var bufferLenght: Int = {
-        return image.size.width &* image.size.height
+        return image.size.x &* image.size.y
     }()
     
     /// CGContext from a given MandelbrotImage.
     lazy var context: CGContext = {
-        let bytesPerRow = ContextProvider.bytesPerPixel &* image.targetCgImage.width
+        let bytesPerRow = ContextProvider.bytesPerPixel &* image.size.x
         guard let context = CGContext(data: nil,
-                                      width: image.size.width,
-                                      height: image.size.height,
+                                      width: image.size.x,
+                                      height: image.size.y,
                                       bitsPerComponent: ContextProvider.bitsPerComponent,
                                       bytesPerRow: bytesPerRow,
                                       space: ContextProvider.colorSpace,
                                       bitmapInfo: ContextProvider.bitmapInfo) else {
             fatalError("Failed to create Quartz destination context.")
         }
-        let frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+        let frame = CGRect(origin: .zero, size: unsafeBitCast(image.size, to: CGSize.self))
         context.draw(image.targetCgImage, in: frame)
         return context
     }()

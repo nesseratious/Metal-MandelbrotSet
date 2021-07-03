@@ -16,13 +16,17 @@ final class MandelbrotImage {
     
     /// Blank CGImage with size of the provided owner view.
     lazy var targetCgImage: CGImage = {
-        return UIGraphicsImageRenderer(size: view.frame.size).image { context in
+        let renderedImage = UIGraphicsImageRenderer(size: view.frame.size).image { _ in
             view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
-        }.cgImage!
+        }
+        guard let cgImage = renderedImage.cgImage else {
+            fatalError("Failed creating a CGImage.")
+        }
+        return cgImage
     }()
     
-    /// Tuple with width, height of the cgImage image.
-    lazy var size: (width: Int, height: Int) = {
-        return (width: targetCgImage.width, height: targetCgImage.height)
+    /// Simd2 vec with width and height of the cgImage image.
+    lazy var size: SIMD2<Int> = {
+        return SIMD2(x: targetCgImage.width, y: targetCgImage.height)
     }()
 }

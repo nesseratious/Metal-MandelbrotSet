@@ -5,7 +5,6 @@
 //  Created by Esie on 11/14/20.
 //
 
-import Foundation
 import UIKit
 
 /// View with mandelbrot image rendered using the power of CPU.
@@ -45,14 +44,14 @@ final class AccelerateRenderer: UIView, Renderer {
         async let widthBuffer = bufferProvider.makeWidthBuffer()
         async let heightBuffer = bufferProvider.makeHeightBuffer()
         let matrix = await Matrix(width: widthBuffer, heigh: heightBuffer)
-        calculate(target: buffer, image: contextProvider.image, transform: matrix)
+        calculate(in: buffer, image: contextProvider.image, transform: matrix)
     }
     
-    private func calculate(target: UnsafeMutablePointer<UInt32>, image: MandelbrotImage, transform: Matrix) {
+    private func calculate(in buffer: UnsafeMutablePointer<UInt32>, image: MandelbrotImage, transform: Matrix) {
         let iterations = Int(vertexBuffer.iterations)
-        let lenght = image.size.width
+        let lenght = image.size.x
         
-        DispatchQueue.concurrentPerform(iterations: image.size.height) { row in
+        DispatchQueue.concurrentPerform(iterations: image.size.y) { row in
             for column in 0 ..< lenght {
                 let my = transform.heigh[row]
                 let mx = transform.width[column]
@@ -70,7 +69,7 @@ final class AccelerateRenderer: UIView, Renderer {
                 }
                 
                 let pixelOffset = row &* lenght &+ column
-                target[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
+                buffer[pixelOffset] = i << 24 | i << 16 | i << 8 | 255 << 0
             }
         }
     }
