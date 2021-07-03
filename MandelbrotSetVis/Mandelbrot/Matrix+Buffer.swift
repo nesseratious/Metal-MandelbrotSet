@@ -8,7 +8,7 @@
 /// Can be switched to Array or other RandomAccesCollection that implements subsripting
 typealias Buffer = UnsafeMutablePointer<FloatType>
 
-struct Matrix {
+struct Matrix: Sendable {
     let width: Buffer
     let heigh: Buffer
 }

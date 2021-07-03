@@ -26,11 +26,11 @@ typealias FloatType = Float32
 
 /// Bridge buffer used for exchanging uniform data between Swift and Metal.
 /// RendererBuffer struct has the same memory layout as Metal's VertexBuffer struct.
-struct VertexBuffer: SwiftToMetalConvertible {
+struct VertexBuffer: SwiftToMetalConvertible, Sendable {
     var scale: FloatType = 1.0
     var iterations: FloatType = 256
-    var translation: (x: FloatType, y: FloatType) = (0.0, 0.0)
-    var aspectRatio: (x: FloatType, y: FloatType) = (1.0, 1.0)
+    var translation: SIMD2<FloatType> = SIMD2(0.0, 0.0)
+    var aspectRatio: SIMD2<FloatType> = SIMD2(1.0, 1.0)
 }
 
 protocol SwiftToMetalConvertible { }

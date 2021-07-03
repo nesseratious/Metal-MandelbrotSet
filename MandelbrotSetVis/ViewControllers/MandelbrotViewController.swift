@@ -81,7 +81,7 @@ final class MandelbrotViewController: UIViewController {
         let shiftY = transform.y - deltaY * FloatType(view.frame.height / pixelsPerPoint) / transform.zoom
         switch sender.state {
         case .began, .changed:
-            renderer.vertexBuffer.translation = (shiftX, shiftY)
+            renderer.vertexBuffer.translation = SIMD2(shiftX, shiftY)
         case .ended:
             transform.x = shiftX
             transform.y = shiftY

@@ -27,6 +27,6 @@ final class MandelbrotImage {
     
     /// Simd2 vec with width and height of the cgImage image.
     lazy var size: SIMD2<Int> = {
-        return SIMD2(x: targetCgImage.width, y: targetCgImage.height)
+        return SIMD2(targetCgImage.width, targetCgImage.height)
     }()
 }
