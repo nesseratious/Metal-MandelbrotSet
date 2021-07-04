@@ -21,7 +21,6 @@
 		64257D9B24FA03D100D17591 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8C24FA03D100D17591 /* Shaders.metal */; };
 		64257D9C24FA03D100D17591 /* MetalVertexBufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D8E24FA03D100D17591 /* MetalVertexBufferProvider.swift */; };
 		64257D9E24FA03D100D17591 /* pallete.png in Resources */ = {isa = PBXBuildFile; fileRef = 64257D9124FA03D100D17591 /* pallete.png */; };
-		64257D9F24FA03D100D17591 /* SceneTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D9324FA03D100D17591 /* SceneTransform.swift */; };
 		64257DA024FA03D100D17591 /* MandelbrotViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64257D9524FA03D100D17591 /* MandelbrotViewController.swift */; };
 		64257DA424FA03E800D17591 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 64257DA224FA03E800D17591 /* LaunchScreen.storyboard */; };
 		6456ABEA2628954C00905448 /* RPReplay_Final1618500227.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6456ABE92628954C00905448 /* RPReplay_Final1618500227.gif */; };
@@ -52,7 +51,6 @@
 		64257D8C24FA03D100D17591 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		64257D8E24FA03D100D17591 /* MetalVertexBufferProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalVertexBufferProvider.swift; sourceTree = "<group>"; };
 		64257D9124FA03D100D17591 /* pallete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pallete.png; sourceTree = "<group>"; };
-		64257D9324FA03D100D17591 /* SceneTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneTransform.swift; sourceTree = "<group>"; };
 		64257D9524FA03D100D17591 /* MandelbrotViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MandelbrotViewController.swift; sourceTree = "<group>"; };
 		64257DA324FA03E800D17591 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6456ABE92628954C00905448 /* RPReplay_Final1618500227.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = RPReplay_Final1618500227.gif; sourceTree = "<group>"; };
@@ -162,7 +160,6 @@
 			isa = PBXGroup;
 			children = (
 				64257D8724FA03D100D17591 /* Renderer+VertexBuffer.swift */,
-				64257D9324FA03D100D17591 /* SceneTransform.swift */,
 				5A7A7B64267234680049C293 /* Matrix+Buffer.swift */,
 			);
 			path = Mandelbrot;
@@ -314,7 +311,6 @@
 				64257D9C24FA03D100D17591 /* MetalVertexBufferProvider.swift in Sources */,
 				64257D7124FA037200D17591 /* SceneDelegate.swift in Sources */,
 				642499D0263562D000E248B5 /* ContextProvider.swift in Sources */,
-				64257D9F24FA03D100D17591 /* SceneTransform.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

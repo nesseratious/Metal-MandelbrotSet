@@ -15,8 +15,8 @@ struct MetalBufferProvider {
         self.device = device
     }
     
-    /// Creates the Metal GPU buffer and copies Swift uniform struct to it.
-    /// - Parameter uniform: Swift uniform struct (bridge buffer used for exchanging uniform data between Swift and C/Metal).
+    /// Creates the Metal GPU buffer and copies Swift `VertexBuffer` struct to it.
+    /// - Parameter uniform: Swift `VertexBuffer` struct (bridge used for exchanging data between Swift and Metal).
     /// - Returns: Metal GPU buffer
     func make(with uniform: SwiftToMetalConvertible) -> MTLBuffer {
         let size = MemoryLayout<FloatType>.size * 8

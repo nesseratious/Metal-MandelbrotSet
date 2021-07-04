@@ -13,7 +13,7 @@
 
 namespace Mandelbrot {
 
-/// Convertible from Swift using RendererBuffer swift struct.
+/// Convertible from Swift using VertexBuffer swift struct.
 struct VertexBuffer {
     float scale;
     float iterations;

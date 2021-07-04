@@ -12,7 +12,7 @@ enum GPUDevice {
     /// Creates a Metal device GPU representation.
     /// On iOS and Macs with Apple Silicon creates the default device.
     /// On intel Macs priorities external GPU. Creates low-power device (iGPU) if battery level is below 20%.
-    /// - Returns: MTLDevice device GPU representation.
+    /// - Returns: `MTLDevice` device.
     static func getDefault() -> MTLDevice {
         #if arch(x86_64)
         return makeIntelMacDevice()

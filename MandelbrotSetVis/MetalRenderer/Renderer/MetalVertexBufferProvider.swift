@@ -19,12 +19,12 @@ struct MetalVertexBufferProvider {
     /// - Returns: Metal vertex buffer.
     func make() -> MTLBuffer? {
         let vertices: [FloatType] =
-            [-1.0, -1.0,  0.0,
-             -1.0,  1.0,  0.0,
-              1.0, -1.0,  0.0,
-             -1.0,  1.0,  0.0,
-              1.0,  1.0,  0.0,
-              1.0, -1.0,  0.0]
+            [-1, -1,  0,
+             -1,  1,  0,
+              1, -1,  0,
+             -1,  1,  0,
+              1,  1,  0,
+              1, -1,  0]
         let lenght = vertices.count * MemoryLayout<FloatType>.stride * 3
         return device.makeBuffer(bytes: vertices, length: lenght)
     }

@@ -32,7 +32,7 @@ final class ContextProvider {
         return image.size.x &* image.size.y
     }()
     
-    /// CGContext from a given MandelbrotImage.
+    /// `CGContext` from a given MandelbrotImage.
     lazy var context: CGContext = {
         let bytesPerRow = ContextProvider.bytesPerPixel &* image.size.x
         guard let context = CGContext(data: nil,
@@ -44,7 +44,8 @@ final class ContextProvider {
                                       bitmapInfo: ContextProvider.bitmapInfo) else {
             fatalError("Failed to create Quartz destination context.")
         }
-        let frame = CGRect(origin: .zero, size: unsafeBitCast(image.size, to: CGSize.self))
+        let size = CGSize(width: image.size.x, height: image.size.y)
+        let frame = CGRect(origin: .zero, size: size)
         context.draw(image.targetCgImage, in: frame)
         return context
     }()

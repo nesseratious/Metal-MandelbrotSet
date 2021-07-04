@@ -13,7 +13,8 @@ final class MandelbrotViewController: UIViewController {
     private let renderer: Renderer
     
     /// Holds this view controller's transformation of the mandelbrot set.
-    private var transform = SceneTransform()
+    private var transform = SIMD2<FloatType>(0, 0)
+    private var zoom: FloatType = 1
     
     /// Injects the provided Renderer.
     /// - Parameter renderer: Entity conforming to Renderer protocol, responsible for rendering of the mandelbrot set.
@@ -70,21 +71,26 @@ final class MandelbrotViewController: UIViewController {
         guard sender.view != nil else { return }
         
         /// The amount of pixels of the mandelbrot that should corespond to one point in gesture's translation.
-        /// Pixel is one mandelbrot unit of calculation (doesn't reflect actual pixels on screen), point is UIKit point.
+        /// Pixel is one mandelbrot unit of calculation (depends on the size of `FloatType`, doesn't reflect actual pixels on screen), point is UIKit point.
         /// Modifing this value will change sensitivity of the pan gesture.
         /// The default is 1 point = 175 pixels.
-        let pixelsPerPoint: CGFloat = 175
+        let pixelsPerPoint: FloatType = 175
+    
+        let location = sender.translation(in: view)
         
-        let deltaX = FloatType(sender.translation(in: view).x / view.frame.width)
-        let deltaY = FloatType(sender.translation(in: view).y / view.frame.height)
-        let shiftX = transform.x + deltaX * FloatType(view.frame.width / pixelsPerPoint) / transform.zoom
-        let shiftY = transform.y - deltaY * FloatType(view.frame.height / pixelsPerPoint) / transform.zoom
+        /// If `FloatType` is 64bit it's possible to reinterpret to simd using `unsafeBitCast`, it will be much faster than calling the SIMD constructor.
+        let positionVec = SIMD2(FloatType(location.x), FloatType(location.y))
+        let sizeVec = SIMD2(FloatType(view.frame.size.width), FloatType(view.frame.size.height))
+        
+        let delta = positionVec / sizeVec
+        let deltaTransform = delta * sizeVec / pixelsPerPoint / zoom * SIMD2<FloatType>(1, -1)
+        let newTransform = transform + deltaTransform
+
         switch sender.state {
         case .began, .changed:
-            renderer.vertexBuffer.translation = SIMD2(shiftX, shiftY)
+            renderer.vertexBuffer.translation = newTransform
         case .ended:
-            transform.x = shiftX
-            transform.y = shiftY
+            transform = newTransform
         default:
             break
         }
@@ -93,14 +99,14 @@ final class MandelbrotViewController: UIViewController {
      func zoom(sender: UIPinchGestureRecognizer) {
         guard sender.view != nil else { return }
         
-        let scale = transform.zoom * FloatType(sender.scale)
+        let scale = zoom * FloatType(sender.scale)
         switch sender.state {
         case .began, .changed:
             renderer.vertexBuffer.scale = 1.0 / scale
         case .ended:
-            transform.zoom = scale
+            zoom = scale
         default:
             break
-        }
+        }    
     }
 }

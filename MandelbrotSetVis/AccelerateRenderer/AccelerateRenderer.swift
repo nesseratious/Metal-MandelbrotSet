@@ -55,15 +55,15 @@ final class AccelerateRenderer: UIView, Renderer {
             for column in 0 ..< lenght {
                 let my = transform.heigh[row]
                 let mx = transform.width[column]
-                var real: FloatType = 0.0
-                var img: FloatType = 0.0
+                var real: FloatType = 0
+                var img: FloatType = 0
                 var i: UInt32 = 0
                 
                 while i < iterations {
                     let r2 = real * real
                     let i2 = img * img
-                    if r2 + i2 > 4.0 { break }
-                    img = 2.0 * real * img + my
+                    if r2 + i2 > 4 { break }
+                    img = 2 * real * img + my
                     real = r2 - i2 + mx
                     i &+= 1
                 }
