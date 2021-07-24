@@ -14,17 +14,19 @@ enum GPUDevice {
     /// On intel Macs priorities external GPU. Creates low-power device (iGPU) if battery level is below 20%.
     /// - Returns: `MTLDevice` device.
     static func getDefault() -> MTLDevice {
-        #if arch(x86_64)
-        return makeIntelMacDevice()
-        #elseif arch(arm64)
+#if targetEnvironment(simulator)
+        return makeSimulatorDevice()
+#elseif arch(x86_64)
+        return makeIntelDevice()
+#elseif arch(arm64)
         return makeAppleSiliconDevice()
-        #else
-        #error("Unknown arch...")
-        #endif
+#else
+#error("Unknown arch or environment...")
+#endif
     }
     
-    #if arch(x86_64)
-    static private func makeIntelMacDevice() -> MTLDevice {
+#if arch(x86_64) && !targetEnvironment(simulator)
+    static private func makeIntelDevice() -> MTLDevice {
         let gpuDevices = MTLCopyAllDevices()
         // Detect device battery level, and force using iGPU for calculations if it's below 20%
         UIDevice.current.isBatteryMonitoringEnabled = true
@@ -47,33 +49,43 @@ enum GPUDevice {
                 print("Using external GPU \(device.name), buffer: \(device.maxBufferLength/1024/1024)MiB")
                 return device
                 
-            // Internal descrete GPU
+                // Internal descrete GPU
             } else if !device.isLowPower {
                 print("Using built-in descrete GPU \(device.name), buffer: \(device.maxBufferLength/1024/1024)MiB")
                 return device
                 
-            // Internal iGPU
+                // Internal iGPU
             } else {
-                print("Using built-in integrated GPU \(device.name), buffer: \(device.maxBufferLength/1024/1024)MiB")
+                print("Using built-in intel integrated GPU \(device.name), buffer: \(device.maxBufferLength/1024/1024)MiB")
                 return device
             }
         }
         
         // If classification above has failed
         guard let unknownDevice = gpuDevices.first else {
-            fatalError("Failed to create device.")
+            fatalError("Failed to create a device.")
         }
         return unknownDevice
     }
-    #endif
+#endif
     
-    #if arch(arm64)
+#if arch(arm64)
     static private func makeAppleSiliconDevice() -> MTLDevice {
         guard let device = MTLCreateSystemDefaultDevice() else {
-            fatalError("Failed to create device.")
+            fatalError("Failed to create a device.")
         }
         print("Using SoC's GPU \(device.name)")
         return device
     }
-    #endif
+#endif
+    
+#if targetEnvironment(simulator)
+    static private func makeSimulatorDevice() -> MTLDevice {
+        guard let device = MTLCreateSystemDefaultDevice() else {
+            fatalError("Failed to create a simulator device.")
+        }
+        print("Using simulator GPU")
+        return device
+    }
+#endif
 }
