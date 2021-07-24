@@ -12,7 +12,14 @@ final class RootTabBarController: UITabBarController {
     init() {
         super.init(nibName: nil, bundle: nil)
         viewControllers = [metalViewController, accelerateViewController]
+        setupTabBar()
         showMacToolbar()
+    }
+    
+    private func setupTabBar() {
+        tabBar.tintColor = .systemPink
+        tabBar.backgroundColor = .clear
+        tabBar.backgroundImage = UIImage()
     }
     
     private func showMacToolbar() {

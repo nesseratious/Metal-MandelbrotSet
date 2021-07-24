@@ -27,6 +27,10 @@ final class MandelbrotViewController: UIViewController {
         fatalError("Not accessible from IB.")
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     override func loadView() {
         view = renderer
     }
