@@ -1,5 +1,5 @@
 //
-//  MetalRenderPipelineState.swift
+//  MetalRenderPipelineProvider.swift
 //  MandelbrotSetVis
 //
 //  Created by Esie on 2/13/21.

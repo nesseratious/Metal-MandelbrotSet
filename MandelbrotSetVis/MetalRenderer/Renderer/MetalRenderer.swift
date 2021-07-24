@@ -1,5 +1,5 @@
 //
-//  Renderer.swift
+//  MetalRenderer.swift
 //  MandelbrotSetVis
 //
 //  Created by Esie on 8/26/20.

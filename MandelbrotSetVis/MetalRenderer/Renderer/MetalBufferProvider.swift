@@ -1,5 +1,5 @@
 //
-//  TransformBufferProvider.swift
+//  MetalBufferProvider.swift
 //  MandelbrotSetVis
 //
 //  Created by Esie on 8/26/20.

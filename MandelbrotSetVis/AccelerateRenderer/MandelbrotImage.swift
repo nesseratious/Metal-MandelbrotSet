@@ -1,5 +1,5 @@
 //
-//  ImageProvider.swift
+//  MandelbrotImage.swift
 //  MandelbrotSetVis
 //
 //  Created by Esie on 4/22/21.

@@ -1,5 +1,5 @@
 //
-//  CGContextProvider.swift
+//  ContextProvider.swift
 //  MandelbrotSetVis
 //
 //  Created by Esie on 4/25/21.

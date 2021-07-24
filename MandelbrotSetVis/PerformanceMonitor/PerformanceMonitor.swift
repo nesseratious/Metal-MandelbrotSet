@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PerformanceMonitor.swift
 //  MandelbrotSetVis
 //
 //  Created by Esie on 11/14/20.
