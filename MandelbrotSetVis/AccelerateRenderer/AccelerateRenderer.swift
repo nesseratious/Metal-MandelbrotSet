@@ -32,7 +32,7 @@ final class AccelerateRenderer: UIView, Renderer {
         performanceMonitor.calculationStarted(on: .CPU)
         let buffer = contextProvider.makeBuffer()
         
-        async(priority: .userInteractive) {
+        Task(priority: .high) {
             await calculateMandelbrot(in: buffer, contextProvider: contextProvider)
             mandelbrotImage.image = contextProvider.generateUIImage()
             performanceMonitor.calculationEnded()
