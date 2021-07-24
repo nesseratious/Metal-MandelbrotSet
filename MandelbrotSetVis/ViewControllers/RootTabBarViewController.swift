@@ -12,11 +12,18 @@ final class RootTabBarController: UITabBarController {
     init() {
         super.init(nibName: nil, bundle: nil)
         viewControllers = [metalViewController, accelerateViewController]
+        setupTabBar()
         showMacToolbar()
     }
     
+    private func setupTabBar() {
+        tabBar.tintColor = .systemPink
+        tabBar.backgroundColor = .clear
+        tabBar.backgroundImage = UIImage()
+    }
+    
     private func showMacToolbar() {
-        // On macOS we show native NSToolbar instead of iOS's tab bar
+        /// On macOS we show native NSToolbar instead of iOS's tab bar
         #if targetEnvironment(macCatalyst)
         tabBar.isHidden = true
         
@@ -34,7 +41,7 @@ final class RootTabBarController: UITabBarController {
         super.init(coder: coder)
     }
     
-    /// A MandelbrotViewController that shows the mandelbrot set using the MetalRenderer.
+    /// A MandelbrotViewController that renders the mandelbrot set using the `MetalRenderer`.
     private let metalViewController: UIViewController = {
         let metalVC = MandelbrotViewController(renderer: MetalRenderer())
         let image = UIImage(systemName: "cpu")
@@ -42,7 +49,7 @@ final class RootTabBarController: UITabBarController {
         return metalVC
     }()
     
-    /// A MandelbrotViewController that shows the mandelbrot set using the AccelerateRenderer.
+    /// A MandelbrotViewController that renders the mandelbrot set using the `AccelerateRenderer`.
     private let accelerateViewController: UIViewController = {
         let accelerateVC = MandelbrotViewController(renderer: AccelerateRenderer())
         let image = UIImage(systemName: "memorychip")

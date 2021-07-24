@@ -6,12 +6,14 @@
 //  Copyright © 2020 Denis Esie. All rights reserved.
 //
 
-#include <metal_stdlib>
-#include "Shaders.h"
+#import <metal_stdlib>
+#import "Shaders.hpp"
 
 using namespace Mandelbrot;
 
-inline int calculate(const MandelbrotVertexData data) {
+constexpr constant float COLOR_SHIFT = 65;
+
+METAL_FUNC int calculate(const MandelbrotVertexData data) {
     float2 complex = float2(0, 0);
     uint i = 0;
     while (i < data.iterations) {
@@ -25,11 +27,11 @@ inline int calculate(const MandelbrotVertexData data) {
     return i == data.iterations ? 0 : i;
 }
 
-inline float4 mandelbrot(const MandelbrotVertexData data,
-                         metal::texture2d<float> pallete,
-                         metal::sampler sampler) {
+METAL_FUNC float4 mandelbrot(const MandelbrotVertexData data,
+                             metal::texture2d<float> pallete,
+                             metal::sampler sampler) {
     int colorShift = calculate(data);
-    float2 palleteCoords = float2(colorShift/65.0f, 0);
+    float2 palleteCoords = float2(colorShift/COLOR_SHIFT, 0);
     return pallete.sample(sampler, palleteCoords);;
 }
 

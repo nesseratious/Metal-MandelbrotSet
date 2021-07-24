@@ -8,17 +8,22 @@
 #ifndef Shaders_h
 #define Shaders_h
 
-#include <simd/simd.h>
-#include <metal_stdlib>
+#import <simd/simd.h>
+#import <metal_stdlib>
 
 namespace Mandelbrot {
 
-/// Convertible from Swift using RendererBuffer swift struct.
+/// Convertible from Swift using VertexBuffer swift struct.
 struct VertexBuffer {
     float scale;
     float iterations;
     float2 translation;
     float2 aspectRatio;
+};
+
+struct MandelbrotVertexData {
+    float2 position;
+    uint iterations;
 };
 
 struct InputVertex {
@@ -30,16 +35,10 @@ struct OutputVertex {
     float2 coordinates;
 };
 
-struct MandelbrotVertexData {
-    float2 position;
-    uint iterations;
-};
-
-
-inline float2 getFloat2(float3 vec) {
-    return float2(vec.x, vec.y);
 }
 
+METAL_FUNC float2 getFloat2(float3 vec) {
+    return float2(vec.x, vec.y);
 }
 
 #endif

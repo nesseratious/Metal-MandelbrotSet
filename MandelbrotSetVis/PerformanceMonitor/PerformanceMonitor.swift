@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PerformanceMonitor.swift
 //  MandelbrotSetVis
 //
 //  Created by Esie on 11/14/20.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-@MainActor struct PerformanceMonitor {
+struct PerformanceMonitor {
     private var time: TimeInterval?
     private var inference: TimeInterval?
     private var source: Source?
@@ -23,19 +23,26 @@ import Foundation
         self.source = source
         time = CFAbsoluteTimeGetCurrent()
         isRunning = true
-        print("[PERFORMANCE] [\(source.rawValue)] Started rendering frame...")
+        self.print("[PERFORMANCE] [\(source.rawValue)] Started rendering frame...")
     }
     
     /// Called after each frame render finishes.
     mutating func calculationEnded() {
         guard let time = time, let source = source else {
-            print("[WARNING] calculationEnded() called before calculationStarted().")
+            self.print("[WARNING] calculationEnded() called before calculationStarted().")
             return
         }
         let inference = CFAbsoluteTimeGetCurrent() - time
         self.inference = inference
         isRunning = false
-        print("[PERFORMANCE] [\(source.rawValue)] Frame rendered in ", inference, "s.")
+        self.print("[PERFORMANCE] [\(source.rawValue)] Frame rendered in \(inference), s.")
+    }
+    
+    @warn_unqualified_access
+    func print(_ message: String) {
+        #if DEBUG
+        Swift.print(message)
+        #endif
     }
     
     //TODO: Add FPS counter
