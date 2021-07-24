@@ -25,7 +25,7 @@ typealias FloatType = Float32
 //TODO: Add custom lenght float support
 
 /// Bridge used for exchanging data between Swift and Metal.
-/// Has the same memory layout as Metal's VertexBuffer struct.
+/// Has the same memory layout as Metal's `VertexBuffer` struct.
 struct VertexBuffer: SwiftToMetalConvertible, Sendable {
     var scale: FloatType = 1
     var iterations: FloatType = 256

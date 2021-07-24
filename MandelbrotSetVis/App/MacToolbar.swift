@@ -46,7 +46,7 @@ extension MacToolbar: NSToolbarDelegate {
         }
     }
     
-    func toolbarSelectionChanged(_ sender: NSToolbarItemGroup) {
+    @objc func toolbarSelectionChanged(_ sender: NSToolbarItemGroup) {
         NotificationCenter.default.post(name: .macToolBarSelectionChanged, object: sender.selectedIndex)
     }
 }

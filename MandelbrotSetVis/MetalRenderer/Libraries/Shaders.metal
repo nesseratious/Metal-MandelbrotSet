@@ -11,6 +11,8 @@
 
 using namespace Mandelbrot;
 
+constexpr constant float COLOR_SHIFT = 65;
+
 METAL_FUNC int calculate(const MandelbrotVertexData data) {
     float real = 0, img = 0;
     uint i = 0;
@@ -24,10 +26,10 @@ METAL_FUNC int calculate(const MandelbrotVertexData data) {
 }
 
 METAL_FUNC float4 mandelbrot(const MandelbrotVertexData data,
-                         metal::texture2d<float> pallete,
-                         metal::sampler sampler) {
+                             metal::texture2d<float> pallete,
+                             metal::sampler sampler) {
     int colorShift = calculate(data);
-    float2 palleteCoords = float2(colorShift/65.0f, 0);
+    float2 palleteCoords = float2(colorShift/COLOR_SHIFT, 0);
     return pallete.sample(sampler, palleteCoords);;
 }
 
