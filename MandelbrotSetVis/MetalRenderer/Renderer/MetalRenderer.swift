@@ -50,15 +50,6 @@ final class MetalRenderer: MTKView, Renderer {
             fatalError("Failed to load pallete texture with error: \(error.localizedDescription)")
         }
     }()
-    
-    private lazy var isDebuggerAttached: Bool = {
-        var info = kinfo_proc()
-        var mib = [CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid()]
-        var stride = MemoryLayout<kinfo_proc>.stride
-        let junk = sysctl(&mib, UInt32(mib.count), &info, &stride, nil, 0)
-        guard junk == 0 else { return false }
-        return (info.kp_proc.p_flag & P_TRACED) != 0
-    }()
 }
 
 extension MetalRenderer: MTKViewDelegate {
@@ -84,16 +75,15 @@ extension MetalRenderer: MTKViewDelegate {
         commandEncoder.setFragmentTexture(paletteTexture, index: 0)
         commandEncoder.setFragmentSamplerState(samplerState, index: 0)
         commandEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
+        
+        isRedrawNeeded = false
+        
+        commandBuffer.addCompletedHandler { [weak self] _ in
+            self?.performanceMonitor.calculationEnded()
+        }
+
         commandEncoder.endEncoding()
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
-        isRedrawNeeded = false
-
-        if isDebuggerAttached {
-            //FIXME: -[_MTLCommandBuffer addCompletedHandler:], line 673: error '<private>'
-            commandBuffer.addCompletedHandler { [unowned self] _ in
-                performanceMonitor.calculationEnded()
-            }
-        }
     }
 }
